@@ -24,6 +24,103 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def is_venv_active():
+    """Check if a virtual environment is active"""
+    return sys.prefix != sys.base_prefix
+
+
+def check_venv_setup():
+    """
+    Interactive venv setup checker.
+    If no venv is active, prompts user with options.
+    Returns True to continue, False to exit.
+    """
+    if is_venv_active():
+        # venv is active, continue silently
+        return True
+
+    # No venv active - show interactive dialog
+    print("\n" + "=" * 80)
+    print("⚠️  KEINE VIRTUELLE UMGEBUNG (venv) AKTIV!")
+    print("=" * 80)
+    print("\nOptionen:")
+    print("[1] venv im Projekt-Ordner nutzen (./venv)")
+    print("[2] Externe venv nutzen (/Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit)")
+    print("[3] Dependencies prüfen/installieren")
+    print("[4] Abbrechen")
+    print()
+
+    choice = input("Wahl [1/2/3/4]: ").strip()
+
+    if choice == "1":
+        # Check project venv
+        venv_path = Path("venv")
+        print()
+        if venv_path.exists():
+            print("✓ venv gefunden!")
+            print("\nFühre folgenden Befehl aus:\n")
+            print("    source venv/bin/activate")
+            print("\nDanach starte das Skript erneut.")
+        else:
+            print("✗ venv nicht gefunden!")
+            print("\nErstelle sie mit:\n")
+            print("    python3 -m venv venv")
+            print("    source venv/bin/activate")
+            print("    pip install -r requirements.txt")
+            print("\nDanach starte das Skript erneut.")
+        print()
+        return False
+
+    elif choice == "2":
+        # Check external venv
+        external_venv = Path("/Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit")
+        print()
+        if external_venv.exists():
+            print("✓ Externe venv gefunden!")
+            print("\nFühre folgenden Befehl aus:\n")
+            print("    source /Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit/bin/activate")
+            print("\nDanach starte das Skript erneut.")
+        else:
+            print("✗ Externe venv nicht gefunden unter:")
+            print(f"   {external_venv}")
+            print("\nBitte prüfe den Pfad oder wähle Option [1].")
+        print()
+        return False
+
+    elif choice == "3":
+        # Show dependency info
+        print()
+        print("📦 Dependencies aus requirements.txt:")
+        print()
+        requirements_path = Path("requirements.txt")
+        if requirements_path.exists():
+            print("Installiere alle mit:\n")
+            print("    pip install -r requirements.txt")
+            print()
+            print("Oder einzeln prüfen:\n")
+            print("    pip list | grep -E \"pandas|numpy|scikit-learn|matplotlib|seaborn|openpyxl|pyyaml|scipy|joblib\"")
+            print()
+            print("\nBenötigte Pakete:")
+            with open(requirements_path, 'r') as f:
+                for line in f:
+                    if line.strip() and not line.startswith('#'):
+                        print(f"    - {line.strip()}")
+        else:
+            print("✗ requirements.txt nicht gefunden!")
+        print()
+        return False
+
+    elif choice == "4":
+        # Cancel
+        print("\n✓ Abgebrochen.\n")
+        return False
+
+    else:
+        print(f"\n✗ Ungültige Wahl: '{choice}'")
+        print("Bitte wähle 1, 2, 3 oder 4.\n")
+        return False
+
+
 def parse_args():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(description='3-Stage Clustering Analysis')
@@ -49,9 +146,42 @@ def parse_args():
     return parser.parse_args()
 
 
+def parse_algorithms_from_config(cfg: dict) -> list:
+    """
+    Parse algorithm(s) from config.
+    Supports single or multiple algorithms (comma-separated).
+
+    Examples:
+        'kmeans' -> ['kmeans']
+        'kmeans, hierarchical, dbscan' -> ['kmeans', 'hierarchical', 'dbscan']
+
+    Returns:
+        List of algorithm names
+    """
+    algorithm_str = config.get_value(cfg, 'classification', 'algorithm', default='kmeans')
+
+    if isinstance(algorithm_str, str):
+        # Split by comma and strip whitespace
+        algorithms = [alg.strip() for alg in algorithm_str.split(',')]
+        # Filter out empty strings
+        algorithms = [alg for alg in algorithms if alg]
+        return algorithms
+    elif isinstance(algorithm_str, list):
+        # Already a list
+        return algorithm_str
+    else:
+        # Fallback
+        return ['kmeans']
+
+
 def main():
     """Main entry point"""
     args = parse_args()
+
+    # Check venv setup before starting pipeline
+    if not check_venv_setup():
+        # User chose to exit or needs to setup venv
+        return 0
 
     logger.info("\n" + "=" * 80)
     logger.info("🚀 CLUSTERING ANALYSIS PIPELINE")
@@ -62,6 +192,18 @@ def main():
     try:
         # Load config
         cfg = config.load_config(args.config)
+
+        # Parse algorithms from config
+        config_algorithms = parse_algorithms_from_config(cfg)
+
+        # Auto-detect compare mode if multiple algorithms in config
+        auto_compare = len(config_algorithms) > 1
+
+        if auto_compare and not args.compare:
+            logger.info(f"📋 Multiple algorithms detected in config: {', '.join(config_algorithms)}")
+            logger.info("🔬 Automatically enabling COMPARISON MODE\n")
+            args.compare = True
+            args.algorithms = config_algorithms
 
         # Preprocessing
         if not args.skip_prep:
