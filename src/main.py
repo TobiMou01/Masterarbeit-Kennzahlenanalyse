@@ -4,25 +4,11 @@ Simplified orchestration - delegates to Pipeline class
 """
 
 import sys
-import argparse
-import logging
 from pathlib import Path
 
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-from src import config, preprocessing
-from src.pipeline import ClusteringPipeline
-from src.comparison_pipeline import ComparisonPipeline
-
-# Logging setup
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]
-)
-logger = logging.getLogger(__name__)
-
+# ============================================================================
+# VENV CHECK - MUST BE FIRST, BEFORE ANY OTHER IMPORTS!
+# ============================================================================
 
 def is_venv_active():
     """Check if a virtual environment is active"""
@@ -42,6 +28,25 @@ def check_venv_setup():
     # No venv active - show interactive dialog
     print("\n" + "=" * 80)
     print("⚠️  KEINE VIRTUELLE UMGEBUNG (venv) AKTIV!")
+    print("=" * 80)
+    print(f"\n⚙️  Aktuell verwendeter Python-Interpreter:")
+    print(f"   {sys.executable}")
+    print()
+    print("💡 WICHTIG:")
+    print("   Wenn du VS Code verwendest und die venv bereits aktiviert ist,")
+    print("   aber diese Meldung trotzdem erscheint:")
+    print()
+    print("   → VS Code verwendet den FALSCHEN Python-Interpreter!")
+    print()
+    print("   Fix:")
+    print("   1. Cmd + Shift + P")
+    print("   2. Tippe: 'Python: Select Interpreter'")
+    print("   3. Wähle: venv_masterarbeit/bin/python")
+    print()
+    print("   ODER führe im Terminal aus:")
+    print("   → python src/main.py --market germany --compare")
+    print("   (NICHT /usr/bin/python3 verwenden!)")
+    print()
     print("=" * 80)
     print("\nOptionen:")
     print("[1] venv im Projekt-Ordner nutzen (./venv)")
@@ -121,6 +126,33 @@ def check_venv_setup():
         return False
 
 
+# Check venv BEFORE importing anything that needs packages
+if not check_venv_setup():
+    sys.exit(0)
+
+# ============================================================================
+# NOW SAFE TO IMPORT - venv is guaranteed to be active
+# ============================================================================
+
+import argparse
+import logging
+
+# Add project root to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from src import config, preprocessing
+from src.pipeline import ClusteringPipeline
+from src.comparison_pipeline import ComparisonPipeline
+
+# Logging setup
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger(__name__)
+
+
 def parse_args():
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(description='3-Stage Clustering Analysis')
@@ -177,11 +209,6 @@ def parse_algorithms_from_config(cfg: dict) -> list:
 def main():
     """Main entry point"""
     args = parse_args()
-
-    # Check venv setup before starting pipeline
-    if not check_venv_setup():
-        # User chose to exit or needs to setup venv
-        return 0
 
     logger.info("\n" + "=" * 80)
     logger.info("🚀 CLUSTERING ANALYSIS PIPELINE")

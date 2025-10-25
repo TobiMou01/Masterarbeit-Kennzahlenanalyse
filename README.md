@@ -4,10 +4,42 @@ Clustering-basierte Unternehmensanalyse mit **3 Algorithmen** (K-Means, Hierarch
 
 ## 🚀 Schnellstart
 
-### Vergleichs-Analyse (EMPFOHLEN für Masterarbeit)
+### ⚙️ Setup (Einmalig)
+
 ```bash
-# Führt ALLE Algorithmen aus + umfassende Vergleiche
+# 1. Repository klonen
+git clone <your-repo-url>
+cd Masterarbeit-Kennzahlenanalyse
+
+# 2. Virtuelle Umgebung erstellen (WÄHLE EINE OPTION)
+
+# Option A: venv im Projekt-Ordner (empfohlen für GitHub)
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Option B: Externe venv nutzen (falls schon vorhanden)
+source /Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit/bin/activate
+```
+
+### 🎯 Projekt ausführen
+
+**⚠️ WICHTIG: Verwende `python`, NICHT `/usr/bin/python3`!**
+
+```bash
+# 1. Virtuelle Umgebung aktivieren (falls nicht bereits aktiv)
+source venv/bin/activate
+# ODER für externe venv:
+source /Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit/bin/activate
+
+# 2. Komplettdurchlauf mit ALLEN Algorithmen (EMPFOHLEN)
 python src/main.py --market germany --compare
+
+# 3. Einzelner Algorithmus (aus config.yaml)
+python src/main.py --market germany
+
+# 4. Schneller Durchlauf (ohne Preprocessing & Plots)
+python src/main.py --market germany --compare --skip-prep --skip-plots
 ```
 
 **Output:**
@@ -16,17 +48,15 @@ python src/main.py --market germany --compare
 - ✅ Metriken-Vergleich (Silhouette, Davies-Bouldin)
 - ✅ Cluster-Überlappung zwischen Algorithmen
 
-### Einzelner Algorithmus
-```bash
-# Standard (in config.yaml definiert)
-python src/main.py --market germany
+### 🔧 VS Code Setup
 
-# Preprocessing überspringen (schneller)
-python src/main.py --market germany --skip-prep
+Falls du in VS Code auf "Play" drücken möchtest:
 
-# Ohne Visualisierungen
-python src/main.py --market germany --skip-plots
-```
+1. **Cmd + Shift + P**
+2. Tippe: **"Python: Select Interpreter"**
+3. Wähle: **`venv/bin/python`** (oder `venv_masterarbeit/bin/python`)
+
+Dann kannst du [src/main.py](src/main.py) öffnen und auf ▶️ Play drücken!
 
 ---
 
