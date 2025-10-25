@@ -1,0 +1,169 @@
+================================================================================
+CLUSTERING ANALYSIS - SUMMARY REPORT
+================================================================================
+Market: GERMANY
+Generated: 2025-10-25 08:01:47
+================================================================================
+
+STATIC ANALYSIS (Querschnitt - aktuelles Jahr)
+--------------------------------------------------------------------------------
+  Klassifizierte Unternehmen: 158
+  Anzahl Cluster: 5
+  Silhouette Score: 0.198
+  Davies-Bouldin Index: 1.141
+
+
+  CLUSTER DETAILS:
+  ----------------------------------------------------------------------------
+
+  Cluster 0: High Performers (23 Unternehmen, 14.6%)
+    Kennzahlen: ROA: 10.66% | ROE: 19.69% | EBIT Margin: 22.40% | Equity Ratio: 32.90% | Debt/Equity: 0.95%
+    Top Unternehmen:
+      - KABEL DEUTSCHLAND HOLDING AG (ROA: 20.67%)
+      - IONOS GROUP SE (ROA: 19.59%)
+      - TEAMVIEWER SE (ROA: 19.28%)
+
+  Cluster 1: Mid (38 Unternehmen, 24.1%)
+    Kennzahlen: ROA: 0.12% | ROE: 17.68% | EBIT Margin: 0.05% | Equity Ratio: 22.87% | Debt/Equity: 1.33%
+    Top Unternehmen:
+      - TUI AG (ROA: 5.01%)
+      - SCHAEFFLER AG (ROA: 3.60%)
+      - BAUER AG (ROA: 3.43%)
+
+  Cluster 2: Upper-Mid (69 Unternehmen, 43.7%)
+    Kennzahlen: ROA: 6.00% | ROE: 8.67% | EBIT Margin: 8.00% | Equity Ratio: 36.99% | Debt/Equity: 0.73%
+    Top Unternehmen:
+      - FIELMANN GROUP AG (ROA: 10.60%)
+      - SAF HOLLAND SE (ROA: 9.71%)
+      - HUGO BOSS AG (ROA: 9.54%)
+
+  Cluster 3: Low Performers (1 Unternehmen, 0.6%)
+    Kennzahlen: ROA: -3.62% | ROE: -304.86% | EBIT Margin: -17.10% | Equity Ratio: 3.30% | Debt/Equity: 23.84%
+    Top Unternehmen:
+      - TELE COLUMBUS AG (ROA: -3.62%)
+
+  Cluster 4: Lower-Mid (27 Unternehmen, 17.1%)
+    Kennzahlen: ROA: 5.01% | ROE: 2.23% | EBIT Margin: 7.02% | Equity Ratio: 54.97% | Debt/Equity: 0.37%
+    Top Unternehmen:
+      - FUCHS SE (ROA: 16.70%)
+      - BEIERSDORF AG (ROA: 10.42%)
+      - KWS SAAT SE & CO KGAA (ROA: 9.46%)
+
+DYNAMIC ANALYSIS (Zeitreihen - Entwicklung)
+--------------------------------------------------------------------------------
+  Klassifizierte Unternehmen: 152
+  Anzahl Cluster: 5
+  Silhouette Score: 0.221
+  Davies-Bouldin Index: 1.335
+
+
+  CLUSTER DETAILS:
+  ----------------------------------------------------------------------------
+
+  Cluster 0: Growing (8 Unternehmen, 5.3%)
+    Kennzahlen: ROA Trend: -0.14% | ROA Volatility: 6.24% | ROE Trend: 2.13% | Revenue CAGR: 3.90%
+    Top Unternehmen:
+      - BAYERISCHE MOTOREN WERKE AKT
+      - E.ON SE
+      - VOLKSWAGEN AG
+
+  Cluster 1: Growing (53 Unternehmen, 34.9%)
+    Kennzahlen: ROA Trend: -0.34% | ROA Volatility: 2.88% | ROE Trend: -9.34% | Revenue CAGR: 5.96%
+    Top Unternehmen:
+      - BASF SE
+      - ALTANA AG
+      - BEIERSDORF AG
+
+  Cluster 2: Growing (3 Unternehmen, 2.0%)
+    Kennzahlen: ROA Trend: 3.66% | ROA Volatility: 15.78% | ROE Trend: 8.43% | Revenue CAGR: 15.30%
+    Top Unternehmen:
+      - OSRAM LICHT AG
+      - ROCKET INTERNET SE
+      - HELLOFRESH SE
+
+  Cluster 3: Growing (87 Unternehmen, 57.2%)
+    Kennzahlen: ROA Trend: -0.05% | ROA Volatility: 3.04% | ROE Trend: -0.06% | Revenue CAGR: 5.08%
+    Top Unternehmen:
+      - MERCEDES BENZ GROUP AG
+      - SIEMENS AG
+      - BAYWA AG
+
+  Cluster 4: Declining (Volatile) (1 Unternehmen, 0.7%)
+    Kennzahlen: ROA Trend: 0.45% | ROA Volatility: 1.61% | ROE Trend: -121.33% | Revenue CAGR: 6.77%
+    Top Unternehmen:
+      - SPRINGER NATURE AG
+
+COMBINED ANALYSIS (Statisch + Dynamisch)
+--------------------------------------------------------------------------------
+  Klassifizierte Unternehmen: 152
+  Anzahl Cluster: 6
+  Silhouette Score: 0.242
+  Davies-Bouldin Index: 0.835
+  Gewichtung: 40% statisch, 60% dynamisch
+
+
+  CLUSTER DETAILS:
+  ----------------------------------------------------------------------------
+
+  Cluster 0: Top Tier (8 Unternehmen, 5.3%)
+    Kennzahlen: ROA: 12.02% | ROE: 38.31% | EBIT Margin: 29.25% | ROA Trend: 1.94% | Revenue CAGR: 19.19%
+    Top Unternehmen:
+      - IONOS GROUP SE (ROA: 19.59%)
+      - TEAMVIEWER SE (ROA: 19.28%)
+      - ROCKET INTERNET SE (ROA: 18.62%)
+
+  Cluster 1: Upper-Mid (89 Unternehmen, 58.6%)
+    Kennzahlen: ROA: 7.03% | ROE: 4.76% | EBIT Margin: 9.57% | ROA Trend: -0.12% | Revenue CAGR: 5.57%
+    Top Unternehmen:
+      - KABEL DEUTSCHLAND HOLDING AG (ROA: 20.67%)
+      - FUCHS SE (ROA: 16.70%)
+      - SCHOTT PHARMA AG & CO KGAA (ROA: 13.09%)
+
+  Cluster 2: Strong Performers (1 Unternehmen, 0.7%)
+    Kennzahlen: ROA: 7.50% | ROE: 3.77% | EBIT Margin: 21.89% | ROA Trend: 0.45% | Revenue CAGR: 6.77%
+    Top Unternehmen:
+      - SPRINGER NATURE AG (ROA: 7.50%)
+
+  Cluster 3: Lower-Mid (1 Unternehmen, 0.7%)
+    Kennzahlen: ROA: 0.10% | ROE: -15.30% | EBIT Margin: 0.03% | ROA Trend: 8.35% | Revenue CAGR: 60.01%
+    Top Unternehmen:
+      - HELLOFRESH SE (ROA: 0.10%)
+
+  Cluster 4: Mid (52 Unternehmen, 34.2%)
+    Kennzahlen: ROA: 0.89% | ROE: 10.13% | EBIT Margin: 0.65% | ROA Trend: -0.49% | Revenue CAGR: 2.20%
+    Top Unternehmen:
+      - UNIPER SE (ROA: 5.91%)
+      - PAUL HARTMANN AG (ROA: 5.18%)
+      - TUI AG (ROA: 5.01%)
+
+  Cluster 5: Challenged (1 Unternehmen, 0.7%)
+    Kennzahlen: ROA: -3.62% | ROE: -304.86% | EBIT Margin: -17.10% | ROA Trend: -0.83% | Revenue CAGR: 7.53%
+    Top Unternehmen:
+      - TELE COLUMBUS AG (ROA: -3.62%)
+
+CROSS ANALYSIS (Cluster-Migration)
+--------------------------------------------------------------------------------
+  Analyzed Companies: 152
+  Migration Patterns:
+    - Consistent: 78
+    - Improving: 39
+    - Declining: 33
+    - Unknown: 2
+
+================================================================================
+OUTPUT STRUCTURE
+================================================================================
+
+  output/germany/kmeans/
+  ├── clusters/          # Pro Cluster eine CSV-Datei
+  ├── reports/           # Reports, Daten & Modelle
+  │   ├── data/          # Assignments & Profiles
+  │   ├── analysis/      # Detaillierte Ergebnisse
+  │   ├── models/        # Gespeicherte Modelle (Scaler, KMeans)
+  │   └── summary.txt    # Dieser Report
+  └── visualizations/    # Plots & Grafiken
+      ├── static/        # Static Analysis Plots
+      ├── dynamic/       # Dynamic Analysis Plots
+      └── combined/      # Combined Analysis Plots
+
+================================================================================

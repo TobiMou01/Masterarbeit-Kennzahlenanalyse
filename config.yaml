@@ -1,0 +1,96 @@
+# ========================================
+# CLUSTERING CONFIGURATION
+# ========================================
+# Kompakte, klare Konfiguration für 3-stufige Analyse
+
+# ========================================
+# CLUSTERING ALGORITHM
+# ========================================
+classification:
+  algorithm: 'kmeans, hierarchical, dbscan'  # Verfügbar: kmeans, hierarchical, dbscan
+
+  # K-Means spezifische Parameter
+  kmeans:
+    n_init: 20          # Anzahl Initialisierungen
+    max_iter: 300       # Maximum Iterationen
+    algorithm: 'lloyd'  # K-Means Algorithmus-Variante
+
+  # Hierarchical Clustering Parameter
+  hierarchical:
+    linkage: 'ward'              # Linkage-Methode (ward, complete, average, single)
+    distance_metric: 'euclidean' # Distanzmetrik (euclidean für ward erforderlich)
+
+  # DBSCAN Parameter (Density-Based)
+  dbscan:
+    eps: 0.5           # Maximaler Abstand zwischen Punkten (kritischer Parameter!)
+    min_samples: 5     # Minimale Anzahl Punkte für Core-Punkt
+    metric: 'euclidean'  # Distanzmetrik
+    # Hinweis: n_clusters wird automatisch gefunden
+    # eps muss ggf. angepasst werden je nach Daten (typisch: 0.3-2.0)
+
+# ========================================
+# CLUSTER-ANZAHL
+# ========================================
+static_analysis:
+  n_clusters: 5  # Empfohlen: 3-7
+
+dynamic_analysis:
+  n_clusters: 5
+  min_years_required: 5  # Minimum Jahre pro Unternehmen
+
+combined_analysis:
+  n_clusters: 6
+  weights:
+    static: 0.4   # 40% Gewicht auf aktuellen Status
+    dynamic: 0.6  # 60% Gewicht auf Entwicklung
+
+# ========================================
+# FEATURES
+# ========================================
+static_analysis:
+  features:
+    - roa
+    - roe
+    - ebit_margin
+    - net_profit_margin
+    - current_ratio
+    - debt_to_equity
+    - equity_ratio
+
+dynamic_analysis:
+  features:  # Automatisch ergänzt mit _trend, _volatility, _cagr
+    - roa
+    - roe
+    - ebit_margin
+    - revt
+    - debt_to_equity
+
+combined_analysis:
+  features_static:
+    - roa
+    - roe
+    - ebit_margin
+
+  features_dynamic:
+    - roa_trend
+    - roa_volatility
+    - roe_trend
+    - revt_cagr
+
+# ========================================
+# DATA & MARKET SETTINGS
+# ========================================
+data:
+  market: 'germany'  # oder 'auto' für automatische Erkennung
+  input_dir: 'data/raw'
+  output_dir: 'output'
+
+# ========================================
+# GLOBAL SETTINGS
+# ========================================
+global:
+  random_state: 42
+
+output:
+  create_plots: true
+  create_company_lists: true

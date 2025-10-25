@@ -1,0 +1,7 @@
+,feature,importance,algorithm
+0,roa,0.230215762295119,dbscan
+3,roa,0.17032741033182563,dbscan
+1,roe,0.1630781150400264,dbscan
+2,ebit_margin,0.15090788011310466,dbscan
+5,ebit_margin,0.14706798091629458,dbscan
+4,roe,0.13840285130362973,dbscan
