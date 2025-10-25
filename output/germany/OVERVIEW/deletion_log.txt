@@ -1,0 +1,260 @@
+================================================================================
+DELETION LOG
+================================================================================
+Generated: 2025-10-25 12:14:57
+Total files removed: 50
+Total space saved: 2.08 MB
+
+DELETED FILES:
+--------------------------------------------------------------------------------
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/clusters/2_strong_performers.csv
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/clusters/2_strong_performers.csv
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/clusters/5_challenged.csv
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/clusters/5_challenged.csv
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/clusters/1_top_tier.csv
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/clusters/1_top_tier.csv
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/clusters/0_upper-mid.csv
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/clusters/0_upper-mid.csv
+  Size: 0.02 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/clusters/3_mid.csv
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/clusters/3_mid.csv
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/clusters/4_lower-mid.csv
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/clusters/4_lower-mid.csv
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/models/scaler.pkl
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/models/scaler.pkl
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/models/model.pkl
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/models/model.pkl
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/data/metrics.json
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/data/metrics.json
+  Size: 0.0 MB
+
+File: output/germany/ALGORITHMS/hierarchical/combined/reports/data/profiles.csv
+  Reason: duplicate
+  Kept: output/germany/hierarchical/combined/reports/data/profiles.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/04_temporal_stability/algorithm_stability_comparison.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/algorithm_stability_comparison.png
+  Size: 0.09 MB
+
+File: output/germany/comparisons/04_temporal_stability/kmeans_migration_heatmap.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/kmeans_migration_heatmap.png
+  Size: 0.13 MB
+
+File: output/germany/comparisons/04_temporal_stability/stability_metrics.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/stability_metrics.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/04_temporal_stability/hierarchical_migration_heatmap.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/hierarchical_migration_heatmap.png
+  Size: 0.13 MB
+
+File: output/germany/comparisons/04_temporal_stability/hierarchical_yearly_stability.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/hierarchical_yearly_stability.png
+  Size: 0.1 MB
+
+File: output/germany/comparisons/04_temporal_stability/kmeans_yearly_stability.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/kmeans_yearly_stability.png
+  Size: 0.1 MB
+
+File: output/germany/comparisons/01_vs_gics/summary_gics_static.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/summary_gics_static.png
+  Size: 0.13 MB
+
+File: output/germany/comparisons/01_vs_gics/chi_square_test.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/chi_square_test.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/01_vs_gics/cramers_v.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/cramers_v.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/01_vs_gics/rand_index.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/rand_index.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/metrics_comparison.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/metrics_comparison.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/cluster_overlap_matrix.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/cluster_overlap_matrix.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/algorithm_overlap_combined.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/algorithm_overlap_combined.png
+  Size: 0.11 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/metrics_comparison_combined.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/metrics_comparison_combined.png
+  Size: 0.23 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/metrics_comparison_dynamic.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/metrics_comparison_dynamic.png
+  Size: 0.2 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/algorithm_overlap_static.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/algorithm_overlap_static.png
+  Size: 0.11 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/metrics_comparison_static.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/metrics_comparison_static.png
+  Size: 0.2 MB
+
+File: output/germany/comparisons/02_algorithm_comparison/algorithm_overlap_dynamic.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/02_algorithms/algorithm_overlap_dynamic.png
+  Size: 0.11 MB
+
+File: output/germany/comparisons/04_temporal_stability/migration_matrices/kmeans_migration.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/migration_matrices/kmeans_migration.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/04_temporal_stability/migration_matrices/hierarchical_migration.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/04_temporal/migration_matrices/hierarchical_migration.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/01_vs_gics/contingency_tables/dbscan_vs_gsector.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/contingency_tables/dbscan_vs_gsector.png
+  Size: 0.11 MB
+
+File: output/germany/comparisons/01_vs_gics/contingency_tables/hierarchical_vs_gsector.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/contingency_tables/hierarchical_vs_gsector.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/01_vs_gics/contingency_tables/kmeans_vs_gsector.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/contingency_tables/kmeans_vs_gsector.png
+  Size: 0.13 MB
+
+File: output/germany/comparisons/01_vs_gics/contingency_tables/dbscan_vs_gsector.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/contingency_tables/dbscan_vs_gsector.csv
+  Size: 0.0 MB
+
+File: output/germany/comparisons/01_vs_gics/contingency_tables/hierarchical_vs_gsector.png
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/contingency_tables/hierarchical_vs_gsector.png
+  Size: 0.13 MB
+
+File: output/germany/comparisons/01_vs_gics/contingency_tables/kmeans_vs_gsector.csv
+  Reason: duplicate
+  Kept: output/germany/comparisons/01_gics_comparison/contingency_tables/kmeans_vs_gsector.csv
+  Size: 0.0 MB
+
+File: output/germany/dbscan/combined/reports/clusters/0_top_tier.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/dbscan/combined/reports/clusters/0_top_tier.csv
+  Size: 0.0 MB
+
+File: output/germany/dbscan/combined/reports/clusters/1_lower-mid.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/dbscan/combined/reports/clusters/1_lower-mid.csv
+  Size: 0.0 MB
+
+File: output/germany/dbscan/combined/reports/clusters/3_mid.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/dbscan/combined/reports/clusters/3_mid.csv
+  Size: 0.0 MB
+
+File: output/germany/dbscan/combined/reports/clusters/2_upper-mid.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/dbscan/combined/reports/clusters/2_upper-mid.csv
+  Size: 0.0 MB
+
+File: output/germany/dbscan/combined/reports/models/model.pkl
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/dbscan/combined/reports/models/model.pkl
+  Size: 0.0 MB
+
+File: output/germany/dbscan/combined/reports/data/metrics.json
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/dbscan/combined/reports/data/metrics.json
+  Size: 0.0 MB
+
+File: output/germany/dbscan/combined/reports/data/profiles.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/dbscan/combined/reports/data/profiles.csv
+  Size: 0.0 MB
+
+File: output/germany/kmeans/combined/reports/clusters/0_top_tier.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/kmeans/combined/reports/clusters/0_top_tier.csv
+  Size: 0.0 MB
+
+File: output/germany/kmeans/combined/reports/clusters/3_lower-mid.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/kmeans/combined/reports/clusters/3_lower-mid.csv
+  Size: 0.0 MB
+
+File: output/germany/kmeans/combined/reports/clusters/1_upper-mid.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/kmeans/combined/reports/clusters/1_upper-mid.csv
+  Size: 0.01 MB
+
+File: output/germany/kmeans/combined/reports/clusters/4_mid.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/kmeans/combined/reports/clusters/4_mid.csv
+  Size: 0.01 MB
+
+File: output/germany/kmeans/combined/reports/models/model.pkl
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/kmeans/combined/reports/models/model.pkl
+  Size: 0.0 MB
+
+File: output/germany/kmeans/combined/reports/data/metrics.json
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/kmeans/combined/reports/data/metrics.json
+  Size: 0.0 MB
+
+File: output/germany/kmeans/combined/reports/data/profiles.csv
+  Reason: duplicate
+  Kept: output/germany/ALGORITHMS/kmeans/combined/reports/data/profiles.csv
+  Size: 0.0 MB
+
+================================================================================

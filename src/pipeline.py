@@ -9,10 +9,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
 
-from src.clustering_engine import ClusteringEngine
+from src._03_clustering.cluster_engine import ClusteringEngine
 from src.output_handler import OutputHandler
-from src.visualizer import create_all_plots
-from src import config
+from src._05_visualization.plot_engine import create_all_plots
+from src._01_setup import config_loader as config
 
 logger = logging.getLogger(__name__)
 

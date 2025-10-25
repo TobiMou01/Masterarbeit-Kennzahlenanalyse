@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(/Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit/bin/python:*)",
+      "Bash(for file in src/_04_comparison/*.py)",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(done)",
+      "Bash(for file in src/_02_processing/*.py)"
     ],
     "deny": [],
     "ask": []

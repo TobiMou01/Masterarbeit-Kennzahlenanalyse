@@ -10,15 +10,13 @@ from pathlib import Path
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 
-from src import config
+from src._01_setup import config_loader as config
 from src.pipeline import ClusteringPipeline
-from src.comparison import (
-    GICSComparison,
-    AlgorithmComparison,
-    FeatureImportance,
-    TemporalStability,
-    ComparisonHandler
-)
+from src._04_comparison.gics_analyzer import GICSComparison
+from src._04_comparison.algorithm_analyzer import AlgorithmComparison
+from src._04_comparison.feature_analyzer import FeatureImportance
+from src._04_comparison.temporal_analyzer import TemporalStability
+# Note: ComparisonHandler logic integrated into this class
 
 logger = logging.getLogger(__name__)
 
@@ -60,12 +58,15 @@ class ComparisonPipeline:
         else:
             self.algorithms = algorithms
 
-        # Initialize handlers
-        self.comparison_handler = ComparisonHandler(market=market)
+        # Initialize comparison analyzers
         self.gics_comparison = GICSComparison()
         self.algo_comparison = AlgorithmComparison()
         self.feature_importance = FeatureImportance()
         self.temporal_stability = TemporalStability()
+
+        # Output directory (replaces ComparisonHandler)
+        self.base_dir = Path(f'output/{market}/comparisons')
+        self.base_dir.mkdir(parents=True, exist_ok=True)
 
         # Results storage
         self.algorithm_results = {}  # {algorithm: {static: df, dynamic: df, combined: df}}

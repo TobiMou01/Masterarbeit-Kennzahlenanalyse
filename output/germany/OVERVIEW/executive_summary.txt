@@ -1,0 +1,22 @@
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+Market: GERMANY
+Generated: 2025-10-25 12:14:57
+
+OVERVIEW:
+- Metrics comparison not available
+
+================================================================================
+FOLDER STRUCTURE:
+================================================================================
+OVERVIEW/          - Key results and navigation
+ALGORITHMS/        - Detailed clustering results per algorithm
+COMPARISONS/       - All comparison analyses
+  01_vs_gics/      - Clustering vs GICS sectors
+  02_algorithms/   - Algorithm performance comparison
+  03_feature_importance/ - Feature importance analysis
+  04_temporal/     - Temporal stability analysis
+
+See README.md for detailed navigation guide.
+================================================================================
