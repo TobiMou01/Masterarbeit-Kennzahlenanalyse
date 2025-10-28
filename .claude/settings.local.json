@@ -6,7 +6,15 @@
       "Bash(for file in src/_04_comparison/*.py)",
       "Bash(do echo \"=== $file ===\")",
       "Bash(done)",
-      "Bash(for file in src/_02_processing/*.py)"
+      "Bash(for file in src/_02_processing/*.py)",
+      "Bash(awk:*)",
+      "Bash(tree:*)",
+      "Bash(for dir in output/germany/kmeans/static output/germany/kmeans/dynamic output/germany/kmeans/combined)",
+      "Bash(do echo \"=== $dir ===\")",
+      "Bash(find:*)",
+      "Bash(chmod:*)",
+      "Bash(./test_interactive.sh:*)",
+      "Bash(./test_hierarchical.sh:*)"
     ],
     "deny": [],
     "ask": []

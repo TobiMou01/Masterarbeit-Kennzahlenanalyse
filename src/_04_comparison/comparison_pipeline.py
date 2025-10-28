@@ -11,7 +11,7 @@ from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 
 from src._01_setup import config_loader as config
-from src.pipeline import ClusteringPipeline
+from src._03_clustering.pipeline import ClusteringPipeline
 from src._04_comparison.gics_analyzer import GICSComparison
 from src._04_comparison.algorithm_analyzer import AlgorithmComparison
 from src._04_comparison.feature_analyzer import FeatureImportance
@@ -71,6 +71,56 @@ class ComparisonPipeline:
         # Results storage
         self.algorithm_results = {}  # {algorithm: {static: df, dynamic: df, combined: df}}
         self.comparison_results = {}
+
+    def save_gics_comparison(self, cramers_v, rand_index, chi_square, contingency_tables):
+        """Speichert GICS Comparison Ergebnisse"""
+        output_dir = self.base_dir / 'gics'
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        cramers_v.to_csv(output_dir / 'cramers_v.csv')
+        rand_index.to_csv(output_dir / 'rand_index.csv')
+        chi_square.to_csv(output_dir / 'chi_square.csv')
+
+        for name, table in contingency_tables.items():
+            table.to_csv(output_dir / f'{name}.csv')
+
+    def save_algorithm_comparison(self, metrics, overlap_matrix):
+        """Speichert Algorithm Comparison Ergebnisse"""
+        output_dir = self.base_dir / 'algorithms'
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        metrics.to_csv(output_dir / 'metrics_comparison.csv')
+        overlap_matrix.to_csv(output_dir / 'overlap_matrix.csv')
+
+    def save_feature_importance(self, importance_dict):
+        """Speichert Feature Importance Ergebnisse"""
+        output_dir = self.base_dir / 'features'
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        for algorithm, importance_df in importance_dict.items():
+            importance_df.to_csv(output_dir / f'{algorithm}_importance.csv')
+
+    def save_temporal_stability(self, migration_matrices, stability_metrics):
+        """Speichert Temporal Stability Ergebnisse"""
+        output_dir = self.base_dir / 'temporal'
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        stability_metrics.to_csv(output_dir / 'stability_metrics.csv')
+
+        for algorithm, matrix in migration_matrices.items():
+            matrix.to_csv(output_dir / f'{algorithm}_migration_matrix.csv')
+
+    def save_plot(self, fig, filename, subfolder=None):
+        """Speichert einen Plot"""
+        if subfolder:
+            output_dir = self.base_dir / subfolder
+        else:
+            output_dir = self.base_dir
+
+        output_dir.mkdir(parents=True, exist_ok=True)
+        fig.savefig(output_dir / filename, bbox_inches='tight', dpi=300)
+        import matplotlib.pyplot as plt
+        plt.close(fig)
 
     def run_all_algorithms(
         self,
@@ -185,7 +235,7 @@ class ComparisonPipeline:
 
             if cramers_df is not None:
                 # Speichere Ergebnisse
-                self.comparison_handler.save_gics_comparison(
+                self.save_gics_comparison(
                     cramers_v=cramers_df,
                     rand_index=rand_df,
                     chi_square=chi2_df,
@@ -202,7 +252,7 @@ class ComparisonPipeline:
                             algorithm_name=algorithm,
                             gics_col=gics_col
                         )
-                        self.comparison_handler.save_plot(
+                        self.save_plot(
                             fig, f'{name}.png', 'gics_tables'
                         )
 
@@ -211,7 +261,7 @@ class ComparisonPipeline:
                         cramers_df=cramers_df,
                         analysis_type=stage
                     )
-                    self.comparison_handler.save_plot(
+                    self.save_plot(
                         fig_summary, f'summary_gics_{stage}.png', 'gics'
                     )
 
@@ -252,7 +302,7 @@ class ComparisonPipeline:
             overlap_matrix = self.algo_comparison.compute_cluster_overlap(results_dict)
 
             # Speichere
-            self.comparison_handler.save_algorithm_comparison(
+            self.save_algorithm_comparison(
                 metrics=metrics_df,
                 overlap_matrix=overlap_matrix
             )
@@ -263,7 +313,7 @@ class ComparisonPipeline:
                     metrics_df=metrics_df,
                     analysis_type=stage
                 )
-                self.comparison_handler.save_plot(
+                self.save_plot(
                     fig_metrics, f'metrics_comparison_{stage}.png', 'algorithms'
                 )
 
@@ -271,7 +321,7 @@ class ComparisonPipeline:
                     overlap_matrix=overlap_matrix,
                     analysis_type=stage
                 )
-                self.comparison_handler.save_plot(
+                self.save_plot(
                     fig_overlap, f'algorithm_overlap_{stage}.png', 'algorithms'
                 )
 
@@ -324,7 +374,7 @@ class ComparisonPipeline:
 
             if importance_dict:
                 # Speichere
-                self.comparison_handler.save_feature_importance(importance_dict)
+                self.save_feature_importance(importance_dict)
 
                 # Plots
                 if not self.skip_plots:
@@ -334,7 +384,7 @@ class ComparisonPipeline:
                             importance_df=importance_df,
                             algorithm_name=algorithm
                         )
-                        self.comparison_handler.save_plot(
+                        self.save_plot(
                             fig, f'{algorithm}_importance_{stage}.png', 'features'
                         )
 
@@ -342,7 +392,7 @@ class ComparisonPipeline:
                     fig_combined = self.feature_importance.plot_combined_importance(
                         importance_dict=importance_dict
                     )
-                    self.comparison_handler.save_plot(
+                    self.save_plot(
                         fig_combined, f'combined_importance_{stage}.png', 'features'
                     )
 
@@ -378,7 +428,7 @@ class ComparisonPipeline:
 
         if migration_matrices and stability_df is not None:
             # Speichere
-            self.comparison_handler.save_temporal_stability(
+            self.save_temporal_stability(
                 migration_matrices=migration_matrices,
                 stability_metrics=stability_df
             )
@@ -391,7 +441,7 @@ class ComparisonPipeline:
                         migration_matrix=matrix,
                         algorithm_name=algorithm
                     )
-                    self.comparison_handler.save_plot(
+                    self.save_plot(
                         fig_migration, f'{algorithm}_migration_heatmap.png', 'temporal'
                     )
 
@@ -402,7 +452,7 @@ class ComparisonPipeline:
                         algorithm_name=algorithm
                     )
                     if fig_yearly:
-                        self.comparison_handler.save_plot(
+                        self.save_plot(
                             fig_yearly, f'{algorithm}_yearly_stability.png', 'temporal'
                         )
 
@@ -410,7 +460,7 @@ class ComparisonPipeline:
                 fig_stability = self.temporal_stability.plot_stability_comparison(
                     stability_df=stability_df
                 )
-                self.comparison_handler.save_plot(
+                self.save_plot(
                     fig_stability, 'algorithm_stability_comparison.png', 'temporal'
                 )
 
@@ -471,7 +521,7 @@ class ComparisonPipeline:
         logger.info("COMPARISON PIPELINE COMPLETED")
         logger.info(f"{'='*80}")
         logger.info(f"  ⏱️  Duration: {duration:.1f}s")
-        logger.info(f"  📁 Output: {self.comparison_handler.base_dir}")
+        logger.info(f"  📁 Output: {self.base_dir}")
 
         return {
             'algorithm_results': self.algorithm_results,

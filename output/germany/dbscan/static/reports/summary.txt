@@ -2,7 +2,7 @@
 CLUSTERING ANALYSIS - SUMMARY REPORT
 ================================================================================
 Market: GERMANY
-Generated: 2025-10-25 13:23:33
+Generated: 2025-10-28 17:12:59
 ================================================================================
 
 STATIC ANALYSIS (Querschnitt - aktuelles Jahr)

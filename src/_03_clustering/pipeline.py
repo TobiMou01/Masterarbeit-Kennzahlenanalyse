@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from src._03_clustering.cluster_engine import ClusteringEngine
-from src.output_handler import OutputHandler
+from src._01_setup.output_handler import OutputHandler
 from src._05_visualization.plot_engine import create_all_plots
 from src._01_setup import config_loader as config
 

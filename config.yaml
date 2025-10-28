@@ -94,3 +94,85 @@ global:
 output:
   create_plots: true
   create_company_lists: true
+
+# ========================================
+# INTERACTIVE MODE PRESETS
+# ========================================
+# Diese Presets können im Interactive Mode ausgewählt werden
+# Du kannst die Presets hier anpassen für deine bevorzugten Setups
+interactive:
+  presets:
+    quick_test:
+      name: "Quick Test"
+      description: "Schneller Test mit K-Means, nur Static, keine Plots"
+      algorithms:
+        - kmeans
+      analyses:
+        - static
+      kmeans_mode: comparative
+      skip_preprocessing: true
+      create_plots: false
+      comparison_mode: false
+
+    full_analysis:
+      name: "Full Analysis"
+      description: "Komplette Analyse mit allen Algorithmen und Modi"
+      algorithms:
+        - kmeans
+        - hierarchical
+        - dbscan
+      analyses:
+        - static
+        - dynamic
+        - combined
+      kmeans_mode: both  # comparative + hierarchical
+      hierarchical_mode: hierarchical
+      dbscan_mode: hierarchical
+      skip_preprocessing: false
+      create_plots: true
+      comparison_mode: true
+
+    comparison_mode:
+      name: "Comparison Mode"
+      description: "Vergleich aller Algorithmen (nur Combined)"
+      algorithms:
+        - kmeans
+        - hierarchical
+        - dbscan
+      analyses:
+        - combined
+      kmeans_mode: hierarchical
+      hierarchical_mode: hierarchical
+      dbscan_mode: hierarchical
+      skip_preprocessing: true
+      create_plots: false
+      comparison_mode: true
+
+    kmeans_exploration:
+      name: "K-Means Exploration"
+      description: "Vergleich beider K-Means Modi (Comparative vs Hierarchical)"
+      algorithms:
+        - kmeans
+      analyses:
+        - static
+        - dynamic
+        - combined
+      kmeans_mode: both
+      skip_preprocessing: true
+      create_plots: true
+      comparison_mode: false
+
+    dbscan_tuning:
+      name: "DBSCAN Tuning"
+      description: "DBSCAN mit Parameter-Tuning bei Problemen"
+      algorithms:
+        - dbscan
+      analyses:
+        - static
+        - dynamic
+        - combined
+      dbscan_mode: hierarchical
+      skip_preprocessing: true
+      create_plots: false
+      comparison_mode: false
+      auto_tune_dbscan: true  # Fragt bei >50% Noise nach Parameter-Anpassung

@@ -11,7 +11,7 @@ from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 
 from src._01_setup import config_loader as config
-from src.pipeline import ClusteringPipeline
+from src._03_clustering.pipeline import ClusteringPipeline
 from src._04_comparison.gics_analyzer import GICSComparison
 from src._04_comparison.algorithm_analyzer import AlgorithmComparison
 from src._04_comparison.feature_analyzer import FeatureImportance
