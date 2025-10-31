@@ -2,6 +2,8 @@
 
 Clustering-basierte Unternehmensanalyse mit **3 Algorithmen** (K-Means, Hierarchical, DBSCAN) und **3 Analyse-Stadien** (Static, Dynamic, Combined).
 
+---
+
 ## 🚀 Schnellstart
 
 ### ⚙️ Setup (Einmalig)
@@ -11,119 +13,123 @@ Clustering-basierte Unternehmensanalyse mit **3 Algorithmen** (K-Means, Hierarch
 git clone <your-repo-url>
 cd Masterarbeit-Kennzahlenanalyse
 
-# 2. Virtuelle Umgebung erstellen (WÄHLE EINE OPTION)
-
-# Option A: venv im Projekt-Ordner (empfohlen für GitHub)
+# 2. Virtuelle Umgebung erstellen
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-
-# Option B: Externe venv nutzen (falls schon vorhanden)
-source /Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit/bin/activate
 ```
 
-### 🎯 Projekt ausführen
+### 🎯 Pipeline ausführen
 
 **⚠️ WICHTIG: Verwende `python`, NICHT `/usr/bin/python3`!**
 
 ```bash
-# 1. Virtuelle Umgebung aktivieren (falls nicht bereits aktiv)
+# Virtuelle Umgebung aktivieren
 source venv/bin/activate
-# ODER für externe venv:
-source /Users/tobi/masterarbeit-kennzahlenanalyse/venv_masterarbeit/bin/activate
 
-# 2. Komplettdurchlauf mit ALLEN Algorithmen (EMPFOHLEN)
+# KOMPLETT-DURCHLAUF: Alle Algorithmen mit allen Visualisierungen (EMPFOHLEN)
 python src/main.py --market germany --compare
 
-# 3. Einzelner Algorithmus (aus config.yaml)
+# Einzelner Algorithmus
 python src/main.py --market germany
 
-# 4. Schneller Durchlauf (ohne Preprocessing & Plots)
+# Schneller Durchlauf (ohne Preprocessing & Plots)
 python src/main.py --market germany --compare --skip-prep --skip-plots
 ```
 
 **Output:**
-- ✅ GICS-Vergleich (Branchen-Unabhängigkeit!)
-- ✅ Algorithmen-Vergleich (Welcher ist besser?)
-- ✅ Metriken-Vergleich (Silhouette, Davies-Bouldin)
-- ✅ Cluster-Überlappung zwischen Algorithmen
-
-### 🔧 VS Code Setup
-
-Falls du in VS Code auf "Play" drücken möchtest:
-
-1. **Cmd + Shift + P**
-2. Tippe: **"Python: Select Interpreter"**
-3. Wähle: **`venv/bin/python`** (oder `venv_masterarbeit/bin/python`)
-
-Dann kannst du [src/main.py](src/main.py) öffnen und auf ▶️ Play drücken!
+- ✅ Cluster-Analysen (Static, Dynamic, Combined)
+- ✅ GICS-Vergleich (Branchen-Unabhängigkeit)
+- ✅ Algorithmen-Vergleich (K-Means vs Hierarchical vs DBSCAN)
+- ✅ 5 Visualisierungen pro Analyse (Verteilung, Charakteristika, PCA, Correlation Heatmap, Performance Dashboard)
 
 ---
 
-## 📁 Projektstruktur
+## 📁 Output-Struktur
 
+Die Pipeline erstellt zwei verschiedene Strukturen je nach Algorithmus:
+
+### K-Means: Comparative Mode (3 unabhängige Clusterings)
 ```
-masterarbeit-kennzahlenanalyse/
-├── config.yaml                 # ⚙️ HAUPTKONFIGURATION
-├── CONFIG_GUIDE.md            # 📘 Ausführliche Dokumentation
-│
-├── data/
-│   ├── raw/germany/           # 📥 Input: DAX, MDAX, SDAX CSVs
-│   └── processed/germany/     # 🔄 Verarbeitete Features
-│
-├── output/germany/
-│   ├── algorithms/            # 📊 Individuelle Algorithmen-Ergebnisse
-│   │   ├── kmeans/
-│   │   ├── hierarchical/
-│   │   └── dbscan/
-│   └── comparisons/           # 🔬 VERGLEICHE (NEU!)
-│       ├── 01_gics_comparison/
-│       ├── 02_algorithm_comparison/
-│       ├── 03_feature_importance/
-│       └── 04_temporal_stability/
-│
-└── src/
-    ├── main.py                # 🎬 Entry Point
-    ├── pipeline.py            # 🔄 Haupt-Pipeline
-    ├── comparison_pipeline.py # 🔬 Vergleichs-Pipeline
-    ├── clustering_engine.py   # 🧮 Clustering-Logik
-    └── comparison/            # 📊 Vergleichs-Module
+output/germany/
+└── 02_algorithms/
+    └── kmeans_comparative/
+        ├── static/          # Static-Clustering
+        ├── dynamic/         # Dynamic-Clustering (unabhängig)
+        └── combined/        # Combined-Clustering (unabhängig)
 ```
+
+### Hierarchical/DBSCAN: Hierarchical Mode (1 Master-Clustering)
+```
+output/germany/
+└── 02_algorithms/
+    └── hierarchical/
+        ├── master_clustering/     # Static → Master-Labels
+        ├── dynamic_enrichment/    # Dynamic → Gleiche Labels + Scores
+        └── combined_scores/       # Combined → Gleiche Labels + Combined Score
+```
+
+### Vergleiche (bei --compare)
+```
+output/germany/
+└── 03_comparisons/
+    ├── algorithms/        # Algorithmen-Vergleich
+    ├── gics/             # GICS-Branchen-Analyse
+    ├── features/         # Feature Importance
+    └── temporal/         # Zeitliche Stabilität
+```
+
+Jede Analyse enthält:
+- `data/` - CSVs (assignments, profiles, metrics)
+- `plots/` - 5 Visualisierungen
+- `reports/clusters/` - CSVs pro Cluster
+- `models/` - Gespeicherte Modelle (Scaler, KMeans)
 
 ---
 
 ## ⚙️ Konfiguration
 
-### Algorithm wählen (für Single Mode)
-```yaml
-# config.yaml
-classification:
-  algorithm: 'kmeans'  # Optionen: kmeans, hierarchical, dbscan
-```
+### Features auswählen
 
-**⚠️ Im Comparison Mode (`--compare`) wird diese Einstellung ignoriert - alle Algorithmen laufen!**
+**2 Modi verfügbar in `config.yaml`:**
 
-### Features anpassen
 ```yaml
+# MODE 1: Preset (empfohlen)
+feature_selection:
+  mode: 'preset'
+  preset: 'pca_optimized'  # minimal, standard, comprehensive, pca_optimized
+
+# MODE 2: Manual
+feature_selection:
+  mode: 'manual'
+
 static_analysis:
   features:
-    - roa                    # Return on Assets
-    - roe                    # Return on Equity
-    - ebit_margin            # EBIT Margin
-    - debt_to_equity         # Verschuldung
-    - equity_ratio           # Eigenkapitalquote
+    - roa, roe, ebit_margin        # Profitabilität
+    - current_ratio, equity_ratio  # Liquidität & Leverage
+    - debt_to_equity              # Verschuldung
 ```
 
-**Verfügbare Features:**
-- **Profitabilität**: `roa`, `roe`, `ebit_margin`, `ebitda_margin`, `net_profit_margin`
-- **Liquidität**: `current_ratio`, `quick_ratio`, `cash_ratio`
-- **Verschuldung**: `debt_to_equity`, `total_debt_to_equity`, `equity_ratio`, `debt_ratio`
-- **Effizienz**: `asset_turnover`, `revenue_per_employee`, `receivables_turnover`
-- **Wachstum**: `revenue_growth`, `asset_growth`, `employee_growth`
+**Verfügbare Features (46 gesamt):**
 
-👉 **Detaillierte Anleitung:** Siehe [CONFIG_GUIDE.md](CONFIG_GUIDE.md)
+**Static (37):**
+- **Profitabilität**: roa, roe, ebit_margin, operating_margin, gross_margin, roc
+- **Liquidität**: current_ratio, quick_ratio, cash_ratio, working_capital_ratio
+- **Leverage**: debt_to_equity, debt_to_assets, equity_ratio, interest_coverage
+- **Effizienz**: asset_turnover, capital_intensity, inventory_turnover
+- **Cashflow**: fcf_margin, capex_to_revenue, cash_conversion
+- **Struktur**: financial_leverage, rnd_intensity, dividend_payout_ratio
+
+**Dynamic (14):**
+- **Growth**: revenue_cagr, roa_cagr, fcf_growth, capex_growth
+- **Trends**: margin_trend, leverage_trend, capex_trend, fcf_trend
+- **Volatility**: margin_volatility, leverage_volatility, cashflow_volatility
+- **Quality**: margin_consistency, growth_quality
+
+Siehe `features_config.yaml` für Formeln und Details.
 
 ### Cluster-Anzahl anpassen
+
 ```yaml
 static_analysis:
   n_clusters: 5      # Empfohlen: 3-7
@@ -138,108 +144,58 @@ combined_analysis:
     dynamic: 0.6     # 60% Entwicklung
 ```
 
+### Algorithm wählen
+
+```yaml
+classification:
+  algorithm: 'kmeans'  # Optionen: kmeans, hierarchical, dbscan
+```
+
+**⚠️ Im Comparison Mode (`--compare`) werden alle Algorithmen ausgeführt!**
+
 ---
 
-## 🔬 Comparison Mode (NEU!)
+## 🔬 Comparison Mode
 
 ### Was macht der Comparison Mode?
 
 Führt **4 umfassende Analysen** durch:
 
-#### 1️⃣ **GICS Comparison** - Branchen-Unabhängigkeit
-```
-Testet ob Cluster der Branchen-Logik folgen oder eigene Muster finden
+#### 1️⃣ GICS Comparison - Branchen-Unabhängigkeit
+Testet ob Cluster der Branchen-Logik folgen oder eigene Muster finden.
 
-Metriken:
+**Metriken:**
 - Cramér's V (< 0.3 = gut, unabhängig von Branchen)
 - Adjusted Rand Index
 - Chi²-Test
 
-Output:
-- cramers_v.csv
-- Contingency Tables (Heatmaps)
-```
+**Output:** `output/germany/03_comparisons/gics/`
 
-**Beispiel-Ergebnis:**
-```
-K-Means:      Cramér's V = 0.350 (moderate Korrelation)
-Hierarchical: Cramér's V = 0.275 (schwache Korrelation ✓)
-DBSCAN:       Cramér's V = 0.704 (starke Korrelation)
+#### 2️⃣ Algorithm Comparison - Algorithmen-Vergleich
+Vergleicht K-Means, Hierarchical & DBSCAN direkt.
 
-→ Hierarchical zeigt beste Branchen-Unabhängigkeit!
-```
-
-#### 2️⃣ **Algorithm Comparison** - Algorithmen-Vergleich
-```
-Vergleicht K-Means, Hierarchical & DBSCAN direkt
-
-Metriken:
+**Metriken:**
 - Silhouette Score (höher = besser)
 - Davies-Bouldin Index (niedriger = besser)
 - Cluster-Überlappung (Adjusted Rand Index)
-```
 
-#### 3️⃣ **Feature Importance** - Wichtigste Kennzahlen
-```
-Zeigt welche Features die Cluster am besten trennen
+#### 3️⃣ Feature Importance - Wichtigste Kennzahlen
+Zeigt welche Features die Cluster am besten trennen (Random Forest).
 
-Methode: Random Forest Classifier
-Output: Top 15 Features pro Algorithmus
-```
-
-#### 4️⃣ **Temporal Stability** - Zeitliche Stabilität
-```
-Analysiert wie stabil Cluster über Jahre sind
-
-Metriken:
-- Cluster Consistency Rate
-- Migration Matrices (Jahr-zu-Jahr)
-```
+#### 4️⃣ Temporal Stability - Zeitliche Stabilität
+Analysiert wie stabil Cluster über Jahre sind.
 
 ### Usage
+
 ```bash
 # Alle Algorithmen + alle Vergleiche
 python src/main.py --market germany --compare
 
 # Nur 2 Algorithmen vergleichen
-python src/main.py --market germany --compare --algorithms kmeans hierarchical
+python src/main.py --compare --algorithms kmeans hierarchical
 
 # Ohne Plots (schneller)
-python src/main.py --market germany --compare --skip-plots
-```
-
----
-
-## 📊 Output-Struktur
-
-### Einzelner Algorithmus
-```
-output/germany/kmeans/
-├── static/
-│   ├── reports/
-│   │   ├── data/
-│   │   │   ├── assignments.csv      # Cluster-Zuordnungen
-│   │   │   ├── profiles.csv         # Cluster-Profile
-│   │   │   └── metrics.json         # Metriken
-│   │   ├── clusters/                # CSV pro Cluster
-│   │   └── models/                  # Gespeicherte Modelle
-│   └── visualizations/              # Plots
-├── dynamic/
-└── combined/
-```
-
-### Comparison Mode Output
-```
-output/germany/comparisons/
-├── 01_gics_comparison/
-│   ├── cramers_v.csv
-│   ├── contingency_tables/*.png
-│   └── summary_gics_static.png
-├── 02_algorithm_comparison/
-│   ├── metrics_comparison.csv
-│   └── *.png
-├── 03_feature_importance/
-└── 04_temporal_stability/
+python src/main.py --compare --skip-plots
 ```
 
 ---
@@ -263,65 +219,134 @@ python src/main.py --compare --algorithms kmeans hierarchical
 
 ---
 
+## 📊 Visualisierungen
+
+Pro Analyse (static/dynamic/combined) werden 5 Plots erstellt:
+
+1. **Cluster Distribution** - Balkendiagramm der Cluster-Größen
+2. **Cluster Characteristics** - Grouped Bar Chart der Top-Kennzahlen
+3. **PCA Clusters** - 2D Projektion der Cluster
+4. **Correlation Heatmap** - Korrelationen zwischen Top-15 Features
+5. **Performance Dashboard** - 6-Panel Dashboard mit Überblick
+
+Alle Plots: `output/germany/02_algorithms/{algorithm}/{analysis}/plots/`
+
+---
+
 ## ❓ FAQ
 
-### F: Kann ich mehrere Algorithmen gleichzeitig in config.yaml angeben?
+### F: Welcher Algorithmus ist der beste?
 
-**A: NEIN** - für Single Mode nur ein Algorithmus.
+**A:** Kommt auf den Use-Case an:
 
-```yaml
-# ❌ FALSCH
-classification:
-  algorithm: 'kmeans, hierarchical, dbscan'
+- **K-Means:** Schnell, gut für klar getrennte Cluster, vergleicht 3 unabhängige Sichtweisen
+- **Hierarchical:** Konsistente Labels über alle Analysen, gut für Unternehmensbewertung mit Scores
+- **DBSCAN:** Findet Ausreißer, aber eps-Parameter schwierig zu tunen
 
-# ✅ RICHTIG (Single Mode)
-classification:
-  algorithm: 'kmeans'
+→ **Empfehlung:** Nutze `--compare` und vergleiche die Cramér's V Werte!
 
-# ✅ RICHTIG (Comparison Mode)
-python src/main.py --compare  # Ignoriert config, führt alle aus
+### F: Preprocessing dauert lange - wie skippen?
+
+**A:** Nach dem ersten Durchlauf:
+```bash
+python src/main.py --market germany --compare --skip-prep
 ```
 
-### F: Wie wähle ich die beste Cluster-Anzahl?
-
-**A:** 3 Methoden:
-
-1. **Elbow-Methode** - Schaue dir den Plot an
-2. **Silhouette Score** - Probiere 3-7 Cluster, wähle höchsten Score
-3. **Domain Knowledge** - Bei Finanzkennzahlen sind 4-6 Cluster typisch
+Processed Features werden gespeichert in: `data/processed/germany/features.csv`
 
 ### F: DBSCAN findet nur Noise - was tun?
 
 **A:** `eps` Parameter erhöhen:
 ```yaml
 dbscan:
-  eps: 1.5  # War 0.5, probiere größere Werte
+  eps: 1.5  # Standard: 0.5, probiere 1.0-2.0
 ```
 
----
+### F: Wie viele Features soll ich nutzen?
 
-## 📖 Weiterführende Dokumentation
-
-- **[CONFIG_GUIDE.md](CONFIG_GUIDE.md)** - Ausführliche Config-Dokumentation mit allen Details
-- **[config.yaml](config.yaml)** - Hauptkonfiguration mit Kommentaren
+**A:** Für PCA-Analyse:
+- **Minimum:** 15-20 static, 8-10 dynamic
+- **Empfohlen:** Nutze `preset: 'pca_optimized'` (21 static, 10 dynamic)
+- **Maximum:** `preset: 'comprehensive'` (51 features)
 
 ---
 
 ## 🏆 Empfohlener Workflow für Masterarbeit
 
 ```bash
-# 1. GICS-Vergleich durchführen (Hauptanalyse)
+# 1. KOMPLETT-DURCHLAUF: Alle Algorithmen + GICS-Vergleich
 python src/main.py --market germany --compare
 
 # 2. Ergebnisse prüfen
-cat output/germany/comparisons/01_gics_comparison/cramers_v.csv
+cat output/germany/03_comparisons/gics/cramers_v.csv
 
 # 3. Besten Algorithmus wählen (z.B. Hierarchical)
-vim config.yaml  # Setze algorithm: 'hierarchical'
+# → Setze in config.yaml: algorithm: 'hierarchical'
+
+# 4. Detaillierte Analyse mit bestem Algorithmus
 python src/main.py --market germany
 
-# 4. Cluster interpretieren
-cat output/germany/hierarchical/static/reports/data/profiles.csv
+# 5. Cluster interpretieren
+cat output/germany/02_algorithms/hierarchical/master_clustering/reports/data/profiles.csv
+
+# 6. Visualisierungen prüfen
+open output/germany/02_algorithms/hierarchical/master_clustering/plots/
 ```
+
+---
+
+## 📁 Projektstruktur
+
+```
+masterarbeit-kennzahlenanalyse/
+├── config.yaml                 # ⚙️ HAUPTKONFIGURATION
+├── features_config.yaml        # 📋 Feature-Definitionen (46 Kennzahlen)
+│
+├── data/
+│   ├── raw/germany/           # 📥 Input: DAX, MDAX, SDAX CSVs
+│   └── processed/germany/     # 🔄 Verarbeitete Features (149 Spalten)
+│
+├── output/germany/
+│   ├── 01_data/               # Processed Features
+│   ├── 02_algorithms/         # Pro Algorithmus
+│   │   ├── kmeans_comparative/
+│   │   ├── hierarchical/
+│   │   └── dbscan/
+│   ├── 03_comparisons/        # Cross-Analysen
+│   └── 99_summary/            # Executive Reports
+│
+└── src/
+    ├── main.py                        # 🎬 Entry Point
+    ├── _01_setup/
+    │   ├── config_loader.py           # Config & Feature Selection
+    │   ├── feature_config_loader.py   # Feature Preset Loader
+    │   └── output_handler.py          # Output Management (Option B)
+    ├── _02_processing/
+    │   ├── data_loader.py             # WRDS Compustat Loader
+    │   └── feature_engineer.py        # 46 Kennzahlen berechnen
+    ├── _03_clustering/
+    │   ├── pipeline.py                # K-Means (Comparative Mode)
+    │   ├── hierarchical_pipeline.py   # Hierarchical/DBSCAN (Label-Consistency)
+    │   └── cluster_engine.py          # Clustering-Algorithmen
+    ├── _04_comparison/
+    │   └── comparison_pipeline.py     # GICS + Algorithm Comparison
+    └── _05_visualization/
+        ├── cluster_visualizer.py      # 5 Cluster-Plots
+        └── comparison_visualizer.py   # Comparison-Plots
+```
+
+---
+
+## 🔧 VS Code Setup
+
+Falls du in VS Code auf "Play" drücken möchtest:
+
+1. **Cmd + Shift + P**
+2. Tippe: **"Python: Select Interpreter"**
+3. Wähle: **`venv/bin/python`**
+
+Dann kannst du [src/main.py](src/main.py) öffnen und auf ▶️ Play drücken!
+
+---
 
 **Happy Clustering! 🎯**

@@ -1,0 +1,13 @@
+,feature,importance,algorithm
+3,gross_margin,0.20932601381176846,hierarchical
+8,roa,0.11689661845481673,hierarchical
+2,ebit_margin,0.10736807452933383,hierarchical
+10,ebit_margin,0.10381652478013122,hierarchical
+0,roa,0.09518045894015457,hierarchical
+6,fcf_margin,0.06843127187593803,hierarchical
+7,financial_leverage,0.06595091073603544,hierarchical
+1,roe,0.053743857849717976,hierarchical
+11,debt_to_equity,0.048031830895386984,hierarchical
+4,current_ratio,0.04635270498097916,hierarchical
+9,roe,0.04628096933263156,hierarchical
+5,debt_to_equity,0.03862076381310618,hierarchical

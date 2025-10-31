@@ -284,13 +284,14 @@ class HierarchicalPipeline:
         # Save results
         self._save_analysis_results(df_result, profiles, metrics, all_features, 'combined', sort_by='combined_score')
 
-        # Cross-analysis (migration patterns)
+        # Cross-analysis (score evolution)
         df_migration = self._analyze_score_evolution(df_static, df_dynamic, df_result)
-        self.output.save_analysis_results(
-            df_static=df_static,
-            df_dynamic=df_dynamic,
-            df_combined=df_result,
-            df_migration=df_migration
+
+        # Save score evolution data to comparisons/temporal
+        self.output.save_comparison_data(
+            comp_type='temporal',
+            data=df_migration,
+            filename='score_evolution.csv'
         )
 
         # Store
@@ -465,12 +466,13 @@ class HierarchicalPipeline:
                                metrics: Dict, features: list, analysis_type: str, sort_by: str):
         """Save analysis results"""
         # Use the same save methods as ClusteringPipeline
-        self.output.save_data(df, profiles, metrics, analysis_type)
+        self.output.save_cluster_data(df, profiles, analysis_type, metrics)
         self.output.save_cluster_lists(df, analysis_type, sort_by=sort_by)
-        self.output.save_models(None, None, analysis_type)  # No models for hierarchical mode
+        # Note: No models saved for hierarchical mode (scaler/model are None)
 
         if not self.skip_plots:
-            create_all_plots(df, profiles, features, analysis_type, self.output.get_viz_dir(analysis_type))
+            plots_dir = self.output.get_plots_dir(analysis_type)
+            create_all_plots(df, profiles, features, analysis_type, plots_dir)
 
     def _print_summary(self):
         """Print pipeline summary"""
@@ -480,4 +482,21 @@ class HierarchicalPipeline:
         logger.info("HIERARCHICAL PIPELINE COMPLETED")
         logger.info("=" * 80)
         logger.info(f"\n  ⏱️  Duration: {duration:.1f}s")
-        logger.info(f"  📁 Output: output/{self.market}/{self.algorithm}")
+        logger.info(f"  📁 Output: {self.output.algorithm_dir}\n")
+
+        # Create README in summary directory
+        self.output.create_readme()
+
+        print("\n" + "=" * 80)
+        print(f"✓ Hierarchical Analysis complete for market: {self.market}")
+        print(f"✓ Algorithm: {self.algorithm} ({self.output.mode} mode)")
+        print(f"✓ Duration: {duration:.1f}s")
+        print(f"\n📂 Output: {self.output.algorithm_dir}/")
+        for analysis_key in ['static', 'dynamic', 'combined']:
+            analysis_name = self.output.analysis_types[analysis_key]
+            print(f"   ├── {analysis_name}/")
+        print("\n📌 Next Steps:")
+        print(f"   1. Review summary: {self.output.summary_dir}/")
+        print(f"   2. Check clusters: {self.output.algorithm_dir}/{self.output.analysis_types['static']}/reports/clusters/")
+        print(f"   3. Check score evolution: {self.output.comparisons_dir}/temporal/data/")
+        print("=" * 80 + "\n")

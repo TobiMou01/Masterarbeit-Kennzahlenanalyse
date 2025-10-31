@@ -1,0 +1,11 @@
+{
+  "silhouette": 0.15427654493473117,
+  "davies_bouldin": 1.4158345519010838,
+  "n_clusters": 5,
+  "linkage": "ward",
+  "distance_metric": "euclidean",
+  "n_leaves": 152,
+  "n_connected_components": 1,
+  "n_companies": 152,
+  "algorithm": "hierarchical"
+}

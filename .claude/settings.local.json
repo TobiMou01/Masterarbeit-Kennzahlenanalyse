@@ -16,7 +16,13 @@
       "Bash(./test_interactive.sh:*)",
       "Bash(./test_hierarchical.sh:*)",
       "Bash(python -m src._02_processing.feature_engineer:*)",
-      "Bash(python:*)"
+      "Bash(python:*)",
+      "Bash(BACKUP_DIR=\"output_backup_20251031\")",
+      "Bash(mkdir:*)",
+      "Bash(cp:*)",
+      "Bash(echo:*)",
+      "Bash(du:*)",
+      "Bash(rm:*)"
     ],
     "deny": [],
     "ask": []

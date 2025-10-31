@@ -24,6 +24,7 @@ check_environment()
 
 import argparse
 import logging
+import pandas as pd
 
 from src._01_setup import config_loader
 from src._01_setup.interactive_menu import InteractiveMenu
@@ -254,13 +255,13 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
         # Pause after each stage if interactive
         if interactive:
             if 'static' in analyses:
-                output_dir = Path(f'output/{market}/{algorithm}/static')
+                output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types['static']
                 InteractiveMenu.pause_for_review('Static', output_dir)
             if 'dynamic' in analyses:
-                output_dir = Path(f'output/{market}/{algorithm}/dynamic')
+                output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types['dynamic']
                 InteractiveMenu.pause_for_review('Dynamic', output_dir)
             if 'combined' in analyses:
-                output_dir = Path(f'output/{market}/{algorithm}/combined')
+                output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types['combined']
                 InteractiveMenu.pause_for_review('Combined', output_dir)
 
     elif mode == 'both':
@@ -316,9 +317,9 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
 
         if interactive:
             logger.info(f"\n📂 Outputs:")
-            logger.info(f"   Comparative:  output/{market}_comparative/{algorithm}/")
-            logger.info(f"   Hierarchical: output/{market}_hierarchical/{algorithm}/")
-            InteractiveMenu.pause_for_review('Both Modes', Path(f'output/'))
+            logger.info(f"   Comparative:  {pipeline_comp.output.algorithm_dir}/")
+            logger.info(f"   Hierarchical: {pipeline_hier.output.algorithm_dir}/")
+            InteractiveMenu.pause_for_review('Both Modes', Path(f'output/{market}/'))
 
     else:
         # Use standard Comparative Pipeline
@@ -333,13 +334,13 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
             if stage == 'static':
                 pipeline._run_static_analysis(df_latest)
                 if interactive:
-                    output_dir = Path(f'output/{market}/{algorithm}/static')
+                    output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types['static']
                     InteractiveMenu.pause_for_review('Static', output_dir)
 
             elif stage == 'dynamic':
                 pipeline._run_dynamic_analysis(df_all)
                 if interactive:
-                    output_dir = Path(f'output/{market}/{algorithm}/dynamic')
+                    output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types['dynamic']
                     InteractiveMenu.pause_for_review('Dynamic', output_dir)
 
             elif stage == 'combined':
@@ -348,7 +349,7 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
                 if df_static is not None and df_dynamic is not None:
                     pipeline._run_combined_analysis(df_static, df_dynamic)
                     if interactive:
-                        output_dir = Path(f'output/{market}/{algorithm}/combined')
+                        output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types['combined']
                         InteractiveMenu.pause_for_review('Combined', output_dir)
 
         # Print final summary

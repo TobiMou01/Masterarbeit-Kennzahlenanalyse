@@ -1,0 +1,4 @@
+,kmeans,hierarchical,dbscan
+kmeans,1.0,0.6098375883497781,0.0
+hierarchical,0.6098375883497781,1.0,0.0
+dbscan,0.0,0.0,1.0

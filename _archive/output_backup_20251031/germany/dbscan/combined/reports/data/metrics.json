@@ -1,0 +1,13 @@
+{
+  "n_clusters": 0,
+  "n_noise": 151,
+  "noise_percentage": 100.0,
+  "eps": 0.5,
+  "min_samples": 5,
+  "silhouette": -999,
+  "davies_bouldin": -999,
+  "n_core_samples": 0,
+  "core_sample_percentage": 0.0,
+  "n_companies": 151,
+  "algorithm": "dbscan"
+}

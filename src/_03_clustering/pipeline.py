@@ -217,11 +217,12 @@ class ClusteringPipeline:
 
         # Cross-analysis (migration patterns)
         df_migration = self.engine.analyze_migration(df_static, df_dynamic, df_result)
-        self.output.save_analysis_results(
-            df_static=df_static,
-            df_dynamic=df_dynamic,
-            df_combined=df_result,
-            df_migration=df_migration
+
+        # Save migration data to comparisons/temporal
+        self.output.save_comparison_data(
+            comp_type='temporal',
+            data=df_migration,
+            filename='cluster_migrations.csv'
         )
 
         # Store
@@ -256,8 +257,8 @@ class ClusteringPipeline:
 
         # Save visualizations
         if not self.skip_plots:
-            viz_dir = self.output.base_dir / analysis_type / 'visualizations'
-            create_all_plots(df, profiles, features, analysis_type=analysis_type, output_dir=viz_dir)
+            plots_dir = self.output.get_plots_dir(analysis_type)
+            create_all_plots(df, profiles, features, analysis_type=analysis_type, output_dir=plots_dir)
 
     def _print_summary(self):
         """Print pipeline summary"""
@@ -267,21 +268,21 @@ class ClusteringPipeline:
         logger.info("PIPELINE COMPLETED")
         logger.info("=" * 80)
         logger.info(f"\n  ⏱️  Duration: {duration:.1f}s")
-        logger.info(f"  📁 Output: {self.output.base_dir}\n")
+        logger.info(f"  📁 Output: {self.output.algorithm_dir}\n")
 
-        # Create summary report
-        self.output.create_summary_report(self.results)
+        # Create README in summary directory
+        self.output.create_readme()
 
         print("\n" + "=" * 80)
         print(f"✓ Analysis complete for market: {self.market}")
-        print(f"✓ Algorithm: {self.algorithm}")
+        print(f"✓ Algorithm: {self.algorithm} ({self.output.mode} mode)")
         print(f"✓ Duration: {duration:.1f}s")
-        print(f"\n📂 Output: {self.output.base_dir}/")
-        print(f"   ├── static/")
-        print(f"   ├── dynamic/")
-        print(f"   └── combined/")
+        print(f"\n📂 Output: {self.output.algorithm_dir}/")
+        for analysis_key in ['static', 'dynamic', 'combined']:
+            analysis_name = self.output.analysis_types[analysis_key]
+            print(f"   ├── {analysis_name}/")
         print("\n📌 Next Steps:")
-        print(f"   1. Review summary: {self.output.base_dir}/static/reports/data/")
-        print(f"   2. Check clusters: {self.output.base_dir}/static/reports/clusters/")
+        print(f"   1. Review summary: {self.output.summary_dir}/")
+        print(f"   2. Check clusters: {self.output.algorithm_dir}/{self.output.analysis_types['static']}/reports/clusters/")
         print(f"   3. Adjust config if needed: config.yaml")
         print("=" * 80 + "\n")
