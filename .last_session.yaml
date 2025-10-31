@@ -1,0 +1,15 @@
+algorithms:
+- kmeans
+- hierarchical
+- dbscan
+analyses:
+- static
+- dynamic
+- combined
+auto_tune_dbscan: false
+comparison_mode: true
+create_plots: true
+dbscan_mode: hierarchical
+hierarchical_mode: hierarchical
+kmeans_mode: both
+skip_preprocessing: false

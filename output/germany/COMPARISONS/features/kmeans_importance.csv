@@ -1,0 +1,7 @@
+,feature,importance,algorithm
+3,roa,0.21809074493897662,kmeans
+5,ebit_margin,0.21675758483839,kmeans
+2,ebit_margin,0.216195865706276,kmeans
+0,roa,0.20543369843478235,kmeans
+1,roe,0.07511638181835424,kmeans
+4,roe,0.06840572426322074,kmeans

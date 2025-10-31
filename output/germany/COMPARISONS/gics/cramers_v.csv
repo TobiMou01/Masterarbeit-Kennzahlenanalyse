@@ -1,0 +1,4 @@
+,algorithm,cramers_v,interpretation
+0,kmeans,0.35034564906470445,moderate Korrelation
+1,hierarchical,0.2753101708188804,schwache Korrelation ✓
+2,dbscan,0.7044501401802685,starke Korrelation (Cluster folgen Branchen)
