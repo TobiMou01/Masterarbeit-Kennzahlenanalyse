@@ -266,7 +266,7 @@ def filter_relevant_columns(df):
 
         # GICS Classification (für Vergleichsanalysen)
         'gsector', 'ggroup', 'gind', 'gsubind',
-        
+
         # Bilanz - Assets
         'at',      # Total Assets
         'act',     # Current Assets
@@ -274,7 +274,8 @@ def filter_relevant_columns(df):
         'rect',    # Receivables
         'invt',    # Inventories
         'ppent',   # Property, Plant & Equipment Net
-        
+        'ivst',    # Short-term Investments (optional)
+
         # Bilanz - Liabilities & Equity
         'lt',      # Total Liabilities
         'lct',     # Current Liabilities
@@ -282,7 +283,7 @@ def filter_relevant_columns(df):
         'dltt',    # Long-term Debt
         'seq',     # Stockholders Equity
         'ceq',     # Common Equity
-        
+
         # GuV
         'revt',    # Revenue Total
         'sale',    # Sales/Revenue
@@ -293,13 +294,19 @@ def filter_relevant_columns(df):
         'ib',      # Income Before Extraordinary Items (Net Income)
         'ni',      # Net Income
         'oibdp',   # Operating Income Before Depreciation
-        
+        'xint',    # Interest Expense (for Interest Coverage)
+        'xrd',     # R&D Expense (for R&D Intensity)
+
         # Cashflow
         'oancf',   # Operating Activities Net Cash Flow
-        
+        'capx',    # Capital Expenditures (for FCF and investment metrics)
+        'ivch',    # Investing CF (optional)
+        'fincf',   # Financing CF (optional)
+
         # Sonstiges
         'emp',     # Employees
         'dp',      # Depreciation and Amortization
+        'dvt',     # Dividends Total (for payout ratio)
     }
     
     # Nur Spalten behalten die existieren

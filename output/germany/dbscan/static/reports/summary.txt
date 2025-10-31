@@ -2,37 +2,23 @@
 CLUSTERING ANALYSIS - SUMMARY REPORT
 ================================================================================
 Market: GERMANY
-Generated: 2025-10-28 18:47:43
+Generated: 2025-10-31 16:48:34
 ================================================================================
 
 STATIC ANALYSIS (Querschnitt - aktuelles Jahr)
 --------------------------------------------------------------------------------
   Klassifizierte Unternehmen: 158
   Anzahl Cluster: 5
-  Silhouette Score: 0.553
-  Davies-Bouldin Index: 0.585
+  Silhouette Score: -999.000
+  Davies-Bouldin Index: -999.000
 
 
   CLUSTER DETAILS:
   ----------------------------------------------------------------------------
 
-  Cluster -1: Upper-Mid (0 Unternehmen, 0.0%)
-    Kennzahlen: ROA: 4.92% | ROE: 9.34% | EBIT Margin: 7.98% | Equity Ratio: 35.75% | Debt/Equity: 1.02%
+  Cluster -1: High Performers (0 Unternehmen, 0.0%)
+    Kennzahlen: ROA: 4.96% | EBIT Margin: 7.17% | Equity Ratio: 35.35% | Debt/Equity: 1.02%
     Top Unternehmen:
-
-  Cluster 0: High Performers (8 Unternehmen, 61.5%)
-    Kennzahlen: ROA: 7.65% | ROE: 11.51% | EBIT Margin: 6.17% | Equity Ratio: 40.27% | Debt/Equity: 0.47%
-    Top Unternehmen:
-      - HUGO BOSS AG (ROA: 9.54%)
-      - PUMA SE (ROA: 8.36%)
-      - BECHTLE AG (ROA: 8.33%)
-
-  Cluster 1: Mid (5 Unternehmen, 38.5%)
-    Kennzahlen: ROA: 4.27% | ROE: 6.43% | EBIT Margin: 7.21% | Equity Ratio: 31.81% | Debt/Equity: 0.91%
-    Top Unternehmen:
-      - COMPUGROUP MEDICAL SE & CO (ROA: 4.98%)
-      - MVV ENERGIE AG (ROA: 4.73%)
-      - BAYERISCHE MOTOREN WERKE AKT (ROA: 4.24%)
 
 DYNAMIC ANALYSIS (Zeitreihen - Entwicklung)
 --------------------------------------------------------------------------------
@@ -51,47 +37,19 @@ DYNAMIC ANALYSIS (Zeitreihen - Entwicklung)
 
 COMBINED ANALYSIS (Statisch + Dynamisch)
 --------------------------------------------------------------------------------
-  Klassifizierte Unternehmen: 152
+  Klassifizierte Unternehmen: 151
   Anzahl Cluster: 6
-  Silhouette Score: 0.411
-  Davies-Bouldin Index: 0.799
+  Silhouette Score: -999.000
+  Davies-Bouldin Index: -999.000
   Gewichtung: 40% statisch, 60% dynamisch
 
 
   CLUSTER DETAILS:
   ----------------------------------------------------------------------------
 
-  Cluster -1: Strong Performers (0 Unternehmen, 0.0%)
-    Kennzahlen: ROA: 5.15% | ROE: 6.19% | EBIT Margin: 7.77% | ROA Trend: -0.06% | Revenue CAGR: 5.86%
+  Cluster -1: Top Tier (0 Unternehmen, 0.0%)
+    Kennzahlen: ROA: 4.99% | ROE: 6.08% | EBIT Margin: 6.87% | ROA Trend: -0.11%
     Top Unternehmen:
-
-  Cluster 0: Top Tier (5 Unternehmen, 20.8%)
-    Kennzahlen: ROA: 7.41% | ROE: 12.08% | EBIT Margin: 7.11% | ROA Trend: 0.31% | Revenue CAGR: 3.69%
-    Top Unternehmen:
-      - KSB SE & CO KGAA (ROA: 8.48%)
-      - DEUTSCHE POST AG (ROA: 7.62%)
-      - BRENNTAG SE (ROA: 7.57%)
-
-  Cluster 1: Lower-Mid (5 Unternehmen, 20.8%)
-    Kennzahlen: ROA: 3.21% | ROE: 3.97% | EBIT Margin: 3.36% | ROA Trend: -0.62% | Revenue CAGR: 5.57%
-    Top Unternehmen:
-      - NORMA GROUP SE (ROA: 3.90%)
-      - HELLA GMBH & CO. KGAA (ROA: 3.85%)
-      - CANCOM SE (ROA: 3.08%)
-
-  Cluster 2: Upper-Mid (7 Unternehmen, 29.2%)
-    Kennzahlen: ROA: 4.46% | ROE: 7.25% | EBIT Margin: 4.93% | ROA Trend: -0.00% | Revenue CAGR: 5.55%
-    Top Unternehmen:
-      - HORNBACH HOLDING AG & CO (ROA: 5.82%)
-      - HORNBACH-BAUMARKT AG (ROA: 5.01%)
-      - MVV ENERGIE AG (ROA: 4.73%)
-
-  Cluster 3: Mid (7 Unternehmen, 29.2%)
-    Kennzahlen: ROA: 4.07% | ROE: 2.46% | EBIT Margin: 7.15% | ROA Trend: -0.46% | Revenue CAGR: 0.96%
-    Top Unternehmen:
-      - BERTELSMANN SE & CO KGAA (ROA: 5.10%)
-      - FRESENIUS MEDICAL CARE AG (ROA: 4.59%)
-      - EVONIK INDUSTRIES AG (ROA: 4.22%)
 
 CROSS ANALYSIS (Cluster-Migration)
 --------------------------------------------------------------------------------

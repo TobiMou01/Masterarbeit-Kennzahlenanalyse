@@ -1,6 +1,6 @@
 {
-  "silhouette": 0.18305351196637573,
-  "davies_bouldin": 1.129779800852958,
+  "silhouette": 0.15427654493473117,
+  "davies_bouldin": 1.4158345519010838,
   "n_clusters": 5,
   "linkage": "ward",
   "distance_metric": "euclidean",

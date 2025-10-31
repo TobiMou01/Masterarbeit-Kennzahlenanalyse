@@ -47,35 +47,75 @@ combined_analysis:
 # ========================================
 # FEATURES
 # ========================================
+# Zwei Modi verfügbar:
+# 1. Preset-Modus: Nutzt vordefinierte Feature-Sets aus features_config.yaml
+# 2. Manual-Modus: Explizite Feature-Liste (wie bisher)
+
+feature_selection:
+  mode: 'preset'  # 'preset' oder 'manual'
+  preset: 'pca_optimized'  # Wenn mode=preset: minimal, standard, comprehensive, pca_optimized
+
+# ========================================
+# MANUAL MODE FEATURES (wenn mode='manual')
+# ========================================
 static_analysis:
   features:
+    # Profitability (erweitert)
     - roa
     - roe
     - ebit_margin
-    - net_profit_margin
+    - gross_margin
+    - roc
+
+    # Liquidity
     - current_ratio
+    - working_capital_ratio
+
+    # Leverage
     - debt_to_equity
     - equity_ratio
+    - interest_coverage
+
+    # Efficiency
+    - asset_turnover
+    - capital_intensity
+
+    # Cashflow
+    - fcf_margin
+    - cash_conversion
+
+    # Structure
+    - financial_leverage
 
 dynamic_analysis:
-  features:  # Automatisch ergänzt mit _trend, _volatility, _cagr
+  features:  # Automatisch ergänzt mit _trend, _volatility, etc.
     - roa
     - roe
     - ebit_margin
     - revt
     - debt_to_equity
+    - fcf  # NEU: Free Cash Flow
+    - capex  # NEU: Capital Expenditures
 
 combined_analysis:
   features_static:
     - roa
     - roe
     - ebit_margin
+    - gross_margin
+    - fcf_margin
+    - current_ratio
+    - debt_to_equity
+    - financial_leverage
 
   features_dynamic:
     - roa_trend
-    - roa_volatility
-    - roe_trend
-    - revt_cagr
+    - margin_trend
+    - leverage_trend
+    - revenue_growth
+    - fcf_growth
+    - margin_volatility
+    - growth_quality
 
 # ========================================
 # DATA & MARKET SETTINGS

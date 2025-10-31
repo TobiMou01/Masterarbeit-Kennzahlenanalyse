@@ -5,7 +5,10 @@ Loads config.yaml with minimal overhead
 
 import yaml
 from pathlib import Path
-from typing import Any
+from typing import Any, List, Dict
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def load_config(config_path: str = 'config.yaml') -> dict:
@@ -81,3 +84,69 @@ def parse_algorithms_from_config(cfg: dict) -> list:
     else:
         # Fallback
         return ['kmeans']
+
+
+def get_features_for_analysis(cfg: dict, analysis_type: str, default_features: List[str] = None) -> List[str]:
+    """
+    Lädt Features für eine Analyse basierend auf feature_selection mode
+
+    Args:
+        cfg: Config dictionary
+        analysis_type: 'static_analysis', 'dynamic_analysis', oder 'combined_analysis'
+        default_features: Fallback Features falls nichts konfiguriert
+
+    Returns:
+        Liste von Feature-Namen
+
+    Examples:
+        >>> get_features_for_analysis(cfg, 'static_analysis')
+        ['roa', 'roe', 'ebit_margin', 'gross_margin', ...]
+    """
+    if default_features is None:
+        default_features = ['roa', 'roe', 'ebit_margin', 'debt_to_equity', 'current_ratio']
+
+    # Prüfe ob feature_selection mode gesetzt ist
+    mode = get_value(cfg, 'feature_selection', 'mode', default='manual')
+
+    if mode == 'preset':
+        # Nutze Preset aus features_config.yaml
+        preset_name = get_value(cfg, 'feature_selection', 'preset', default='pca_optimized')
+
+        try:
+            from src._01_setup.feature_config_loader import FeatureConfigLoader
+
+            feature_loader = FeatureConfigLoader()
+            preset_features = feature_loader.get_preset_features(preset_name)
+
+            if analysis_type == 'static_analysis':
+                features = preset_features.get('static', [])
+                logger.info(f"Using preset '{preset_name}' for static analysis: {len(features)} features")
+                return features
+
+            elif analysis_type == 'dynamic_analysis':
+                features = preset_features.get('dynamic', [])
+                logger.info(f"Using preset '{preset_name}' for dynamic analysis: {len(features)} features")
+                return features
+
+            elif analysis_type == 'combined_analysis':
+                # Return both static and dynamic
+                static_features = preset_features.get('static', [])
+                dynamic_features = preset_features.get('dynamic', [])
+                logger.info(f"Using preset '{preset_name}' for combined: {len(static_features)} static + {len(dynamic_features)} dynamic")
+                return {
+                    'static': static_features,
+                    'dynamic': dynamic_features
+                }
+
+        except Exception as e:
+            logger.warning(f"Failed to load preset '{preset_name}': {e}. Falling back to manual mode.")
+            mode = 'manual'
+
+    # Manual mode - load from config.yaml directly
+    if analysis_type == 'combined_analysis':
+        return {
+            'static': get_value(cfg, 'combined_analysis', 'features_static', default=default_features),
+            'dynamic': get_value(cfg, 'combined_analysis', 'features_dynamic', default=[])
+        }
+    else:
+        return get_value(cfg, analysis_type, 'features', default=default_features)

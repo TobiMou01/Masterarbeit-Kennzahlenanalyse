@@ -1,9 +1,9 @@
 {
-  "silhouette": 0.2416732327309539,
-  "davies_bouldin": 0.8354267421196943,
-  "inertia": 449.2237662558748,
-  "n_iter": 9,
+  "silhouette": 0.1476700627051026,
+  "davies_bouldin": 1.3503172718294743,
+  "inertia": 649.6055301340964,
+  "n_iter": 10,
   "n_clusters": 6,
-  "n_companies": 152,
+  "n_companies": 151,
   "algorithm": "kmeans"
 }

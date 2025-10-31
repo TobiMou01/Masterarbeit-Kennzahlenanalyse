@@ -106,12 +106,14 @@ class HierarchicalPipeline:
         logger.info("STATIC ANALYSIS (Master-Clustering)")
         logger.info("=" * 80 + "\n")
 
-        # Get config
-        features = config.get_value(
-            self.config, 'static_analysis', 'features',
-            default=['roa', 'roe', 'ebit_margin', 'debt_to_equity', 'current_ratio']
+        # Get config - using new feature selection logic
+        features = config.get_features_for_analysis(
+            self.config, 'static_analysis',
+            default_features=['roa', 'roe', 'ebit_margin', 'debt_to_equity', 'current_ratio']
         )
         n_clusters = config.get_value(self.config, 'static_analysis', 'n_clusters', default=5)
+
+        logger.info(f"📊 Selected {len(features)} features for static analysis")
 
         # Run clustering
         df_result, profiles, metrics = self.engine.perform_clustering(

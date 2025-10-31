@@ -1,0 +1,503 @@
+# ========================================
+# FINANCIAL RATIOS CONFIGURATION
+# ========================================
+# Steuert welche Finanzkennzahlen berechnet werden
+# Ermöglicht granulare Kontrolle über Feature Engineering
+
+# ========================================
+# DATA REQUIREMENTS
+# ========================================
+# Definiert welche Spalten aus Rohdaten geladen werden müssen
+required_columns:
+  # Identifikation
+  identity:
+    - gvkey
+    - datadate
+    - conm
+    - isin
+    - loc
+    - fyear
+    - sic
+    - naics
+
+  # GICS Classification
+  classification:
+    - gsector
+    - ggroup
+    - gind
+    - gsubind
+
+  # Bilanz - Assets
+  balance_sheet_assets:
+    - at       # Total Assets
+    - act      # Current Assets
+    - che      # Cash and Equivalents
+    - rect     # Receivables
+    - invt     # Inventories
+    - ppent    # Property, Plant & Equipment Net
+    - ivst     # Short-term Investments (optional)
+
+  # Bilanz - Liabilities & Equity
+  balance_sheet_liabilities:
+    - lt       # Total Liabilities
+    - lct      # Current Liabilities
+    - dlc      # Debt in Current Liabilities
+    - dltt     # Long-term Debt
+    - seq      # Stockholders Equity
+    - ceq      # Common Equity
+
+  # GuV (Income Statement)
+  income_statement:
+    - revt     # Revenue Total
+    - sale     # Sales/Revenue
+    - cogs     # Cost of Goods Sold
+    - xsga     # Selling, General & Administrative Expense
+    - ebit     # EBIT
+    - ebitda   # EBITDA
+    - ib       # Income Before Extraordinary Items
+    - ni       # Net Income
+    - oibdp    # Operating Income Before Depreciation
+    - xint     # Interest Expense
+    - xrd      # R&D Expense
+
+  # Cashflow
+  cashflow:
+    - oancf    # Operating Activities Net Cash Flow
+    - capx     # Capital Expenditures
+    - ivch     # Investing CF
+    - fincf    # Financing CF
+
+  # Sonstiges
+  other:
+    - emp      # Employees
+    - dp       # Depreciation and Amortization
+    - dvt      # Dividends Total
+
+# ========================================
+# STATIC FEATURES (SNAPSHOT RATIOS)
+# ========================================
+
+profitability:
+  enabled: true
+  description: "Rentabilitätskennzahlen - messen die Ertragskraft"
+  metrics:
+    roa:
+      enabled: true
+      formula: "(ebit / at) * 100"
+      unit: "percent"
+      interpretation: "Höher ist besser. >10% = gut, >15% = sehr gut"
+      outlier_method: "iqr"
+      outlier_threshold: 3
+
+    roe:
+      enabled: true
+      formula: "(ib / seq) * 100"
+      unit: "percent"
+      interpretation: "Höher ist besser. >15% = gut, >20% = sehr gut"
+      outlier_method: "iqr"
+      outlier_threshold: 3
+
+    ebit_margin:
+      enabled: true
+      formula: "(ebit / revt) * 100"
+      unit: "percent"
+      interpretation: "Höher ist besser. >10% = gut"
+
+    ebitda_margin:
+      enabled: true
+      formula: "(ebitda / revt) * 100"
+      unit: "percent"
+
+    net_profit_margin:
+      enabled: true
+      formula: "(ib / revt) * 100"
+      unit: "percent"
+
+    operating_margin:
+      enabled: true
+      formula: "(oibdp / revt) * 100"
+      unit: "percent"
+      interpretation: "Operative Rentabilität vor D&A"
+
+    gross_margin:
+      enabled: true
+      formula: "((revt - cogs) / revt) * 100"
+      unit: "percent"
+      interpretation: "Bruttomarge, zeigt Pricing Power"
+
+    roc:
+      enabled: true
+      formula: "(ebit / (seq + dltt)) * 100"
+      unit: "percent"
+      interpretation: "Return on Capital - ROIC-ähnlich"
+
+liquidity:
+  enabled: true
+  description: "Liquiditätskennzahlen - messen kurzfristige Zahlungsfähigkeit"
+  metrics:
+    current_ratio:
+      enabled: true
+      formula: "act / lct"
+      unit: "ratio"
+      interpretation: ">1.5 = gut, <1.0 = kritisch"
+
+    quick_ratio:
+      enabled: true
+      formula: "(act - invt) / lct"
+      unit: "ratio"
+      interpretation: "Konservativer als Current Ratio"
+
+    cash_ratio:
+      enabled: true
+      formula: "che / lct"
+      unit: "ratio"
+
+    cash_ratio_enhanced:
+      enabled: true
+      formula: "(che + ivst) / lct"
+      unit: "ratio"
+      interpretation: "Inkludiert kurzfristige Investments"
+
+    working_capital_ratio:
+      enabled: true
+      formula: "((act - lct) / at) * 100"
+      unit: "percent"
+      interpretation: "Working Capital als % der Assets"
+
+leverage:
+  enabled: true
+  description: "Verschuldungskennzahlen - messen Kapitalstruktur und Schuldenstand"
+  metrics:
+    debt_to_equity:
+      enabled: true
+      formula: "dltt / seq"
+      unit: "ratio"
+      interpretation: "<1.0 = konservativ, >2.0 = hoch verschuldet"
+
+    total_debt_to_equity:
+      enabled: true
+      formula: "(dlc + dltt) / seq"
+      unit: "ratio"
+      interpretation: "Inkludiert kurzfristige Schulden"
+
+    equity_ratio:
+      enabled: true
+      formula: "(seq / at) * 100"
+      unit: "percent"
+      interpretation: ">40% = solide Basis"
+
+    debt_ratio:
+      enabled: true
+      formula: "(lt / at) * 100"
+      unit: "percent"
+
+    interest_coverage:
+      enabled: true
+      formula: "ebit / xint"
+      unit: "ratio"
+      interpretation: ">3 = sicher, <1.5 = kritisch"
+      special_handling: "nur wenn xint > 0, sonst NaN"
+
+    net_debt_to_ebitda:
+      enabled: true
+      formula: "((dlc + dltt - che) / ebitda)"
+      unit: "ratio"
+      interpretation: "<3 = gesund, >5 = hohe Verschuldung"
+
+    debt_to_assets:
+      enabled: true
+      formula: "((dlc + dltt) / at) * 100"
+      unit: "percent"
+
+efficiency:
+  enabled: true
+  description: "Effizienzkennzahlen - messen Asset- und Ressourcennutzung"
+  metrics:
+    asset_turnover:
+      enabled: true
+      formula: "revt / at"
+      unit: "ratio"
+      interpretation: "Höher = effizienter. Branchenabhängig"
+
+    revenue_per_employee:
+      enabled: true
+      formula: "revt / emp"
+      unit: "thousands"
+      interpretation: "Produktivitätsmaß"
+
+    receivables_turnover:
+      enabled: true
+      formula: "revt / rect"
+      unit: "ratio"
+
+    days_sales_outstanding:
+      enabled: true
+      formula: "365 / receivables_turnover"
+      unit: "days"
+      interpretation: "Wie schnell werden Forderungen eingezogen"
+
+    capital_intensity:
+      enabled: true
+      formula: "(ppent / revt) * 100"
+      unit: "percent"
+      interpretation: "Wie kapitalintensiv ist das Geschäft"
+
+    working_capital_turnover:
+      enabled: true
+      formula: "revt / (act - lct)"
+      unit: "ratio"
+      special_handling: "nur wenn working capital > 0"
+
+    inventory_turnover:
+      enabled: true
+      formula: "cogs / invt"
+      unit: "ratio"
+      interpretation: "Wie schnell wird Inventar umgeschlagen"
+      special_handling: "nur wenn invt > 0"
+
+    asset_quality:
+      enabled: true
+      formula: "((che + rect) / at) * 100"
+      unit: "percent"
+      interpretation: "Anteil liquider Assets"
+
+cashflow:
+  enabled: true
+  description: "Cashflow- und Investitionskennzahlen"
+  metrics:
+    capex_to_revenue:
+      enabled: true
+      formula: "(abs(capx) / revt) * 100"
+      unit: "percent"
+      interpretation: "Investitionsintensität"
+
+    capex_to_depreciation:
+      enabled: true
+      formula: "abs(capx) / dp"
+      unit: "ratio"
+      interpretation: ">1 = Wachstum, <1 = Unterinvestition"
+      special_handling: "nur wenn dp > 0"
+
+    fcf_margin:
+      enabled: true
+      formula: "((oancf - abs(capx)) / revt) * 100"
+      unit: "percent"
+      interpretation: "Free Cash Flow Margin"
+
+    reinvestment_rate:
+      enabled: true
+      formula: "(abs(capx) / oancf) * 100"
+      unit: "percent"
+      special_handling: "nur wenn oancf > 0"
+
+    cash_conversion:
+      enabled: true
+      formula: "(oancf / ebit) * 100"
+      unit: "percent"
+      interpretation: "Wie gut wird EBIT zu Cash konvertiert"
+      special_handling: "nur wenn ebit > 0"
+
+structure:
+  enabled: true
+  description: "Struktur- und Qualitätskennzahlen"
+  metrics:
+    financial_leverage:
+      enabled: true
+      formula: "at / seq"
+      unit: "ratio"
+      interpretation: "DuPont-Komponente"
+      special_handling: "nur wenn seq > 0"
+
+    rnd_intensity:
+      enabled: true
+      formula: "(xrd / revt) * 100"
+      unit: "percent"
+      interpretation: "Innovationsintensität"
+
+    dividend_payout_ratio:
+      enabled: true
+      formula: "(dvt / ni) * 100"
+      unit: "percent"
+      interpretation: "Ausschüttungsquote"
+      special_handling: "nur wenn ni > 0"
+
+    retention_ratio:
+      enabled: true
+      formula: "100 - dividend_payout_ratio"
+      unit: "percent"
+      interpretation: "Thesaurierungsquote"
+
+# ========================================
+# DYNAMIC FEATURES (TIME-SERIES RATIOS)
+# ========================================
+
+dynamic:
+  enabled: true
+  description: "Dynamische Kennzahlen über Zeit"
+  min_years_required: 3  # Minimum Jahre für Trend-Berechnung
+
+  growth:
+    enabled: true
+    description: "Wachstumskennzahlen (YoY)"
+    metrics:
+      revenue_growth:
+        enabled: true
+        formula: "year-over-year % change in revt"
+        unit: "percent"
+
+      asset_growth:
+        enabled: true
+        formula: "year-over-year % change in at"
+        unit: "percent"
+
+      employee_growth:
+        enabled: true
+        formula: "year-over-year % change in emp"
+        unit: "percent"
+
+      fcf_growth:
+        enabled: true
+        formula: "year-over-year % change in FCF"
+        unit: "percent"
+
+      capex_growth:
+        enabled: true
+        formula: "year-over-year % change in capx"
+        unit: "percent"
+
+  trends:
+    enabled: true
+    description: "Trend-Kennzahlen (lineare Regression über Zeit)"
+    method: "linear_regression"
+    metrics:
+      margin_trend:
+        enabled: true
+        formula: "slope of ebit_margin over fyear"
+        unit: "percentage points per year"
+        interpretation: "Positiv = verbessernde Margen"
+
+      leverage_trend:
+        enabled: true
+        formula: "slope of total_debt_to_equity over fyear"
+        unit: "ratio points per year"
+
+      capex_trend:
+        enabled: true
+        formula: "slope of capex_to_revenue over fyear"
+        unit: "percentage points per year"
+
+      fcf_trend:
+        enabled: true
+        formula: "slope of fcf_margin over fyear"
+        unit: "percentage points per year"
+
+  volatility:
+    enabled: true
+    description: "Volatilitätskennzahlen (Standardabweichung über Zeit)"
+    metrics:
+      margin_volatility:
+        enabled: true
+        formula: "std deviation of ebit_margin"
+        unit: "percentage points"
+        interpretation: "Niedriger = stabiler"
+
+      leverage_volatility:
+        enabled: true
+        formula: "std deviation of total_debt_to_equity"
+        unit: "ratio points"
+
+      cashflow_volatility:
+        enabled: true
+        formula: "std deviation of (oancf / at)"
+        unit: "percentage points"
+
+  quality:
+    enabled: true
+    description: "Qualitätskennzahlen"
+    metrics:
+      margin_consistency:
+        enabled: true
+        formula: "R² of margin trend"
+        unit: "0-1"
+        interpretation: "Höher = vorhersagbarer"
+
+      growth_quality:
+        enabled: true
+        formula: "correlation between revenue_growth and fcf_growth"
+        unit: "-1 to 1"
+        interpretation: "Höher = qualitatives Wachstum"
+
+# ========================================
+# OUTLIER HANDLING
+# ========================================
+outliers:
+  global_method: "iqr"  # 'iqr' oder 'zscore'
+  global_threshold: 3   # IQR-Multiplikator oder Z-Score
+
+  # Überschreibungen pro Kategorie
+  overrides:
+    profitability:
+      method: "iqr"
+      threshold: 3
+
+    leverage:
+      method: "iqr"
+      threshold: 4  # Verschuldung kann extremer sein
+
+    growth:
+      method: "iqr"
+      threshold: 4  # Wachstum oft volatile
+
+# ========================================
+# FEATURE SELECTION PRESETS
+# ========================================
+# Vordefinierte Feature-Sets für verschiedene Analysen
+
+presets:
+  minimal:
+    description: "Minimales Set für Quick Analysis"
+    categories:
+      - profitability: [roa, roe, ebit_margin]
+      - liquidity: [current_ratio]
+      - leverage: [debt_to_equity]
+
+  standard:
+    description: "Standard-Set für reguläre Analysen"
+    categories:
+      - profitability: [roa, roe, ebit_margin, net_profit_margin]
+      - liquidity: [current_ratio, quick_ratio]
+      - leverage: [debt_to_equity, equity_ratio]
+      - efficiency: [asset_turnover, revenue_per_employee]
+      - growth: [revenue_growth, asset_growth]
+
+  comprehensive:
+    description: "Alle verfügbaren Kennzahlen"
+    use_all: true
+
+  pca_optimized:
+    description: "Optimiert für PCA - minimiert Multikollinearität"
+    categories:
+      - profitability: [roa, ebit_margin, gross_margin]  # Nicht ROE (korreliert mit leverage)
+      - liquidity: [current_ratio, working_capital_ratio]  # Nicht alle Cash Ratios
+      - leverage: [debt_to_equity, equity_ratio]
+      - efficiency: [asset_turnover, capital_intensity, days_sales_outstanding]
+      - cashflow: [fcf_margin, cash_conversion]
+      - structure: [financial_leverage]
+      - growth: [revenue_growth, fcf_growth]
+      - trends: [margin_trend, leverage_trend]
+      - volatility: [margin_volatility, cashflow_volatility]
+      - quality: [margin_consistency, growth_quality]
+
+# ========================================
+# LOGGING & OUTPUT
+# ========================================
+logging:
+  log_calculated_features: true
+  log_missing_data: true
+  log_outliers: true
+  log_extreme_values: true  # Werte > 1e6 oder < -1e6
+
+output:
+  include_outlier_flags: true  # Erstelle *_outlier Spalten
+  save_feature_summary: true   # Erstelle feature_summary.csv
+  summary_percentiles: [0.25, 0.5, 0.75, 0.90, 0.95]
