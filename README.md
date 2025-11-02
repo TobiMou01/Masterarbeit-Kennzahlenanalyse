@@ -6,7 +6,26 @@ Clustering-basierte Unternehmensanalyse mit **3 Algorithmen** (K-Means, Hierarch
 
 ## 🚀 Schnellstart
 
-### ⚙️ Setup (Einmalig)
+### Methode 1: Automatisches Setup (EMPFOHLEN)
+
+```bash
+# 1. Repository klonen
+git clone <your-repo-url>
+cd Masterarbeit-Kennzahlenanalyse
+
+# 2. Setup starten (erstellt automatisch venv + installiert dependencies)
+python3 src/main.py --market germany
+
+# 3. Folge den Anweisungen im Menü:
+#    → Wähle Option [1] "Automatisch installieren"
+#    → Warte bis Installation fertig ist
+
+# 4. Aktiviere venv und starte Pipeline:
+source venv/bin/activate
+python src/main.py --market germany --compare
+```
+
+### Methode 2: Manuelles Setup
 
 ```bash
 # 1. Repository klonen
@@ -17,14 +36,29 @@ cd Masterarbeit-Kennzahlenanalyse
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+
+# 3. Pipeline starten
+python src/main.py --market germany --compare
 ```
 
-### 🎯 Pipeline ausführen
-
-**⚠️ WICHTIG: Verwende `python`, NICHT `/usr/bin/python3`!**
+### Methode 3: One-Click Setup Script
 
 ```bash
-# Virtuelle Umgebung aktivieren
+# 1. Repository klonen und setup.sh ausführen
+git clone <your-repo-url>
+cd Masterarbeit-Kennzahlenanalyse
+bash setup.sh
+
+# 2. Pipeline starten (venv ist bereits aktiv!)
+python src/main.py --market germany --compare
+```
+
+### 🎯 Pipeline-Befehle
+
+**⚠️ WICHTIG: Virtuelle Umgebung MUSS aktiviert sein!**
+
+```bash
+# JEDES Mal wenn du ein neues Terminal öffnest:
 source venv/bin/activate
 
 # KOMPLETT-DURCHLAUF: Alle Algorithmen mit allen Visualisierungen (EMPFOHLEN)
@@ -346,6 +380,100 @@ Falls du in VS Code auf "Play" drücken möchtest:
 3. Wähle: **`venv/bin/python`**
 
 Dann kannst du [src/main.py](src/main.py) öffnen und auf ▶️ Play drücken!
+
+---
+
+## ⚠️ Troubleshooting
+
+### Setup-Menü: Welche Option wählen?
+
+Das Setup-Menü passt sich automatisch an deine Situation an:
+
+#### Szenario 1: venv existiert NICHT (frisch geklontes Repo)
+```
+Optionen:
+[1] Automatisch installieren (EMPFOHLEN)
+[2] Manuelle Anweisungen anzeigen
+[3] Dependencies prüfen
+[4] Abbrechen
+```
+→ **Wähle [1]** für automatische Installation
+
+#### Szenario 2: venv existiert, ist aber NICHT aktiviert
+```
+✓ venv/ gefunden im Projekt-Ordner!
+💡 Du hast vergessen die venv zu aktivieren.
+
+Optionen:
+[1] venv aktivieren (EMPFOHLEN)
+[2] Neu installieren
+[3] Dependencies prüfen
+[4] Abbrechen
+```
+→ **Wähle [1]** für Aktivierungsanleitung
+→ **Wähle [2]** nur bei Problemen (löscht venv/ komplett!)
+
+### "Keine venv aktiv" Meldung erscheint immer wieder
+
+**Problem:** Du hast vergessen die venv zu aktivieren!
+
+**Lösung:** JEDES Mal wenn du ein neues Terminal öffnest:
+```bash
+source venv/bin/activate
+```
+
+**Tipp:** Prüfe ob venv aktiv ist - dein Prompt sollte `(venv)` zeigen:
+```bash
+(venv) user@mac Masterarbeit-Kennzahlenanalyse %
+```
+
+### VS Code zeigt Setup-Menü obwohl venv aktiv ist
+
+**Problem:** VS Code nutzt falschen Python-Interpreter
+
+**Lösung:**
+1. **Cmd + Shift + P**
+2. Tippe: **"Python: Select Interpreter"**
+3. Wähle: **`venv/bin/python`** (im Projekt-Ordner)
+
+### Installation schlägt fehl: "No module named 'pip'"
+
+**Problem:** Python venv ohne pip installiert
+
+**Lösung:**
+```bash
+# Lösche alte venv
+rm -rf venv
+
+# Erstelle neue mit --upgrade-deps
+python3 -m venv venv --upgrade-deps
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### "Permission denied" beim Setup
+
+**Problem:** setup.sh hat keine Ausführungsrechte
+
+**Lösung:**
+```bash
+chmod +x setup.sh
+bash setup.sh
+```
+
+### Dependencies installiert, aber Import-Fehler
+
+**Problem:** Falscher Python-Interpreter wird verwendet
+
+**Lösung:** Prüfe welcher Python aktiv ist:
+```bash
+which python
+# Sollte zeigen: /pfad/zu/projekt/venv/bin/python
+
+# Falls nicht:
+source venv/bin/activate
+which python  # Erneut prüfen
+```
 
 ---
 
