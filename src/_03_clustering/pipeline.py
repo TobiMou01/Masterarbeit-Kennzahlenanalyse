@@ -270,9 +270,6 @@ class ClusteringPipeline:
         logger.info(f"\n  ⏱️  Duration: {duration:.1f}s")
         logger.info(f"  📁 Output: {self.output.algorithm_dir}\n")
 
-        # Create README in summary directory
-        self.output.create_readme()
-
         print("\n" + "=" * 80)
         print(f"✓ Analysis complete for market: {self.market}")
         print(f"✓ Algorithm: {self.algorithm} ({self.output.mode} mode)")

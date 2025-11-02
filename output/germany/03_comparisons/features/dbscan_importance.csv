@@ -1,0 +1,13 @@
+,feature,importance,algorithm
+4,current_ratio,0.19095647823301468,dbscan
+7,financial_leverage,0.15135905917530673,dbscan
+6,fcf_margin,0.09116064170307323,dbscan
+9,roe,0.0817501188772855,dbscan
+5,debt_to_equity,0.07790407921444527,dbscan
+1,roe,0.06618209057464629,dbscan
+8,roa,0.06422503223599538,dbscan
+11,debt_to_equity,0.06373520538451967,dbscan
+3,gross_margin,0.05864985131125612,dbscan
+0,roa,0.05401249648219139,dbscan
+2,ebit_margin,0.05248754502340429,dbscan
+10,ebit_margin,0.04757740178486133,dbscan

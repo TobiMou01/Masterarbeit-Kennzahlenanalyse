@@ -16,6 +16,7 @@ from src._04_comparison.gics_analyzer import GICSComparison
 from src._04_comparison.algorithm_analyzer import AlgorithmComparison
 from src._04_comparison.feature_analyzer import FeatureImportance
 from src._04_comparison.temporal_analyzer import TemporalStability
+from src._04_comparison.company_analysis import create_company_cluster_excel
 # Note: ComparisonHandler logic integrated into this class
 
 logger = logging.getLogger(__name__)
@@ -65,7 +66,7 @@ class ComparisonPipeline:
         self.temporal_stability = TemporalStability()
 
         # Output directory (replaces ComparisonHandler)
-        self.base_dir = Path(f'output/{market}/comparisons')
+        self.base_dir = Path(f'output/{market}/03_comparisons')
         self.base_dir.mkdir(parents=True, exist_ok=True)
 
         # Results storage
@@ -150,12 +151,22 @@ class ComparisonPipeline:
                 algo_config['classification'] = {}
             algo_config['classification']['algorithm'] = algorithm
 
-            # Create pipeline für diesen Algorithmus
-            pipeline = ClusteringPipeline(
-                config_dict=algo_config,
-                market=self.market,
-                skip_plots=True  # Vermeide individuelle Plots, nur Comparison-Plots
-            )
+            # Wähle richtige Pipeline basierend auf Algorithmus
+            if algorithm in ['hierarchical', 'dbscan']:
+                # Hierarchical/DBSCAN nutzen Label-Consistency Mode
+                from src._03_clustering.hierarchical_pipeline import HierarchicalPipeline
+                pipeline = HierarchicalPipeline(
+                    config_dict=algo_config,
+                    market=self.market,
+                    skip_plots=self.skip_plots
+                )
+            else:
+                # K-Means nutzt Comparative Mode (3 separate Clusterings)
+                pipeline = ClusteringPipeline(
+                    config_dict=algo_config,
+                    market=self.market,
+                    skip_plots=self.skip_plots
+                )
 
             # Run pipeline und extrahiere Ergebnisse
             pipeline.run_analysis(
@@ -514,6 +525,13 @@ class ComparisonPipeline:
         # 2. Run all comparisons
         self.run_comparisons()
 
+        # 3. Create company-level Excel analysis
+        excel_path = create_company_cluster_excel(
+            algorithm_results=self.algorithm_results,
+            market=self.market,
+            output_dir=f'output/{self.market}'
+        )
+
         # Duration
         duration = (datetime.now() - start_time).total_seconds()
 
@@ -522,9 +540,12 @@ class ComparisonPipeline:
         logger.info(f"{'='*80}")
         logger.info(f"  ⏱️  Duration: {duration:.1f}s")
         logger.info(f"  📁 Output: {self.base_dir}")
+        if excel_path:
+            logger.info(f"  📊 Excel: {excel_path}")
 
         return {
             'algorithm_results': self.algorithm_results,
             'comparison_results': self.comparison_results,
+            'excel_path': excel_path,
             'duration': duration
         }

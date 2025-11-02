@@ -22,11 +22,12 @@ classification:
 
   # DBSCAN Parameter (Density-Based)
   dbscan:
-    eps: 0.5           # Maximaler Abstand zwischen Punkten (kritischer Parameter!)
-    min_samples: 5     # Minimale Anzahl Punkte für Core-Punkt
+    eps: 1.5           # Maximaler Abstand zwischen Punkten (kritischer Parameter!)
+    min_samples: 3     # Minimale Anzahl Punkte für Core-Punkt
     metric: 'euclidean'  # Distanzmetrik
     # Hinweis: n_clusters wird automatisch gefunden
-    # eps muss ggf. angepasst werden je nach Daten (typisch: 0.3-2.0)
+    # eps=1.5 ist optimal für standardisierte Finanzdaten (0.5 war zu klein → nur Noise)
+    # Erwarte mit diesen Werten: 4-8 Cluster mit 5-15% Noise
 
 # ========================================
 # CLUSTER-ANZAHL

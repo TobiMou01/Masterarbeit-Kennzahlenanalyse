@@ -107,9 +107,6 @@ class OutputHandler:
     def _create_directories(self):
         """Erstellt die komplette Verzeichnisstruktur"""
 
-        # 01_data/
-        self.data_dir.mkdir(parents=True, exist_ok=True)
-
         # 02_algorithms/{algorithm}/
         for analysis_key in ['static', 'dynamic', 'combined']:
             analysis_dir = self.algorithm_dir / self.analysis_types[analysis_key]
@@ -119,15 +116,16 @@ class OutputHandler:
             (analysis_dir / 'plots').mkdir(parents=True, exist_ok=True)
             (analysis_dir / 'reports').mkdir(parents=True, exist_ok=True)
             (analysis_dir / 'reports' / 'clusters').mkdir(parents=True, exist_ok=True)
-            (analysis_dir / 'models').mkdir(parents=True, exist_ok=True)
+
+            # models/ nur für comparative mode (K-Means)
+            # hierarchical/dbscan nutzen HierarchicalPipeline und speichern keine Modelle
+            if self.mode == 'comparative':
+                (analysis_dir / 'models').mkdir(parents=True, exist_ok=True)
 
         # 03_comparisons/
+        # Dateien werden direkt in comp_type/ gespeichert, keine data/plots Unterordner
         for comp_type in ['algorithms', 'gics', 'features', 'temporal']:
-            (self.comparisons_dir / comp_type / 'data').mkdir(parents=True, exist_ok=True)
-            (self.comparisons_dir / comp_type / 'plots').mkdir(parents=True, exist_ok=True)
-
-        # 99_summary/
-        self.summary_dir.mkdir(parents=True, exist_ok=True)
+            (self.comparisons_dir / comp_type).mkdir(parents=True, exist_ok=True)
 
     def save_cluster_data(
         self,
@@ -240,15 +238,20 @@ class OutputHandler:
         data: pd.DataFrame,
         filename: str
     ):
-        """Speichert Comparison-Daten"""
-        data_dir = self.comparisons_dir / comp_type / 'data'
-        path = data_dir / filename
+        """Speichert Comparison-Daten direkt in comp_type/ Ordner"""
+        # Dateien direkt in comp_type/ speichern (keine data/ Unterordner)
+        comp_dir = self.comparisons_dir / comp_type
+        comp_dir.mkdir(parents=True, exist_ok=True)
+        path = comp_dir / filename
         data.to_csv(path, index=False)
         logger.info(f"    ✓ {comp_type}/{filename}")
 
     def get_comparison_plots_dir(self, comp_type: str) -> Path:
-        """Gibt Comparison Plots Dir zurück"""
-        return self.comparisons_dir / comp_type / 'plots'
+        """Gibt Comparison Plots Dir zurück (direkt in comp_type/)"""
+        # Plots direkt in comp_type/ speichern (keine plots/ Unterordner)
+        comp_dir = self.comparisons_dir / comp_type
+        comp_dir.mkdir(parents=True, exist_ok=True)
+        return comp_dir
 
     def create_readme(self):
         """Erstellt README in 99_summary/"""

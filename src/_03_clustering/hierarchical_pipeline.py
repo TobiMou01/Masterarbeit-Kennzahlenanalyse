@@ -171,13 +171,15 @@ class HierarchicalPipeline:
 
         logger.info(f"→ {len(common_gvkeys)} Unternehmen haben Static + Dynamic Daten")
 
-        # Add master labels
+        # Add master labels AND static_score
         df_result = df_result[df_result['gvkey'].isin(common_gvkeys)].copy()
         label_map = static_df.set_index('gvkey')['cluster'].to_dict()
         name_map = static_df.set_index('gvkey')['cluster_name'].to_dict()
+        static_score_map = static_df.set_index('gvkey')['static_score'].to_dict()
 
         df_result['cluster'] = df_result['gvkey'].map(label_map)
         df_result['cluster_name'] = df_result['gvkey'].map(name_map)
+        df_result['static_score'] = df_result['gvkey'].map(static_score_map)
 
         # Calculate DYNAMIC Scores (based on dynamic features)
         # Berechne Profile der Dynamic-Features pro Cluster
@@ -483,9 +485,6 @@ class HierarchicalPipeline:
         logger.info("=" * 80)
         logger.info(f"\n  ⏱️  Duration: {duration:.1f}s")
         logger.info(f"  📁 Output: {self.output.algorithm_dir}\n")
-
-        # Create README in summary directory
-        self.output.create_readme()
 
         print("\n" + "=" * 80)
         print(f"✓ Hierarchical Analysis complete for market: {self.market}")
