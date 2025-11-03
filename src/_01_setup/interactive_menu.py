@@ -143,6 +143,12 @@ class InteractiveMenu:
             'create_plots': preset.get('create_plots', False),
             'comparison_mode': preset.get('comparison_mode', False),
             'auto_tune_dbscan': preset.get('auto_tune_dbscan', False),
+            # New features
+            'enable_scoring': preset.get('enable_scoring', True),
+            'enable_naming': preset.get('enable_naming', True),
+            'naming_method': preset.get('naming_method', 'z_score'),
+            'enable_validation': preset.get('enable_validation', True),
+            'enable_pca': preset.get('enable_pca', False),
         }
 
     def _custom_configuration(self):
@@ -181,6 +187,23 @@ class InteractiveMenu:
             self.session_config['comparison_mode'] = self._select_comparison()
         else:
             self.session_config['comparison_mode'] = False
+
+        # NEW: Question 9: Scoring
+        self.session_config['enable_scoring'] = self._select_scoring()
+
+        # NEW: Question 10: Cluster Naming
+        if self.session_config['enable_scoring']:
+            self.session_config['enable_naming'] = self._select_naming()
+            if self.session_config['enable_naming']:
+                self.session_config['naming_method'] = self._select_naming_method()
+        else:
+            self.session_config['enable_naming'] = False
+
+        # NEW: Question 11: External Validation
+        self.session_config['enable_validation'] = self._select_validation()
+
+        # NEW: Question 12: PCA Validation
+        self.session_config['enable_pca'] = self._select_pca()
 
         # Summary
         self._print_summary()
@@ -333,6 +356,97 @@ class InteractiveMenu:
 
         return choice == 'a'
 
+    def _select_scoring(self) -> bool:
+        """Select scoring mode"""
+        print("\n" + "-" * 80)
+        print("[9] Scoring System:")
+        print("-" * 80)
+        print("  Berechnet Qualitäts-Scores für jedes Unternehmen:")
+        print("  • Proximity Score (Nähe zum Cluster-Zentrum)")
+        print("  • Dimensional Scores (Profitability, Leverage, etc.)")
+        print("  • Relative Score (im Vergleich zu Cluster-Peers)")
+        print("  • Overall Score (Gesamtbewertung)")
+        print()
+        print("  [a] Ja, Scores berechnen (empfohlen)")
+        print("  [b] Nein, nur Clustering")
+        print()
+
+        choice = self._get_input("→ Deine Auswahl", default='a')
+
+        return choice == 'a'
+
+    def _select_naming(self) -> bool:
+        """Select cluster naming mode"""
+        print("\n" + "-" * 80)
+        print("[10] Cluster Naming:")
+        print("-" * 80)
+        print("  Generiert beschreibende Namen für Cluster")
+        print("  (z.B. 'High ROE, Low Leverage' statt nur 'Cluster 0')")
+        print()
+        print("  [a] Ja, Namen generieren (empfohlen)")
+        print("  [b] Nein, nur Nummern")
+        print()
+
+        choice = self._get_input("→ Deine Auswahl", default='a')
+
+        return choice == 'a'
+
+    def _select_naming_method(self) -> str:
+        """Select naming method"""
+        print("\n  → Naming-Stil:")
+        print("     [a] Hybrid (empfohlen: Business-Archetype + technische Details)")
+        print("     [b] Technical (detailliert: dominante Features mit Werten)")
+        print("     [c] Business (einfach: nur Archetype wie 'Growth Champion')")
+        print()
+
+        choice = self._get_input("     Deine Auswahl", default='a')
+
+        mapping = {
+            'a': 'hybrid',
+            'b': 'technical',
+            'c': 'business'
+        }
+
+        return mapping.get(choice, 'hybrid')
+
+    def _select_validation(self) -> bool:
+        """Select external validation"""
+        print("\n" + "-" * 80)
+        print("[11] External Validation:")
+        print("-" * 80)
+        print("  Validiert Cluster gegen externe Labels:")
+        print("  • GICS Sectors (Industrie-Klassifikation)")
+        print("  • Company Size (Größenkategorien)")
+        print("  • Cramér's V, Chi²-Tests, Contingency Tables")
+        print()
+        print("  [a] Ja, externe Validierung durchführen")
+        print("  [b] Nein, überspringen")
+        print()
+
+        choice = self._get_input("→ Deine Auswahl", default='a')
+
+        return choice == 'a'
+
+    def _select_pca(self) -> bool:
+        """Select PCA validation"""
+        print("\n" + "-" * 80)
+        print("[12] PCA Validation (Optional):")
+        print("-" * 80)
+        print("  Führt paralleles Clustering in PCA-Space durch:")
+        print("  • Original-Features vs. PCA-transformierte Features")
+        print("  • Vergleich der Cluster-Strukturen")
+        print("  • Dimensionsreduktion & Interpretation")
+        print()
+        print("  ⚠️  Benötigt erweiterte Features (pca_optimized preset)")
+        print()
+        print("  [a] Ja, PCA Validation (dauert länger)")
+        print("  [b] Nein, nur Standard-Clustering")
+        print()
+
+        choice = self._get_input("→ Deine Auswahl", default='b')
+
+        return choice == 'a'
+
     def _print_summary(self):
         """Print configuration summary"""
         print("\n" + "=" * 80)
@@ -361,6 +475,18 @@ class InteractiveMenu:
         print(f"  Preprocessing:  {'Übersprungen' if self.session_config.get('skip_preprocessing') else 'Neu ausführen'}")
         print(f"  Plots:          {'Aktiviert' if self.session_config.get('create_plots') else 'Deaktiviert'}")
         print(f"  Comparison:     {'Aktiviert' if self.session_config.get('comparison_mode') else 'Deaktiviert'}")
+
+        print()
+        print("  🆕 Erweiterte Features:")
+        print(f"  Scoring:        {'Aktiviert' if self.session_config.get('enable_scoring', True) else 'Deaktiviert'}")
+
+        if self.session_config.get('enable_scoring', True):
+            naming_status = 'Aktiviert' if self.session_config.get('enable_naming', True) else 'Deaktiviert'
+            naming_method = self.session_config.get('naming_method', 'z_score')
+            print(f"  Naming:         {naming_status} ({naming_method})")
+
+        print(f"  Validation:     {'Aktiviert' if self.session_config.get('enable_validation', True) else 'Deaktiviert'}")
+        print(f"  PCA:            {'Aktiviert' if self.session_config.get('enable_pca', False) else 'Deaktiviert'}")
 
     def _confirm_proceed(self) -> bool:
         """Ask user to confirm and proceed"""

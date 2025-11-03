@@ -476,7 +476,18 @@ class ClusteringPipeline:
 
         # Save detailed scores
         score_columns = [col for col in df_scored.columns if 'score' in col.lower()]
-        df_scores = df_scored[['gvkey', 'conm', cluster_column] + score_columns].copy()
+
+        # Build columns list - only include columns that exist
+        columns_to_save = ['gvkey']
+        if 'conm' in df_scored.columns:
+            columns_to_save.append('conm')
+        elif 'company_name' in df_scored.columns:
+            columns_to_save.append('company_name')
+
+        columns_to_save.append(cluster_column)
+        columns_to_save.extend(score_columns)
+
+        df_scores = df_scored[columns_to_save].copy()
         df_scores.to_csv(scores_dir / 'company_scores.csv', index=False)
 
         logger.info(f"     ✓ Scores calculated and saved")
@@ -511,17 +522,37 @@ class ClusteringPipeline:
 
         logger.info(f"\n  📛 Generating Cluster Names ({analysis_type})...")
 
-        # Get naming method from config (default: 'z_score')
+        # Get naming style from config (default: 'hybrid')
+        # Map old 'method' values to new 'style' values
         naming_method = config.get_value(
-            self.config, 'naming', 'method', default='z_score'
+            self.config, 'naming', 'method', default='hybrid'
         )
 
+        # Map method names to style names
+        method_to_style = {
+            'z_score': 'technical',
+            'top_features': 'technical',
+            'percentile': 'technical',
+            'hybrid': 'hybrid',
+            'business': 'business',
+            'technical': 'technical'
+        }
+
+        style = method_to_style.get(naming_method, 'hybrid')
+
         # Generate names
-        cluster_names, naming_summary = self.cluster_namer.name_clusters(
+        cluster_names = self.cluster_namer.generate_names(
             profiles=profiles,
             features=features,
-            method=naming_method
+            style=style,
+            top_n=2
         )
+
+        # Create naming summary DataFrame
+        naming_summary = pd.DataFrame([
+            {'cluster_id': cid, 'cluster_name': name}
+            for cid, name in cluster_names.items()
+        ])
 
         # Save naming summary to 1_cluster_quality/naming/
         naming_dir = self.output.get_cluster_quality_dir(analysis_type) / 'naming'
@@ -530,7 +561,7 @@ class ClusteringPipeline:
         naming_summary.to_csv(naming_dir / 'cluster_names.csv', index=False)
 
         # Log names
-        logger.info(f"     ✓ Naming method: {naming_method}")
+        logger.info(f"     ✓ Naming style: {style}")
         for cluster_id, name in cluster_names.items():
             logger.info(f"     Cluster {cluster_id}: {name}")
 
@@ -582,7 +613,7 @@ class ClusteringPipeline:
         if len(dimensional_scores) > 0:
             self.plot_engine_scores.plot_dimensional_heatmap(
                 df=df,
-                dimensional_columns=dimensional_scores,
+                dimensional_score_columns=dimensional_scores,
                 cluster_column=cluster_column,
                 output_path=viz_dir / 'dimensional_heatmap.png'
             )
@@ -597,10 +628,16 @@ class ClusteringPipeline:
 
         # 4. Homogeneity comparison
         if 'overall_score' in df.columns:
-            self.plot_engine_scores.plot_homogeneity_comparison(
+            # First analyze homogeneity
+            homogeneity_df = self.score_analyzer.analyze_cluster_homogeneity(
                 df=df,
                 score_column='overall_score',
-                cluster_column=cluster_column,
+                cluster_column=cluster_column
+            )
+
+            # Then plot it
+            self.plot_engine_scores.plot_homogeneity_comparison(
+                homogeneity_df=homogeneity_df,
                 output_path=viz_dir / 'cluster_homogeneity.png'
             )
 
@@ -713,8 +750,17 @@ class ClusteringPipeline:
             df_combined=df_combined
         )
 
-        # Analyze patterns
-        pattern_summary = self.score_analyzer.analyze_patterns(evolution_df)
+        # Classify evolution patterns
+        patterns = self.score_tracker.classify_evolution_pattern(evolution_df)
+        evolution_df['pattern'] = patterns
+
+        # Create pattern summary
+        pattern_counts = patterns.value_counts()
+        pattern_summary = pd.DataFrame({
+            'pattern': pattern_counts.index,
+            'count': pattern_counts.values,
+            'percentage': (pattern_counts.values / len(patterns) * 100).round(1)
+        })
 
         # Save to 1_cluster_quality/scores/evolution/
         evolution_dir = self.output.get_cluster_quality_dir('combined') / 'scores' / 'evolution'
@@ -734,7 +780,7 @@ class ClusteringPipeline:
             )
 
         logger.info(f"     ✓ Score evolution tracked")
-        logger.info(f"     ✓ Patterns: {pattern_summary['pattern'].value_counts().to_dict()}")
+        logger.info(f"     ✓ Patterns: {pattern_counts.to_dict()}")
 
     # =========================================================================
     # ORCHESTRATION METHODS
@@ -932,8 +978,19 @@ class ClusteringPipeline:
                 report_lines.append(f"### {analysis_key.capitalize()} Analysis\n")
                 report_lines.append(f"- **Companies:** {result['n_companies']}")
                 report_lines.append(f"- **Clusters:** {result['n_clusters']}")
-                report_lines.append(f"- **Silhouette Score:** {result['metrics'].get('silhouette_score', 'N/A'):.3f}")
-                report_lines.append(f"- **Davies-Bouldin Index:** {result['metrics'].get('davies_bouldin_score', 'N/A'):.3f}\n")
+
+                # Format metrics with proper type checking
+                silhouette = result['metrics'].get('silhouette_score', 'N/A')
+                if isinstance(silhouette, (int, float)):
+                    report_lines.append(f"- **Silhouette Score:** {silhouette:.3f}")
+                else:
+                    report_lines.append(f"- **Silhouette Score:** {silhouette}")
+
+                davies_bouldin = result['metrics'].get('davies_bouldin_score', 'N/A')
+                if isinstance(davies_bouldin, (int, float)):
+                    report_lines.append(f"- **Davies-Bouldin Index:** {davies_bouldin:.3f}\n")
+                else:
+                    report_lines.append(f"- **Davies-Bouldin Index:** {davies_bouldin}\n")
 
         # 2. Cluster Profiles
         report_lines.append("## 2. Cluster Profiles\n")
@@ -941,7 +998,11 @@ class ClusteringPipeline:
         if 'static' in self.results:
             profiles = self.results['static']['profiles']
             report_lines.append("### Static Analysis Profiles\n")
-            report_lines.append(profiles.to_markdown())
+
+            # Convert to markdown table manually (no tabulate dependency needed)
+            report_lines.append("```")
+            report_lines.append(profiles.to_string())
+            report_lines.append("```")
             report_lines.append("\n")
 
         # 3. Validation Results

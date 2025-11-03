@@ -10,6 +10,11 @@ auto_tune_dbscan: false
 comparison_mode: true
 create_plots: true
 dbscan_mode: hierarchical
+enable_naming: true
+enable_pca: false
+enable_scoring: true
+enable_validation: true
 hierarchical_mode: hierarchical
 kmeans_mode: both
+naming_method: hybrid
 skip_preprocessing: false

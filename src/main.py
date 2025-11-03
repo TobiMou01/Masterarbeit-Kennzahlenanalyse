@@ -127,6 +127,24 @@ def main():
             dbscan_mode = session_config.get('dbscan_mode', 'hierarchical')
             auto_tune_dbscan = session_config.get('auto_tune_dbscan', False)
 
+            # Apply extended features to config
+            if 'scoring' not in cfg:
+                cfg['scoring'] = {}
+            cfg['scoring']['enabled'] = session_config.get('enable_scoring', True)
+
+            if 'naming' not in cfg:
+                cfg['naming'] = {}
+            cfg['naming']['enabled'] = session_config.get('enable_naming', True)
+            cfg['naming']['method'] = session_config.get('naming_method', 'z_score')
+
+            if 'validation' not in cfg:
+                cfg['validation'] = {}
+            cfg['validation']['enabled'] = session_config.get('enable_validation', True)
+
+            if 'pca' not in cfg:
+                cfg['pca'] = {}
+            cfg['pca']['enabled'] = session_config.get('enable_pca', False)
+
         else:
             # Direct mode (command-line args)
             logger.info("\n" + "=" * 80)

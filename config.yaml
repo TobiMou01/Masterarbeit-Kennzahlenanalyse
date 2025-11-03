@@ -157,9 +157,10 @@ scoring:
 # ========================================
 naming:
   enabled: true
-  method: 'z_score'  # Options: 'z_score', 'top_features', 'percentile'
-  z_score_threshold: 0.5  # For z_score method: features with |z| > threshold
-  max_features_in_name: 3  # Maximum features to include in name
+  method: 'hybrid'  # Options: 'hybrid', 'technical', 'business'
+  # hybrid: Business archetype + technical details (recommended)
+  # technical: Only dominant features with values
+  # business: Only business archetype (e.g., "Growth Champion")
 
 # ========================================
 # VALIDATION
@@ -261,10 +262,15 @@ interactive:
       skip_preprocessing: true
       create_plots: false
       comparison_mode: false
+      # Extended features
+      enable_scoring: false
+      enable_naming: false
+      enable_validation: false
+      enable_pca: false
 
     full_analysis:
       name: "Full Analysis"
-      description: "Komplette Analyse mit allen Algorithmen und Modi"
+      description: "Komplette Analyse mit allen Algorithmen und Modi + alle Features"
       algorithms:
         - kmeans
         - hierarchical
@@ -279,10 +285,16 @@ interactive:
       skip_preprocessing: false
       create_plots: true
       comparison_mode: true
+      # Extended features - ALL ENABLED
+      enable_scoring: true
+      enable_naming: true
+      naming_method: hybrid
+      enable_validation: true
+      enable_pca: false  # Optional, da rechenintensiv
 
     comparison_mode:
       name: "Comparison Mode"
-      description: "Vergleich aller Algorithmen (nur Combined)"
+      description: "Vergleich aller Algorithmen (nur Combined) mit Validation"
       algorithms:
         - kmeans
         - hierarchical
@@ -295,6 +307,12 @@ interactive:
       skip_preprocessing: true
       create_plots: false
       comparison_mode: true
+      # Extended features
+      enable_scoring: true
+      enable_naming: true
+      naming_method: hybrid
+      enable_validation: true
+      enable_pca: false
 
     kmeans_exploration:
       name: "K-Means Exploration"
@@ -309,6 +327,12 @@ interactive:
       skip_preprocessing: true
       create_plots: true
       comparison_mode: false
+      # Extended features
+      enable_scoring: true
+      enable_naming: true
+      naming_method: technical
+      enable_validation: false
+      enable_pca: false
 
     dbscan_tuning:
       name: "DBSCAN Tuning"
@@ -324,3 +348,8 @@ interactive:
       create_plots: false
       comparison_mode: false
       auto_tune_dbscan: true  # Fragt bei >50% Noise nach Parameter-Anpassung
+      # Extended features
+      enable_scoring: false
+      enable_naming: false
+      enable_validation: false
+      enable_pca: false

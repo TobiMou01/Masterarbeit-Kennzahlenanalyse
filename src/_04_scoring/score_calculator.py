@@ -74,11 +74,18 @@ class ScoreCalculator:
         logger.info(f"  Features: {len(features)}")
         logger.info(f"  Companies: {len(df)}")
 
-        # Validate features exist
+        # Validate features exist in df
         missing_features = [f for f in features if f not in df.columns]
         if missing_features:
-            logger.warning(f"  ⚠️  Missing features: {missing_features}")
+            logger.warning(f"  ⚠️  Missing features in df: {missing_features}")
             features = [f for f in features if f in df.columns]
+
+        # If profiles provided, also check they exist in profiles
+        if profiles is not None:
+            missing_in_profiles = [f for f in features if f not in profiles.columns]
+            if missing_in_profiles:
+                logger.warning(f"  ⚠️  Missing features in profiles: {missing_in_profiles}")
+                features = [f for f in features if f in profiles.columns]
 
         if len(features) == 0:
             logger.error("  ❌ No valid features found!")
@@ -199,6 +206,10 @@ class ScoreCalculator:
         for category_name, feature_list in categories.items():
             # Only use features that exist in df
             available_features = [f for f in feature_list if f in df.columns]
+
+            # If profiles provided, also check they exist in profiles
+            if profiles is not None:
+                available_features = [f for f in available_features if f in profiles.columns]
 
             if len(available_features) == 0:
                 logger.warning(f"  ⚠️  {category_name}: No available features, skipping")

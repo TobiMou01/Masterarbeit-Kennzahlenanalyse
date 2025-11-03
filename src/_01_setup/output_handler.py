@@ -252,6 +252,54 @@ class OutputHandler:
         """
         return self.get_analysis_level_dir(5, analysis_type)
 
+    def get_cluster_quality_dir(self, analysis_type: str = 'static') -> Path:
+        """
+        Liefert Cluster Quality Verzeichnis (Level 1)
+
+        Args:
+            analysis_type: 'static', 'dynamic', oder 'combined'
+
+        Returns:
+            Path-Objekt für Cluster Quality Verzeichnis
+        """
+        return self.get_analysis_level_dir(1, analysis_type)
+
+    def get_algorithm_congruence_dir(self, analysis_type: str = 'static') -> Path:
+        """
+        Liefert Algorithm Congruence Verzeichnis (Level 2)
+
+        Args:
+            analysis_type: 'static', 'dynamic', oder 'combined'
+
+        Returns:
+            Path-Objekt für Algorithm Congruence Verzeichnis
+        """
+        return self.get_analysis_level_dir(2, analysis_type)
+
+    def get_external_validation_dir(self, analysis_type: str = 'static') -> Path:
+        """
+        Liefert External Validation Verzeichnis (Level 3)
+
+        Args:
+            analysis_type: 'static', 'dynamic', oder 'combined'
+
+        Returns:
+            Path-Objekt für External Validation Verzeichnis
+        """
+        return self.get_analysis_level_dir(3, analysis_type)
+
+    def get_company_insights_dir(self, analysis_type: str = 'static') -> Path:
+        """
+        Liefert Company Insights Verzeichnis (Level 4)
+
+        Args:
+            analysis_type: 'static', 'dynamic', oder 'combined'
+
+        Returns:
+            Path-Objekt für Company Insights Verzeichnis
+        """
+        return self.get_analysis_level_dir(4, analysis_type)
+
     def save_cluster_data(
         self,
         df: pd.DataFrame,
