@@ -501,3 +501,68 @@ output:
   include_outlier_flags: true  # Erstelle *_outlier Spalten
   save_feature_summary: true   # Erstelle feature_summary.csv
   summary_percentiles: [0.25, 0.5, 0.75, 0.90, 0.95]
+
+# ========================================
+# FEATURE SELECTION FOR CLUSTERING
+# ========================================
+# Definiert welche Features für verschiedene Analyse-Typen genutzt werden
+
+clustering_features:
+  # Base Features (12) - Optimiert für Standard-Clustering ohne PCA
+  # Diese Features wurden manuell kuratiert für beste Clustering-Ergebnisse
+  base_features:
+    description: "12 carefully selected features for standard clustering analysis"
+    features:
+      - roa                    # Profitability
+      - roe                    # Profitability
+      - ebit_margin            # Profitability
+      - net_profit_margin      # Profitability
+      - debt_to_equity         # Leverage
+      - current_ratio          # Liquidity
+      - quick_ratio            # Liquidity
+      - asset_turnover         # Efficiency
+      - interest_coverage      # Leverage
+      - fcf_margin             # Cashflow
+      - revenue_growth         # Growth (dynamic)
+      - asset_growth           # Growth (dynamic)
+
+  # Extended Features (25+) - Für PCA-basierte Analysen
+  # Nutzt das 'pca_optimized' Preset - siehe oben
+  extended_features:
+    description: "Extended feature set for PCA analysis - uses 'pca_optimized' preset"
+    use_preset: "pca_optimized"
+    # Alternative: Manuell definieren
+    # features:
+    #   - [alle Features aus pca_optimized preset]
+
+  # Feature-Sets für verschiedene Analyse-Typen
+  analysis_types:
+    static_analysis:
+      description: "Features für statische Analyse (aktueller Stand)"
+      use_features: "base_features"
+      # Alternative: Custom Features
+      # custom_features: [roa, roe, ebit_margin, ...]
+
+    dynamic_analysis:
+      description: "Features für dynamische Analyse (Trends über Zeit)"
+      # Wird automatisch berechnet aus timeseries data
+      auto_detect: true
+      # Nutzt: revenue_growth, asset_growth, margin_trend, etc.
+
+    combined_analysis:
+      description: "Features für kombinierte Analyse (Static + Dynamic)"
+      static_features:
+        - roa
+        - roe
+        - ebit_margin
+        - debt_to_equity
+        - current_ratio
+      dynamic_features:
+        - revenue_growth
+        - asset_growth
+        - margin_trend
+        - fcf_growth
+
+    pca_analysis:
+      description: "Features für PCA-basierte Analyse"
+      use_features: "extended_features"

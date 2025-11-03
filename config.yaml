@@ -132,9 +132,116 @@ data:
 global:
   random_state: 42
 
+# ========================================
+# SCORING SYSTEM
+# ========================================
+scoring:
+  enabled: true  # Enable/disable scoring module
+  methods:
+    - proximity  # Distance to cluster center
+    - dimensional  # Per-category scores (Profitability, Leverage, etc.)
+    - relative  # Z-score vs cluster average
+    - overall  # Weighted combination
+  weights:
+    proximity: 0.3
+    dimensional: 0.4
+    relative: 0.3
+  thresholds:
+    excellent: 0.8  # Top 20%
+    good: 0.6       # Top 40%
+    average: 0.4    # Middle 40%
+    poor: 0.2       # Bottom 40%
+
+# ========================================
+# CLUSTER NAMING
+# ========================================
+naming:
+  enabled: true
+  method: 'z_score'  # Options: 'z_score', 'top_features', 'percentile'
+  z_score_threshold: 0.5  # For z_score method: features with |z| > threshold
+  max_features_in_name: 3  # Maximum features to include in name
+
+# ========================================
+# VALIDATION
+# ========================================
+validation:
+  enabled: true
+  external_labels:
+    - gics_sector  # GICS industry classification
+    - size_category  # Company size (small, medium, large)
+    # - country  # Uncomment if multi-country analysis
+  cramers_v_threshold: 0.3  # Minimum for "meaningful" association
+  algorithm_comparison:
+    enabled: true  # Compare multiple algorithms
+    min_ari: 0.5  # Minimum ARI for "good agreement"
+
+# ========================================
+# PCA INTEGRATION
+# ========================================
+pca:
+  enabled: false  # Enable PCA validation (requires extended features)
+  n_components: 0.85  # Preserve 85% variance (or int for exact number)
+  extended_features_preset: 'pca_optimized'  # Feature preset for PCA
+  compare_with_original: true  # Compare PCA vs original clustering
+
+# ========================================
+# VISUALIZATION
+# ========================================
+visualization:
+  dpi: 300  # High resolution for publications
+  format: 'png'  # Output format (png, pdf, svg)
+
+  score_plots:
+    - distribution  # Box plots per cluster
+    - evolution  # Static → Dynamic → Combined
+    - radar  # Dimensional profiles
+    - ranking  # Top/Bottom companies
+    - homogeneity  # Cluster consistency
+    - correlations  # Score correlations
+
+  validation_plots:
+    - ari_heatmap  # Algorithm agreement
+    - confusion_matrix  # Pairwise comparisons
+    - cramers_v  # External label associations
+    - contingency  # Cluster × Label overlap
+
+  pca_plots:
+    - scree  # Variance explained
+    - loadings  # Feature contributions
+    - biplot  # Observations + features
+    - comparison  # PCA vs Original
+
+# ========================================
+# OUTPUT SETTINGS
+# ========================================
 output:
   create_plots: true
   create_company_lists: true
+  create_summary_report: true  # Generate Markdown summary
+  excel_enhanced: true  # Multi-sheet Excel with formatting
+
+  # 5-Level Output Structure
+  levels:
+    1_cluster_quality:
+      - scores
+      - naming
+      - visualizations
+    2_algorithm_congruence:
+      - ari_matrix
+      - confusion_matrices
+      - consensus_clusters
+    3_external_validation:
+      - cramers_v
+      - contingency_tables
+      - chi_square_tests
+    4_company_insights:
+      - rankings
+      - outliers
+      - migrations
+    5_pca_analysis:
+      - comparison
+      - loadings
+      - reconstructions
 
 # ========================================
 # INTERACTIVE MODE PRESETS
