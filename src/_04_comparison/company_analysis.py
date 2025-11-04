@@ -123,9 +123,22 @@ class CompanyClusterAnalyzer:
             logger.warning(f"  ⚠️  No data available for {algo_name} - {stage}")
             return None
 
-        # Start with base info
-        result_df = df[['gvkey', 'conm', 'cluster']].copy()
-        result_df = result_df.rename(columns={'conm': 'company_name'})
+        # Start with base info - handle both 'conm' and 'company_name'
+        base_cols = ['gvkey', 'cluster']
+
+        # Check for company name column
+        if 'conm' in df.columns:
+            base_cols.append('conm')
+            result_df = df[base_cols].copy()
+            result_df = result_df.rename(columns={'conm': 'company_name'})
+        elif 'company_name' in df.columns:
+            base_cols.append('company_name')
+            result_df = df[base_cols].copy()
+        else:
+            # Fallback: just use gvkey and cluster
+            logger.warning("  ⚠️  No company name column found, using only gvkey")
+            result_df = df[base_cols].copy()
+            result_df['company_name'] = result_df['gvkey']  # Use gvkey as name
 
         # Add cluster name
         result_df['cluster_name'] = result_df['cluster'].apply(
@@ -262,8 +275,19 @@ class CompanyClusterAnalyzer:
             return None
 
         # Get data from each stage
-        static_df = kmeans['static']['df'][['gvkey', 'conm', 'cluster']].copy()
-        static_df = static_df.rename(columns={'conm': 'company_name', 'cluster': 'static_cluster'})
+        static_source = kmeans['static']['df']
+
+        # Handle both 'conm' and 'company_name'
+        if 'conm' in static_source.columns:
+            static_df = static_source[['gvkey', 'conm', 'cluster']].copy()
+            static_df = static_df.rename(columns={'conm': 'company_name', 'cluster': 'static_cluster'})
+        elif 'company_name' in static_source.columns:
+            static_df = static_source[['gvkey', 'company_name', 'cluster']].copy()
+            static_df = static_df.rename(columns={'cluster': 'static_cluster'})
+        else:
+            static_df = static_source[['gvkey', 'cluster']].copy()
+            static_df = static_df.rename(columns={'cluster': 'static_cluster'})
+            static_df['company_name'] = static_df['gvkey']
 
         dynamic_df = kmeans['dynamic']['df'][['gvkey', 'cluster']].copy()
         dynamic_df = dynamic_df.rename(columns={'cluster': 'dynamic_cluster'})
