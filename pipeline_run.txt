@@ -1,0 +1,1607 @@
+2025-11-04 17:02:05 - __main__ - INFO - ================================================================================
+2025-11-04 17:02:05 - __main__ - INFO - NEW PIPELINE RUN STARTED
+2025-11-04 17:02:05 - __main__ - INFO - Log file: /Users/tobi/Documents/GitHub/Masterarbeit-Kennzahlenanalyse/pipeline_run.txt
+2025-11-04 17:02:05 - __main__ - INFO - ================================================================================
+2025-11-04 17:02:15 - src._02_processing.data_cleaner - INFO - 
+================================================================================
+2025-11-04 17:02:15 - src._02_processing.data_cleaner - INFO - PREPROCESSING
+2025-11-04 17:02:15 - src._02_processing.data_cleaner - INFO - ================================================================================
+
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - 
+============================================================
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - Gefundene CSV-Dateien in data/raw/germany:
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   1. mdax_proxy.csv
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   2. sdax_proxy.csv
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   3. dax40_proxy.csv
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - ============================================================
+
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - 
+--- Lade Datei: mdax_proxy.csv ---
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - Lade Daten aus: data/raw/germany/mdax_proxy.csv
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - ✓ 510 Zeilen und 473 Spalten geladen (Delimiter: ',')
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - 
+--- Lade Datei: sdax_proxy.csv ---
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - Lade Daten aus: data/raw/germany/sdax_proxy.csv
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - ✓ 683 Zeilen und 473 Spalten geladen (Delimiter: ',')
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - 
+--- Lade Datei: dax40_proxy.csv ---
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - Lade Daten aus: data/raw/germany/dax40_proxy.csv
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - ✓ 409 Zeilen und 473 Spalten geladen (Delimiter: ',')
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - 
+============================================================
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - Kombiniere 3 DataFrames...
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - ✓ Kombinierter DataFrame erstellt:
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   Gesamt Zeilen: 1602
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   Gesamt Spalten: 473
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - ============================================================
+
+2025-11-04 17:02:15 - src._02_processing.data_cleaner - INFO -   Loaded: 1602 rows
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - Starte Datenbereinigung...
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO - Bereinige numerische Spalten...
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   Konvertiere Datum: datadate
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   Konvertiere Datum: dldte
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   Konvertiere Datum: ipodate
+2025-11-04 17:02:15 - src._02_processing.data_loader - INFO -   Konvertiere Datum: fdate
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO -   Konvertiere Datum: pdate
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO - ✓ Numerische Spalten bereinigt
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO - Entferne 230 leere Spalten
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO - ✓ Bereinigung abgeschlossen:
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO -   Zeilen: 1602 → 1602 (0 entfernt)
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO -   Spalten: 473 → 243 (230 entfernt)
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO - Filtere relevante Spalten...
+2025-11-04 17:02:16 - src._02_processing.data_loader - WARNING - Fehlende Spalten: {'ni'}
+2025-11-04 17:02:16 - src._02_processing.data_loader - INFO - ✓ 42 relevante Spalten behalten
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - 
+==================================================
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - STARTE FEATURE ENGINEERING
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - ==================================================
+
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne Profitabilitätskennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ ROA berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ ROE berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ EBIT Margin berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ EBITDA Margin berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Net Profit Margin berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Operating Margin berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Gross Margin berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ ROC (Return on Capital) berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne Liquiditätskennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Current Ratio berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Quick Ratio berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Cash Ratio berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Cash Ratio Enhanced berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Working Capital Ratio berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne Verschuldungskennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Debt-to-Equity berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Total Debt-to-Equity berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Equity Ratio berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Debt Ratio berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Interest Coverage berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Net Debt to EBITDA berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Debt to Assets berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne Effizienzkennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Asset Turnover berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Revenue per Employee berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Receivables Turnover berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Days Sales Outstanding berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Capital Intensity berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Working Capital Turnover berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Inventory Turnover berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Asset Quality berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne Cashflow-Kennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Capex to Revenue berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Capex to Depreciation berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Free Cash Flow berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ FCF Margin berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Reinvestment Rate berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Cash Conversion berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne Struktur-Kennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Financial Leverage berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ R&D Intensity berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Dividend Payout Ratio berechnet (using ib)
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Retention Ratio berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne Wachstumskennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Revenue Growth berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Asset Growth berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Employee Growth berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ FCF Growth berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Capex Growth berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne dynamische Trend-Kennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Margin Trend berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Leverage Trend berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Capex Trend berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ FCF Trend berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO - Berechne dynamische Volatilitäts-Kennzahlen...
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Margin Volatility berechnet
+2025-11-04 17:02:16 - src._02_processing.feature_engineer - INFO -   ✓ Leverage Volatility berechnet
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   ✓ Cashflow Volatility berechnet
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   ✓ Margin Consistency berechnet
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   ✓ Growth Quality berechnet
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO - Bereinige berechnete Kennzahlen...
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - WARNING -   ⚠ Extreme Werte in gsubind: min=15101010, max=55105020
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO - Identifiziere Ausreißer mit Methode: iqr...
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   ebit: 181 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   ebitda: 163 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   roa: 28 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   roe: 100 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   ebit_margin: 44 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   ebitda_margin: 44 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   net_profit_margin: 70 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   operating_margin: 44 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   gross_margin: 1 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   roc: 50 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   current_ratio: 30 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   quick_ratio: 46 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   cash_ratio: 51 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   cash_ratio_enhanced: 60 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   working_capital_ratio: 1 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   debt_to_equity: 96 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   total_debt_to_equity: 95 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   equity_ratio: 3 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   debt_ratio: 3 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   interest_coverage: 121 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   net_debt_to_ebitda: 50 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   debt_to_assets: 2 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   asset_turnover: 23 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   revenue_per_employee: 59 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   receivables_turnover: 91 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   days_sales_outstanding: 15 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   capital_intensity: 59 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   working_capital_turnover: 92 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   inventory_turnover: 120 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   capex_to_revenue: 66 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   capex_to_depreciation: 30 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   fcf: 179 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   fcf_margin: 61 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   reinvestment_rate: 64 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   cash_conversion: 76 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   financial_leverage: 86 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   rnd_intensity: 15 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   dividend_payout_ratio: 18 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   retention_ratio: 18 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   revenue_growth: 63 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   asset_growth: 71 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   employee_growth: 75 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   fcf_growth: 135 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   capex_growth: 42 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   margin_trend: 55 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   leverage_trend: 203 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   capex_trend: 104 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   fcf_trend: 113 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   margin_volatility: 115 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   leverage_volatility: 177 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO -   cashflow_volatility: 31 Ausreißer gefunden
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO - 
+✅ Feature Engineering abgeschlossen!
+2025-11-04 17:02:17 - src._02_processing.feature_engineer - INFO - Finale Spaltenanzahl: 149
+2025-11-04 17:02:17 - src._02_processing.data_cleaner - INFO -   ✓ Saved: 1602 rows, 149 columns
+
+2025-11-04 17:02:17 - src._02_processing.data_cleaner - INFO - Preparing time structure...
+2025-11-04 17:02:17 - src._02_processing.data_cleaner - INFO -   Latest year: 160 companies
+2025-11-04 17:02:17 - __main__ - INFO - 
+🔬 Running COMPARISON ANALYSIS mode
+2025-11-04 17:02:17 - __main__ - INFO -    Algorithms: kmeans, hierarchical, dbscan
+2025-11-04 17:02:17 - __main__ - INFO -    Analyses: Static → Dynamic → Combined
+
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - STARTING FULL COMPARISON PIPELINE
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - Market: germany
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - Algorithms: kmeans, hierarchical, dbscan
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - RUNNING ALL ALGORITHMS
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:02:17 - src._04_comparison.comparison_pipeline - INFO - 
+--- Running KMEANS ---
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - Clustering-Algorithmus: kmeans
+2025-11-04 17:02:17 - src._01_setup.output_handler - INFO - ✓ OutputHandler: germany / kmeans_comparative (comparative mode)
+2025-11-04 17:02:17 - src._01_setup.feature_selector - INFO - ✓ FeatureSelector initialisiert mit 12 Base Features
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - ✓ ScoreCalculator initialized
+2025-11-04 17:02:17 - src._04_scoring.score_evolution - INFO - ✓ ScoreEvolutionTracker initialized
+2025-11-04 17:02:17 - src._04_scoring.score_analyzer - INFO - ✓ ScoreAnalyzer initialized
+2025-11-04 17:02:17 - src._05_visualization.plot_engine_scores - INFO - ✓ PlotEngineScores initialized (DPI=300)
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -   ✓ Scoring modules initialized
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO - ✓ ClusterNamer initialized
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -   ✓ Cluster naming initialized
+2025-11-04 17:02:17 - src._06_validation.algorithm_comparison - INFO - ✓ AlgorithmComparison initialized
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - ✓ ExternalValidation initialized
+2025-11-04 17:02:17 - src._05_visualization.plot_engine_validation - INFO - ✓ PlotEngineValidation initialized (DPI=300)
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -   ✓ Validation modules initialized
+2025-11-04 17:02:17 - src._05_visualization.plot_engine_pca - INFO - ✓ PlotEnginePCA initialized (DPI=300)
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -   ✓ PCA visualization initialized
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - 🚀 CLUSTERING ANALYSIS
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - ================================================================================
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - Market: germany
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - Algorithm: kmeans
+
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - STATIC ANALYSIS
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - ================================================================================
+
+2025-11-04 17:02:17 - src._01_setup.config_loader - INFO - Using preset 'pca_optimized' for static analysis: 13 features
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - 📊 Selected 13 features for static analysis
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - STATIC CLUSTERING
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - ================================================================================
+
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - Features: 13
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - Cluster: 5
+2025-11-04 17:02:17 - src._03_clustering.algorithms.factory - INFO - Erstelle Clusterer: KMeansClusterer
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - 
+✓ Clustering abgeschlossen
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO -   Silhouette Score: 0.116
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO -   Davies-Bouldin: 1.678
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO - 
+  Cluster-Verteilung:
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO -     0: High Performers             21 ( 13.3%)
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO -     1: Mid                         23 ( 14.6%)
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO -     2: Lower-Mid                   46 ( 29.1%)
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO -     3: Upper-Mid                   62 ( 39.2%)
+2025-11-04 17:02:17 - src._03_clustering.cluster_engine - INFO -     4: Low Performers               6 (  3.8%)
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - 
+  💯 Calculating Scores (static)...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - CALCULATING ALL SCORES
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - ================================================================================
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 13
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Companies: 160
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=40.7, Std=18.2, Min=0.0, Max=80.6
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Dimensional Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Profitability: 3 features
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 3
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Companies: 160
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=62.8, Std=18.1, Min=0.0, Max=94.2
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Liquidity: 2 features
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 2
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Companies: 160
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=73.9, Std=18.9, Min=0.0, Max=99.7
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Leverage: 2 features
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 2
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Companies: 160
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=72.8, Std=20.6, Min=0.0, Max=98.7
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Efficiency: 3 features
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 3
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Companies: 160
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=67.2, Std=21.6, Min=0.0, Max=96.4
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Cashflow: 2 features
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 2
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Companies: 160
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=77.0, Std=19.3, Min=0.0, Max=98.1
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Structure: 1 features
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 1
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Companies: 160
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=88.7, Std=15.9, Min=0.0, Max=100.0
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - WARNING -   ⚠️  Growth: No available features, skipping
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - WARNING -   ⚠️  Trends: No available features, skipping
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - WARNING -   ⚠️  Volatility: No available features, skipping
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - WARNING -   ⚠️  Quality: No available features, skipping
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Calculated 6 dimensional scores
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Relative Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Features: 13
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Relative Scores: Mean=50.0, Std=3.0, Min=41.6, Max=60.0
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+Calculating Overall Scores...
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   proximity: weight=0.40
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   profitability: weight=0.20
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   leverage: weight=0.10
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   efficiency: weight=0.15
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - WARNING -   ⚠️  growth: not found, skipping
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   ✓ Overall Scores: Mean=46.2, Std=13.6, Min=0.0, Max=74.6
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - ✓ All scores calculated successfully
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO -   Added 9 score columns
+2025-11-04 17:02:17 - src._04_scoring.score_calculator - INFO - ================================================================================
+
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      ✓ Scores calculated and saved
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      ✓ Score columns: 9
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - 
+  📛 Generating Cluster Names (static)...
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO - 
+Generating Cluster Names (style=hybrid)...
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   Clusters: 5
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   Features: 13
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO - 
+  Analyzing Feature Dominance (top 2)...
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   ✓ Identified dominant features for 5 clusters
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   Cluster 0: Mid-Tier (Balanced) - Capital Intensity: 122.9
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   Cluster 1: Mid-Tier (Mature Stable) - Current Ratio: 2.52x
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   Cluster 2: Mid-Tier (Balanced) - Days Sales Outstanding: 380.2
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   Cluster 3: Mid-Tier (Balanced) - Financial Leverage: 3.1
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO -   Cluster 4: Mid-Tier (Distressed) - Financial Leverage: 24.2
+2025-11-04 17:02:17 - src._03_clustering.cluster_naming - INFO - ✓ Generated 5 cluster names
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      ✓ Naming style: hybrid
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      Cluster 0: Mid-Tier (Balanced) - Capital Intensity: 122.9
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      Cluster 1: Mid-Tier (Mature Stable) - Current Ratio: 2.52x
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      Cluster 2: Mid-Tier (Balanced) - Days Sales Outstanding: 380.2
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      Cluster 3: Mid-Tier (Balanced) - Financial Leverage: 3.1
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      Cluster 4: Mid-Tier (Distressed) - Financial Leverage: 24.2
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO - 
+  🔍 Performing External Validation (static)...
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      ✓ Created gics_sector from gsector
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -      ✓ Created size_category from revt
+2025-11-04 17:02:17 - src._03_clustering.pipeline - INFO -        Small: < 2238, Medium: 2238-9246, Large: > 9246
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - 🔬 EXTERNAL VALIDATION REPORT
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - ================================================================================
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Cluster Column: cluster
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   External Labels: ['gics_sector', 'size_category']
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Total Companies: 160
+
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - 
+📊 Analyzing: gics_sector
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Cramér's V: 0.293 (Moderate - Orthogonal)
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Chi² p-value: 0.0006 (Significant)
+2025-11-04 17:02:17 - src._06_validation.external_validation - WARNING -   ⚠️  Chi²-Test unreliable: 77.1% of cells have expected < 5
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Contingency Table: 6 x 8
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Distribution: 8 external categories
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Outliers (<5%): 27 combinations
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - 
+📊 Analyzing: size_category
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Cramér's V: 0.265 (Moderate - Orthogonal)
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Chi² p-value: 0.0129 (Significant)
+2025-11-04 17:02:17 - src._06_validation.external_validation - WARNING -   ⚠️  Chi²-Test unreliable: 33.3% of cells have expected < 5
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Contingency Table: 6 x 3
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Distribution: 3 external categories
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Outliers (<5%): 6 combinations
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - 
+================================================================================
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - VALIDATION SUMMARY
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - ================================================================================
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Average Cramér's V: 0.279
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Strongest Association: gics_sector (V=0.293)
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO -   Weakest Association: size_category (V=0.265)
+2025-11-04 17:02:17 - src._06_validation.external_validation - INFO - ================================================================================
+
+2025-11-04 17:02:17 - src._05_visualization.plot_engine_validation - INFO -   Creating Cramér's V comparison: cramers_v_comparison.png
+2025-11-04 17:02:18 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/3_external_validation/plots/cramers_v_comparison.png
+2025-11-04 17:02:18 - src._05_visualization.plot_engine_validation - INFO -   Creating contingency heatmap: contingency_gics_sector.png
+2025-11-04 17:02:18 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/3_external_validation/plots/contingency_gics_sector.png
+2025-11-04 17:02:18 - src._05_visualization.plot_engine_validation - INFO -   Creating contingency heatmap: contingency_size_category.png
+2025-11-04 17:02:18 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/3_external_validation/plots/contingency_size_category.png
+2025-11-04 17:02:18 - src._03_clustering.pipeline - INFO -      ✓ Validation report saved
+2025-11-04 17:02:18 - src._03_clustering.pipeline - INFO -      ✓ External labels validated: ['gics_sector', 'size_category']
+2025-11-04 17:02:18 - src._03_clustering.pipeline - INFO - 
+  📊 Creating Score Visualizations (static)...
+2025-11-04 17:02:18 - src._05_visualization.plot_engine_scores - INFO -   Creating score distribution plot: score_distribution_overall.png
+2025-11-04 17:02:19 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/1_cluster_quality/plots/score_distribution_overall.png
+2025-11-04 17:02:19 - src._05_visualization.plot_engine_scores - INFO -   Creating score correlation matrix: score_correlations.png
+2025-11-04 17:02:19 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/1_cluster_quality/plots/score_correlations.png
+2025-11-04 17:02:19 - src._04_scoring.score_analyzer - INFO - 
+Analyzing Cluster Homogeneity...
+2025-11-04 17:02:19 - src._04_scoring.score_analyzer - INFO -   Score Column: overall_score
+2025-11-04 17:02:19 - src._04_scoring.score_analyzer - INFO - 
+  Homogeneity Summary:
+2025-11-04 17:02:19 - src._04_scoring.score_analyzer - INFO -     Avg Std Dev: 10.2
+2025-11-04 17:02:19 - src._04_scoring.score_analyzer - INFO -     Avg CV: 25.6%
+2025-11-04 17:02:19 - src._04_scoring.score_analyzer - INFO -     Most Homogeneous: Cluster 4
+2025-11-04 17:02:19 - src._04_scoring.score_analyzer - INFO -     Least Homogeneous: Cluster 2
+2025-11-04 17:02:19 - src._05_visualization.plot_engine_scores - INFO -   Creating homogeneity comparison: cluster_homogeneity.png
+2025-11-04 17:02:19 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/1_cluster_quality/plots/cluster_homogeneity.png
+2025-11-04 17:02:19 - src._03_clustering.pipeline - INFO -      ✓ Score visualizations created in plots/
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO - 
+  Speichere static → static/data/
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (160 Unternehmen)
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (5 Cluster)
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (static)...
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:  21 Unternehmen → 0_high_performers.csv
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:  23 Unternehmen → 1_mid.csv
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:  46 Unternehmen → 2_lower-mid.csv
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:  62 Unternehmen → 3_upper-mid.csv
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ Cluster 4:   6 Unternehmen → 4_low_performers.csv
+2025-11-04 17:02:19 - src._01_setup.output_handler - INFO -     ✓ Models: scaler, model
+2025-11-04 17:02:19 - src._05_visualization.plot_engine - INFO - Creating all plots for static analysis...
+2025-11-04 17:02:19 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:02:20 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/static/plots/cluster_distribution.png
+2025-11-04 17:02:20 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:02:20 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/static/plots/cluster_characteristics.png
+2025-11-04 17:02:20 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:02:22 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/static/plots/correlation_heatmap.png
+2025-11-04 17:02:22 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:02:22 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/static/plots/pca_clusters.png
+2025-11-04 17:02:22 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:02:23 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/static/plots/performance_dashboard.png
+2025-11-04 17:02:23 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:02:23 - src._03_clustering.pipeline - INFO - 
+  🔬 Creating PCA Plots (static)...
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO - ✓ PCATransformer initialized (n_components=0.85)
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO - 
+================================================================================
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO - PCA TRANSFORMATION
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO - ================================================================================
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO -   Original Features: 13
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO -   Samples: 160
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO -   ✓ Data standardized (mean=0, std=1)
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO -   ✓ PCA fitted
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO -     Components: 8
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO -     Explained Variance: 88.6%
+2025-11-04 17:02:23 - src._02_preprocessing.pca_transformer - INFO - ================================================================================
+
+2025-11-04 17:02:23 - src._03_clustering.pipeline - INFO -      ✓ PCA complete: 13 features → 8 components
+2025-11-04 17:02:23 - src._05_visualization.plot_engine_pca - INFO -   Creating scree plot: scree_plot.png
+2025-11-04 17:02:23 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/5_pca_analysis/plots/scree_plot.png
+2025-11-04 17:02:23 - src._05_visualization.plot_engine_pca - INFO -   Creating component loadings heatmap: component_loadings.png
+2025-11-04 17:02:24 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/5_pca_analysis/plots/component_loadings.png
+2025-11-04 17:02:24 - src._05_visualization.plot_engine_pca - INFO -   Creating biplot: biplot_pc1_pc2.png
+2025-11-04 17:02:24 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/5_pca_analysis/plots/biplot_pc1_pc2.png
+2025-11-04 17:02:24 - src._05_visualization.plot_engine_pca - INFO -   Creating cluster separation plot: cluster_separation.png
+2025-11-04 17:02:25 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/5_pca_analysis/plots/cluster_separation.png
+2025-11-04 17:02:25 - src._03_clustering.pipeline - INFO -      ✓ PCA plots saved to plots/
+2025-11-04 17:02:25 - src._03_clustering.pipeline - INFO - 
+  🔄 Creating Algorithm Congruence Plots (static)...
+2025-11-04 17:02:25 - src._03_clustering.pipeline - INFO -      Running 5 clusterings with different initializations...
+2025-11-04 17:02:25 - src._03_clustering.pipeline - INFO -      ✓ ARI Matrix calculated (mean ARI: 0.669)
+2025-11-04 17:02:25 - src._05_visualization.plot_engine_validation - INFO -   Creating ARI heatmap: ari_heatmap_robustness.png
+2025-11-04 17:02:25 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/2_algorithm_congruence/plots/ari_heatmap_robustness.png
+2025-11-04 17:02:25 - src._05_visualization.plot_engine_validation - INFO -   Creating confusion matrix: confusion_matrix.png
+2025-11-04 17:02:26 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/static/2_algorithm_congruence/plots/confusion_matrix.png
+2025-11-04 17:02:26 - src._03_clustering.pipeline - INFO -      ✓ Algorithm congruence plots saved to plots/
+2025-11-04 17:02:26 - src._03_clustering.pipeline - INFO - 
+  💼 Creating Company Insights Plots (static)...
+2025-11-04 17:02:26 - src._03_clustering.pipeline - INFO -      ✓ Cluster size distribution plot created
+2025-11-04 17:02:26 - src._03_clustering.pipeline - WARNING -      ⚠️  Feature distribution plots failed: zero-size array to reduction operation minimum which has no identity
+2025-11-04 17:02:26 - src._03_clustering.pipeline - INFO -      ✓ Top/bottom performers plot created
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      ✓ Outlier detection plot created
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      ✓ Company insights plots saved to plots/
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO - DYNAMIC ANALYSIS
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO - ================================================================================
+
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - 
+Berechne Zeitreihen-Features (min 5 Jahre)...
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -   Unternehmen mit >=5 Jahren: 152
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - ✓ Zeitreihen-Features für 152 Unternehmen berechnet
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - 
+================================================================================
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - DYNAMIC CLUSTERING
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - ================================================================================
+
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - Features: 19
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - Cluster: 5
+2025-11-04 17:02:27 - src._03_clustering.algorithms.factory - INFO - Erstelle Clusterer: KMeansClusterer
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - 
+✓ Clustering abgeschlossen
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -   Silhouette Score: 0.177
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -   Davies-Bouldin: 1.451
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO - 
+  Cluster-Verteilung:
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -     0: Growing                      7 (  4.6%)
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -     1: Growing                     57 ( 37.5%)
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -     2: Growing                     84 ( 55.3%)
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -     3: Growing                      3 (  2.0%)
+2025-11-04 17:02:27 - src._03_clustering.cluster_engine - INFO -     4: Declining (Volatile)         1 (  0.7%)
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO - 
+  💯 Calculating Scores (dynamic)...
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - 
+================================================================================
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - CALCULATING ALL SCORES
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - ================================================================================
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   Features: 19
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=30.9, Std=13.6, Min=0.0, Max=100.0
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - 
+Calculating Dimensional Scores...
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Profitability: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Liquidity: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Leverage: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Efficiency: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Cashflow: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Structure: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Growth: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   Trends: 1 features
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   Features: 1
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=89.2, Std=15.2, Min=2.5, Max=100.0
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Volatility: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  Quality: No available features, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   ✓ Calculated 1 dimensional scores
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - 
+Calculating Relative Scores...
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   Features: 19
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   ✓ Relative Scores: Mean=50.0, Std=2.6, Min=45.5, Max=59.0
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - 
+Calculating Overall Scores...
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   proximity: weight=0.40
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  profitability: not found, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  leverage: not found, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  efficiency: not found, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - WARNING -   ⚠️  growth: not found, skipping
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   ✓ Overall Scores: Mean=12.4, Std=5.4, Min=0.0, Max=40.0
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - 
+================================================================================
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - ✓ All scores calculated successfully
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO -   Added 4 score columns
+2025-11-04 17:02:27 - src._04_scoring.score_calculator - INFO - ================================================================================
+
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      ✓ Scores calculated and saved
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      ✓ Score columns: 4
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO - 
+  📛 Generating Cluster Names (dynamic)...
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO - 
+Generating Cluster Names (style=hybrid)...
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   Clusters: 5
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   Features: 19
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO - 
+  Analyzing Feature Dominance (top 2)...
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   ✓ Identified dominant features for 5 clusters
+2025-11-04 17:02:27 - src._01_setup.feature_selector - WARNING - ⚠️  Metadaten für Feature 'revt_cagr' nicht gefunden
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   Cluster 0: Mid-Tier (Balanced) - revt_cagr: 24.3
+2025-11-04 17:02:27 - src._01_setup.feature_selector - WARNING - ⚠️  Metadaten für Feature 'roe_trend_r2' nicht gefunden
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   Cluster 1: Mid-Tier (Balanced) - roe_trend_r2: 0.5%
+2025-11-04 17:02:27 - src._01_setup.feature_selector - WARNING - ⚠️  Metadaten für Feature 'ebit_margin_trend_r2' nicht gefunden
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   Cluster 2: Mid-Tier (Balanced) - ebit_margin_trend_r2: 0.2%
+2025-11-04 17:02:27 - src._01_setup.feature_selector - WARNING - ⚠️  Metadaten für Feature 'revt_trend' nicht gefunden
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   Cluster 3: Mid-Tier (Balanced) - revt_trend: 8105.0
+2025-11-04 17:02:27 - src._01_setup.feature_selector - WARNING - ⚠️  Metadaten für Feature 'debt_to_equity_volatility' nicht gefunden
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO -   Cluster 4: Mid-Tier (Balanced) - debt_to_equity_volatility: 302.59x
+2025-11-04 17:02:27 - src._03_clustering.cluster_naming - INFO - ✓ Generated 5 cluster names
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      ✓ Naming style: hybrid
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      Cluster 0: Mid-Tier (Balanced) - revt_cagr: 24.3
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      Cluster 1: Mid-Tier (Balanced) - roe_trend_r2: 0.5%
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      Cluster 2: Mid-Tier (Balanced) - ebit_margin_trend_r2: 0.2%
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      Cluster 3: Mid-Tier (Balanced) - revt_trend: 8105.0
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO -      Cluster 4: Mid-Tier (Balanced) - debt_to_equity_volatility: 302.59x
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO - 
+  🔍 Performing External Validation (dynamic)...
+2025-11-04 17:02:27 - src._03_clustering.pipeline - WARNING -      ⚠️  Cannot create size_category: no revenue/assets column
+2025-11-04 17:02:27 - src._03_clustering.pipeline - WARNING -      ⚠️  No external labels available for validation
+2025-11-04 17:02:27 - src._03_clustering.pipeline - INFO - 
+  📊 Creating Score Visualizations (dynamic)...
+2025-11-04 17:02:27 - src._05_visualization.plot_engine_scores - INFO -   Creating score distribution plot: score_distribution_overall.png
+2025-11-04 17:02:27 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/1_cluster_quality/plots/score_distribution_overall.png
+2025-11-04 17:02:27 - src._05_visualization.plot_engine_scores - INFO -   Creating score correlation matrix: score_correlations.png
+2025-11-04 17:02:28 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/1_cluster_quality/plots/score_correlations.png
+2025-11-04 17:02:28 - src._04_scoring.score_analyzer - INFO - 
+Analyzing Cluster Homogeneity...
+2025-11-04 17:02:28 - src._04_scoring.score_analyzer - INFO -   Score Column: overall_score
+2025-11-04 17:02:28 - src._04_scoring.score_analyzer - INFO - 
+  Homogeneity Summary:
+2025-11-04 17:02:28 - src._04_scoring.score_analyzer - INFO -     Avg Std Dev: 3.1
+2025-11-04 17:02:28 - src._04_scoring.score_analyzer - INFO -     Avg CV: 40.5%
+2025-11-04 17:02:28 - src._04_scoring.score_analyzer - INFO -     Most Homogeneous: Cluster 3
+2025-11-04 17:02:28 - src._04_scoring.score_analyzer - INFO -     Least Homogeneous: Cluster 2
+2025-11-04 17:02:28 - src._05_visualization.plot_engine_scores - INFO -   Creating homogeneity comparison: cluster_homogeneity.png
+2025-11-04 17:02:28 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/1_cluster_quality/plots/cluster_homogeneity.png
+2025-11-04 17:02:28 - src._03_clustering.pipeline - INFO -      ✓ Score visualizations created in plots/
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO - 
+  Speichere dynamic → dynamic/data/
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (152 Unternehmen)
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (5 Cluster)
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (dynamic)...
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:   7 Unternehmen → 0_growing.csv
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:  57 Unternehmen → 1_growing.csv
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:  84 Unternehmen → 2_growing.csv
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:   3 Unternehmen → 3_growing.csv
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ Cluster 4:   1 Unternehmen → 4_declining_volatile.csv
+2025-11-04 17:02:28 - src._01_setup.output_handler - INFO -     ✓ Models: scaler, model
+2025-11-04 17:02:28 - src._05_visualization.plot_engine - INFO - Creating all plots for dynamic analysis...
+2025-11-04 17:02:28 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:02:28 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/dynamic/plots/cluster_distribution.png
+2025-11-04 17:02:28 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:02:28 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/dynamic/plots/cluster_characteristics.png
+2025-11-04 17:02:28 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:02:29 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/dynamic/plots/correlation_heatmap.png
+2025-11-04 17:02:29 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:02:29 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/dynamic/plots/pca_clusters.png
+2025-11-04 17:02:29 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:02:30 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/dynamic/plots/performance_dashboard.png
+2025-11-04 17:02:30 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:02:30 - src._03_clustering.pipeline - INFO - 
+  🔬 Creating PCA Plots (dynamic)...
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO - ✓ PCATransformer initialized (n_components=0.85)
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO - 
+================================================================================
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO - PCA TRANSFORMATION
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO - ================================================================================
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO -   Original Features: 19
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO -   Samples: 152
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO -   ✓ Data standardized (mean=0, std=1)
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO -   ✓ PCA fitted
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO -     Components: 9
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO -     Explained Variance: 87.9%
+2025-11-04 17:02:30 - src._02_preprocessing.pca_transformer - INFO - ================================================================================
+
+2025-11-04 17:02:30 - src._03_clustering.pipeline - INFO -      ✓ PCA complete: 19 features → 9 components
+2025-11-04 17:02:30 - src._05_visualization.plot_engine_pca - INFO -   Creating scree plot: scree_plot.png
+2025-11-04 17:02:30 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/5_pca_analysis/plots/scree_plot.png
+2025-11-04 17:02:30 - src._05_visualization.plot_engine_pca - INFO -   Creating component loadings heatmap: component_loadings.png
+2025-11-04 17:02:31 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/5_pca_analysis/plots/component_loadings.png
+2025-11-04 17:02:31 - src._05_visualization.plot_engine_pca - INFO -   Creating biplot: biplot_pc1_pc2.png
+2025-11-04 17:02:31 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/5_pca_analysis/plots/biplot_pc1_pc2.png
+2025-11-04 17:02:31 - src._05_visualization.plot_engine_pca - INFO -   Creating cluster separation plot: cluster_separation.png
+2025-11-04 17:02:32 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/5_pca_analysis/plots/cluster_separation.png
+2025-11-04 17:02:32 - src._03_clustering.pipeline - INFO -      ✓ PCA plots saved to plots/
+2025-11-04 17:02:32 - src._03_clustering.pipeline - INFO - 
+  🔄 Creating Algorithm Congruence Plots (dynamic)...
+2025-11-04 17:02:32 - src._03_clustering.pipeline - INFO -      Running 5 clusterings with different initializations...
+2025-11-04 17:02:32 - src._03_clustering.pipeline - INFO -      ✓ ARI Matrix calculated (mean ARI: 0.790)
+2025-11-04 17:02:32 - src._05_visualization.plot_engine_validation - INFO -   Creating ARI heatmap: ari_heatmap_robustness.png
+2025-11-04 17:02:32 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/2_algorithm_congruence/plots/ari_heatmap_robustness.png
+2025-11-04 17:02:32 - src._05_visualization.plot_engine_validation - INFO -   Creating confusion matrix: confusion_matrix.png
+2025-11-04 17:02:33 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/dynamic/2_algorithm_congruence/plots/confusion_matrix.png
+2025-11-04 17:02:33 - src._03_clustering.pipeline - INFO -      ✓ Algorithm congruence plots saved to plots/
+2025-11-04 17:02:33 - src._03_clustering.pipeline - INFO - 
+  💼 Creating Company Insights Plots (dynamic)...
+2025-11-04 17:02:33 - src._03_clustering.pipeline - INFO -      ✓ Cluster size distribution plot created
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Feature distribution plots created
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Top/bottom performers plot created
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Outlier detection plot created
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Company insights plots saved to plots/
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO - COMBINED ANALYSIS
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO - ================================================================================
+
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -   Common companies: 152
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO - 
+================================================================================
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO - COMBINED CLUSTERING
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO - ================================================================================
+
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO - Features: 9
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO - Cluster: 6
+2025-11-04 17:02:34 - src._03_clustering.algorithms.factory - INFO - Erstelle Clusterer: KMeansClusterer
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO - 
+✓ Clustering abgeschlossen
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -   Silhouette Score: 0.148
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -   Davies-Bouldin: 1.350
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO - 
+  Cluster-Verteilung:
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -     0: Upper-Mid                   60 ( 39.7%)
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -     1: Challenged                   1 (  0.7%)
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -     2: Mid                         34 ( 22.5%)
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -     3: Lower-Mid                    5 (  3.3%)
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -     4: Top Tier                    17 ( 11.3%)
+2025-11-04 17:02:34 - src._03_clustering.cluster_engine - INFO -     5: Strong Performers           34 ( 22.5%)
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO - 
+  💯 Calculating Scores (combined)...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+================================================================================
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - CALCULATING ALL SCORES
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - ================================================================================
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Features: 9
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=52.5, Std=19.3, Min=0.0, Max=100.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Dimensional Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Profitability: 4 features
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Features: 4
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=64.5, Std=18.9, Min=0.0, Max=100.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Liquidity: 1 features
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Features: 1
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=83.9, Std=15.2, Min=0.0, Max=100.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Leverage: 1 features
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Features: 1
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=88.6, Std=14.5, Min=0.0, Max=100.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - WARNING -   ⚠️  Efficiency: No available features, skipping
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Cashflow: 1 features
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Features: 1
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=82.7, Std=17.7, Min=0.0, Max=100.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Structure: 1 features
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Proximity Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Features: 1
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Companies: 152
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Proximity Scores: Mean=89.0, Std=13.7, Min=0.0, Max=100.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - WARNING -   ⚠️  Growth: No available features, skipping
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - WARNING -   ⚠️  Trends: No available features, skipping
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - WARNING -   ⚠️  Volatility: No available features, skipping
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - WARNING -   ⚠️  Quality: No available features, skipping
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Calculated 5 dimensional scores
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Relative Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Features: 9
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Relative Scores: Mean=50.0, Std=3.7, Min=42.6, Max=66.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+Calculating Overall Scores...
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   proximity: weight=0.40
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   profitability: weight=0.20
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   leverage: weight=0.10
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - WARNING -   ⚠️  efficiency: not found, skipping
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - WARNING -   ⚠️  growth: not found, skipping
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   ✓ Overall Scores: Mean=42.8, Std=12.0, Min=0.0, Max=70.0
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - 
+================================================================================
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - ✓ All scores calculated successfully
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO -   Added 8 score columns
+2025-11-04 17:02:34 - src._04_scoring.score_calculator - INFO - ================================================================================
+
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Scores calculated and saved
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Score columns: 8
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO - 
+  📛 Generating Cluster Names (combined)...
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO - 
+Generating Cluster Names (style=hybrid)...
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Clusters: 6
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Features: 9
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO - 
+  Analyzing Feature Dominance (top 2)...
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   ✓ Identified dominant features for 6 clusters
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Cluster 0: Mid-Tier (Balanced) - Gross Margin: 30.3%
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Cluster 1: Challenged (Distressed) - ROE: -304.9%
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Cluster 2: Mid-Tier (Balanced) - Gross Margin: 21.3%
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Cluster 3: Mid-Tier (Distressed) - FCF Margin: -27.8%
+2025-11-04 17:02:34 - src._01_setup.feature_selector - WARNING - ⚠️  Metadaten für Feature 'roa_trend' nicht gefunden
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Cluster 4: Mid-Tier (Balanced) - roa_trend: 0.7%
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO -   Cluster 5: Mid-Tier (Balanced) - Current Ratio: 1.85x
+2025-11-04 17:02:34 - src._03_clustering.cluster_naming - INFO - ✓ Generated 6 cluster names
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Naming style: hybrid
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      Cluster 0: Mid-Tier (Balanced) - Gross Margin: 30.3%
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      Cluster 1: Challenged (Distressed) - ROE: -304.9%
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      Cluster 2: Mid-Tier (Balanced) - Gross Margin: 21.3%
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      Cluster 3: Mid-Tier (Distressed) - FCF Margin: -27.8%
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      Cluster 4: Mid-Tier (Balanced) - roa_trend: 0.7%
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      Cluster 5: Mid-Tier (Balanced) - Current Ratio: 1.85x
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO - 
+  🔍 Performing External Validation (combined)...
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Created gics_sector from gsector
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -      ✓ Created size_category from revt
+2025-11-04 17:02:34 - src._03_clustering.pipeline - INFO -        Small: < 2309, Medium: 2309-9704, Large: > 9704
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO - 
+================================================================================
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO - 🔬 EXTERNAL VALIDATION REPORT
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO - ================================================================================
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Cluster Column: cluster
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   External Labels: ['gics_sector', 'size_category']
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Total Companies: 152
+
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO - 
+📊 Analyzing: gics_sector
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Cramér's V: 0.281 (Moderate - Orthogonal)
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Chi² p-value: 0.0026 (Significant)
+2025-11-04 17:02:34 - src._06_validation.external_validation - WARNING -   ⚠️  Chi²-Test unreliable: 82.1% of cells have expected < 5
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Contingency Table: 7 x 8
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Distribution: 8 external categories
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Outliers (<5%): 28 combinations
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO - 
+📊 Analyzing: size_category
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Cramér's V: 0.187 (Low - Weak Association)
+2025-11-04 17:02:34 - src._06_validation.external_validation - INFO -   Chi² p-value: 0.5655 (Not Significant)
+2025-11-04 17:02:34 - src._06_validation.external_validation - WARNING -   ⚠️  Chi²-Test unreliable: 42.9% of cells have expected < 5
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO -   Contingency Table: 7 x 3
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO -   Distribution: 3 external categories
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO -   Outliers (<5%): 7 combinations
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO - 
+================================================================================
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO - VALIDATION SUMMARY
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO - ================================================================================
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO -   Average Cramér's V: 0.234
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO -   Strongest Association: gics_sector (V=0.281)
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO -   Weakest Association: size_category (V=0.187)
+2025-11-04 17:02:35 - src._06_validation.external_validation - INFO - ================================================================================
+
+2025-11-04 17:02:35 - src._05_visualization.plot_engine_validation - INFO -   Creating Cramér's V comparison: cramers_v_comparison.png
+2025-11-04 17:02:35 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/3_external_validation/plots/cramers_v_comparison.png
+2025-11-04 17:02:35 - src._05_visualization.plot_engine_validation - INFO -   Creating contingency heatmap: contingency_gics_sector.png
+2025-11-04 17:02:35 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/3_external_validation/plots/contingency_gics_sector.png
+2025-11-04 17:02:35 - src._05_visualization.plot_engine_validation - INFO -   Creating contingency heatmap: contingency_size_category.png
+2025-11-04 17:02:35 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/3_external_validation/plots/contingency_size_category.png
+2025-11-04 17:02:35 - src._03_clustering.pipeline - INFO -      ✓ Validation report saved
+2025-11-04 17:02:35 - src._03_clustering.pipeline - INFO -      ✓ External labels validated: ['gics_sector', 'size_category']
+2025-11-04 17:02:35 - src._03_clustering.pipeline - INFO - 
+  📊 Creating Score Visualizations (combined)...
+2025-11-04 17:02:35 - src._05_visualization.plot_engine_scores - INFO -   Creating score distribution plot: score_distribution_overall.png
+2025-11-04 17:02:36 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/1_cluster_quality/plots/score_distribution_overall.png
+2025-11-04 17:02:36 - src._05_visualization.plot_engine_scores - INFO -   Creating score correlation matrix: score_correlations.png
+2025-11-04 17:02:36 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/1_cluster_quality/plots/score_correlations.png
+2025-11-04 17:02:36 - src._04_scoring.score_analyzer - INFO - 
+Analyzing Cluster Homogeneity...
+2025-11-04 17:02:36 - src._04_scoring.score_analyzer - INFO -   Score Column: overall_score
+2025-11-04 17:02:36 - src._04_scoring.score_analyzer - INFO - 
+  Homogeneity Summary:
+2025-11-04 17:02:36 - src._04_scoring.score_analyzer - INFO -     Avg Std Dev: 9.2
+2025-11-04 17:02:36 - src._04_scoring.score_analyzer - INFO -     Avg CV: 26.0%
+2025-11-04 17:02:36 - src._04_scoring.score_analyzer - INFO -     Most Homogeneous: Cluster 3
+2025-11-04 17:02:36 - src._04_scoring.score_analyzer - INFO -     Least Homogeneous: Cluster 2
+2025-11-04 17:02:36 - src._05_visualization.plot_engine_scores - INFO -   Creating homogeneity comparison: cluster_homogeneity.png
+2025-11-04 17:02:36 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/1_cluster_quality/plots/cluster_homogeneity.png
+2025-11-04 17:02:36 - src._03_clustering.pipeline - INFO -      ✓ Score visualizations created in plots/
+2025-11-04 17:02:36 - src._03_clustering.pipeline - INFO - 
+  📈 Tracking Score Evolution...
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO - 
+Tracking Score Evolution...
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -   Score Column: proximity_score
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -   Companies in static: 160
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -   Companies in dynamic: 152
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -   Companies in combined: 152
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -   Common companies: 152
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO - 
+  Score Changes:
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Static → Dynamic: Mean=-10.0
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Static → Combined: Mean=11.6
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Max Improvement: 94.2
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Max Decline: -13.7
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO - 
+Classifying Evolution Patterns...
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO - 
+  Pattern Distribution:
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Mixed: 84 (55.3%)
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Improving Trend: 33 (21.7%)
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Challenged: 33 (21.7%)
+2025-11-04 17:02:36 - src._04_scoring.score_evolution - INFO -     Eroding Position: 2 (1.3%)
+2025-11-04 17:02:36 - src._05_visualization.plot_engine_scores - INFO -   Creating score evolution scatter: evolution_scatter.png
+2025-11-04 17:02:37 - src._05_visualization.plot_engine_scores - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/1_cluster_quality/scores/evolution/evolution_scatter.png
+2025-11-04 17:02:37 - src._03_clustering.pipeline - INFO -      ✓ Score evolution tracked
+2025-11-04 17:02:37 - src._03_clustering.pipeline - INFO -      ✓ Patterns: {'Mixed': 84, 'Improving Trend': 33, 'Challenged': 33, 'Eroding Position': 2}
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO - 
+  Speichere combined → combined/data/
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (152 Unternehmen)
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (6 Cluster)
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (combined)...
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:  60 Unternehmen → 0_upper-mid.csv
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:   1 Unternehmen → 1_challenged.csv
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:  34 Unternehmen → 2_mid.csv
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:   5 Unternehmen → 3_lower-mid.csv
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ Cluster 4:  17 Unternehmen → 4_top_tier.csv
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ Cluster 5:  34 Unternehmen → 5_strong_performers.csv
+2025-11-04 17:02:37 - src._01_setup.output_handler - INFO -     ✓ Models: scaler, model
+2025-11-04 17:02:37 - src._05_visualization.plot_engine - INFO - Creating all plots for combined analysis...
+2025-11-04 17:02:37 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:02:37 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/combined/plots/cluster_distribution.png
+2025-11-04 17:02:37 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:02:37 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/combined/plots/cluster_characteristics.png
+2025-11-04 17:02:37 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:02:38 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/combined/plots/correlation_heatmap.png
+2025-11-04 17:02:38 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:02:39 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/combined/plots/pca_clusters.png
+2025-11-04 17:02:39 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:02:41 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/kmeans_comparative/combined/plots/performance_dashboard.png
+2025-11-04 17:02:41 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:02:41 - src._03_clustering.pipeline - INFO - 
+  🔬 Creating PCA Plots (combined)...
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO - ✓ PCATransformer initialized (n_components=0.85)
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO - 
+================================================================================
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO - PCA TRANSFORMATION
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO - ================================================================================
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO -   Original Features: 9
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO -   Samples: 152
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO -   ✓ Data standardized (mean=0, std=1)
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO -   ✓ PCA fitted
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO -     Components: 5
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO -     Explained Variance: 86.4%
+2025-11-04 17:02:41 - src._02_preprocessing.pca_transformer - INFO - ================================================================================
+
+2025-11-04 17:02:41 - src._03_clustering.pipeline - INFO -      ✓ PCA complete: 9 features → 5 components
+2025-11-04 17:02:41 - src._05_visualization.plot_engine_pca - INFO -   Creating scree plot: scree_plot.png
+2025-11-04 17:02:42 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/5_pca_analysis/plots/scree_plot.png
+2025-11-04 17:02:42 - src._05_visualization.plot_engine_pca - INFO -   Creating component loadings heatmap: component_loadings.png
+2025-11-04 17:02:42 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/5_pca_analysis/plots/component_loadings.png
+2025-11-04 17:02:42 - src._05_visualization.plot_engine_pca - INFO -   Creating biplot: biplot_pc1_pc2.png
+2025-11-04 17:02:42 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/5_pca_analysis/plots/biplot_pc1_pc2.png
+2025-11-04 17:02:42 - src._05_visualization.plot_engine_pca - INFO -   Creating cluster separation plot: cluster_separation.png
+2025-11-04 17:02:43 - src._05_visualization.plot_engine_pca - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/5_pca_analysis/plots/cluster_separation.png
+2025-11-04 17:02:43 - src._03_clustering.pipeline - INFO -      ✓ PCA plots saved to plots/
+2025-11-04 17:02:43 - src._03_clustering.pipeline - INFO - 
+  🔄 Creating Algorithm Congruence Plots (combined)...
+2025-11-04 17:02:43 - src._03_clustering.pipeline - INFO -      Running 5 clusterings with different initializations...
+2025-11-04 17:02:44 - src._03_clustering.pipeline - INFO -      ✓ ARI Matrix calculated (mean ARI: 0.440)
+2025-11-04 17:02:44 - src._05_visualization.plot_engine_validation - INFO -   Creating ARI heatmap: ari_heatmap_robustness.png
+2025-11-04 17:02:44 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/2_algorithm_congruence/plots/ari_heatmap_robustness.png
+2025-11-04 17:02:44 - src._05_visualization.plot_engine_validation - INFO -   Creating confusion matrix: confusion_matrix.png
+2025-11-04 17:02:45 - src._05_visualization.plot_engine_validation - INFO -     ✓ Saved: output/germany/02_algorithms/kmeans_comparative/combined/2_algorithm_congruence/plots/confusion_matrix.png
+2025-11-04 17:02:45 - src._03_clustering.pipeline - INFO -      ✓ Algorithm congruence plots saved to plots/
+2025-11-04 17:02:45 - src._03_clustering.pipeline - INFO - 
+  💼 Creating Company Insights Plots (combined)...
+2025-11-04 17:02:46 - src._03_clustering.pipeline - INFO -      ✓ Cluster size distribution plot created
+2025-11-04 17:02:46 - src._03_clustering.pipeline - WARNING -      ⚠️  Feature distribution plots failed: zero-size array to reduction operation minimum which has no identity
+2025-11-04 17:02:46 - src._03_clustering.pipeline - INFO -      ✓ Top/bottom performers plot created
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO -      ✓ Outlier detection plot created
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO -      ✓ Company insights plots saved to plots/
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - 
+================================================================================
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - CROSS ANALYSIS - Cluster Migration
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - ================================================================================
+
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - Migration Patterns:
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -   ⭐ Improving         78 ( 51.3%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -   ✓ Consistent        38 ( 25.0%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -   ⚠ Volatile          26 ( 17.1%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -   ⚠ Declining          8 (  5.3%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -   ? Unknown            2 (  1.3%)
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ temporal/cluster_migrations.csv
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO - 
+  📄 Generating Summary Report...
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO -      ✓ Summary report saved: output/germany/99_summary/analysis_report.md
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO - PIPELINE COMPLETED
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO - ================================================================================
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO - 
+  ⏱️  Duration: 30.1s
+2025-11-04 17:02:47 - src._03_clustering.pipeline - INFO -   📁 Output: output/germany/02_algorithms/kmeans_comparative
+
+2025-11-04 17:02:47 - src._04_comparison.comparison_pipeline - INFO - 
+--- Running HIERARCHICAL ---
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - Clustering-Algorithmus: hierarchical
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO - ✓ OutputHandler: germany / hierarchical (hierarchical mode)
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - 🚀 HIERARCHICAL CLUSTERING ANALYSIS
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - Market: germany
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - Algorithm: hierarchical
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - Mode: Hierarchical (Static-Labels bleiben konsistent)
+
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - STATIC ANALYSIS (Master-Clustering)
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+
+2025-11-04 17:02:47 - src._01_setup.config_loader - INFO - Using preset 'pca_optimized' for static analysis: 13 features
+2025-11-04 17:02:47 - src._03_clustering.hierarchical_pipeline - INFO - 📊 Selected 13 features for static analysis
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - 
+================================================================================
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - STATIC CLUSTERING
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - ================================================================================
+
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - Features: 13
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - Cluster: 5
+2025-11-04 17:02:47 - src._03_clustering.algorithms.factory - INFO - Erstelle Clusterer: HierarchicalClusterer
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - 
+✓ Clustering abgeschlossen
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -   Silhouette Score: 0.153
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -   Davies-Bouldin: 1.437
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO - 
+  Cluster-Verteilung:
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -     0: Mid                        103 ( 65.2%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -     1: Low Performers               6 (  3.8%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -     2: High Performers             25 ( 15.8%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -     3: Upper-Mid                   21 ( 13.3%)
+2025-11-04 17:02:47 - src._03_clustering.cluster_engine - INFO -     4: Lower-Mid                    3 (  1.9%)
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO - 
+  Speichere static → master_clustering/data/
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (160 Unternehmen)
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (5 Cluster)
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (static)...
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ Cluster 0: 103 Unternehmen → 0_mid.csv
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:   6 Unternehmen → 1_low_performers.csv
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:  25 Unternehmen → 2_high_performers.csv
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:  21 Unternehmen → 3_upper-mid.csv
+2025-11-04 17:02:47 - src._01_setup.output_handler - INFO -     ✓ Cluster 4:   3 Unternehmen → 4_lower-mid.csv
+2025-11-04 17:02:47 - src._05_visualization.plot_engine - INFO - Creating all plots for static analysis...
+2025-11-04 17:02:47 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:02:48 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/master_clustering/plots/cluster_distribution.png
+2025-11-04 17:02:48 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:02:48 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/master_clustering/plots/cluster_characteristics.png
+2025-11-04 17:02:48 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:02:50 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/master_clustering/plots/correlation_heatmap.png
+2025-11-04 17:02:50 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:02:50 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/master_clustering/plots/pca_clusters.png
+2025-11-04 17:02:50 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:02:51 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/master_clustering/plots/performance_dashboard.png
+2025-11-04 17:02:51 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:02:51 - src._03_clustering.hierarchical_pipeline - INFO - 
+✓ Master-Labels gespeichert: 5 Cluster
+2025-11-04 17:02:51 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:51 - src._03_clustering.hierarchical_pipeline - INFO - DYNAMIC ANALYSIS (Anreicherung, keine neuen Labels)
+2025-11-04 17:02:51 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+
+2025-11-04 17:02:51 - src._03_clustering.cluster_engine - INFO - 
+Berechne Zeitreihen-Features (min 5 Jahre)...
+2025-11-04 17:02:51 - src._03_clustering.cluster_engine - INFO -   Unternehmen mit >=5 Jahren: 152
+2025-11-04 17:02:52 - src._03_clustering.cluster_engine - INFO - ✓ Zeitreihen-Features für 152 Unternehmen berechnet
+2025-11-04 17:02:52 - src._03_clustering.hierarchical_pipeline - INFO - 
+→ Verwende Master-Labels von Static Analysis
+2025-11-04 17:02:52 - src._03_clustering.hierarchical_pipeline - INFO - → 152 Unternehmen haben Static + Dynamic Daten
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO - 
+  Speichere dynamic → dynamic_enrichment/data/
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (152 Unternehmen)
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (6 Cluster)
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (dynamic)...
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:  97 Unternehmen → 0_mid.csv
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:   6 Unternehmen → 1_low_performers.csv
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:  23 Unternehmen → 2_high_performers.csv
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:  21 Unternehmen → 3_upper-mid.csv
+2025-11-04 17:02:52 - src._01_setup.output_handler - INFO -     ✓ Cluster 4:   3 Unternehmen → 4_lower-mid.csv
+2025-11-04 17:02:52 - src._05_visualization.plot_engine - INFO - Creating all plots for dynamic analysis...
+2025-11-04 17:02:52 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:02:52 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/dynamic_enrichment/plots/cluster_distribution.png
+2025-11-04 17:02:52 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:02:52 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/dynamic_enrichment/plots/cluster_characteristics.png
+2025-11-04 17:02:52 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:02:53 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/dynamic_enrichment/plots/correlation_heatmap.png
+2025-11-04 17:02:53 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:02:54 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/dynamic_enrichment/plots/pca_clusters.png
+2025-11-04 17:02:54 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:02:55 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/dynamic_enrichment/plots/performance_dashboard.png
+2025-11-04 17:02:55 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:02:55 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:55 - src._03_clustering.hierarchical_pipeline - INFO - COMBINED ANALYSIS (Combined-Score aus Static + Dynamic)
+2025-11-04 17:02:55 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+
+2025-11-04 17:02:55 - src._03_clustering.hierarchical_pipeline - INFO -   Common companies: 152
+2025-11-04 17:02:55 - src._03_clustering.hierarchical_pipeline - INFO -   Weights: Static 0.4, Dynamic 0.6
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO - 
+  Speichere combined → combined_scores/data/
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (152 Unternehmen)
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (6 Cluster)
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (combined)...
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:  97 Unternehmen → 0_mid.csv
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:   6 Unternehmen → 1_low_performers.csv
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:  23 Unternehmen → 2_high_performers.csv
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:  21 Unternehmen → 3_upper-mid.csv
+2025-11-04 17:02:55 - src._01_setup.output_handler - INFO -     ✓ Cluster 4:   3 Unternehmen → 4_lower-mid.csv
+2025-11-04 17:02:55 - src._05_visualization.plot_engine - INFO - Creating all plots for combined analysis...
+2025-11-04 17:02:55 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:02:55 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/combined_scores/plots/cluster_distribution.png
+2025-11-04 17:02:55 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:02:55 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/combined_scores/plots/cluster_characteristics.png
+2025-11-04 17:02:55 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:02:56 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/combined_scores/plots/correlation_heatmap.png
+2025-11-04 17:02:56 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:02:56 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/combined_scores/plots/pca_clusters.png
+2025-11-04 17:02:56 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:02:57 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/hierarchical/combined_scores/plots/performance_dashboard.png
+2025-11-04 17:02:57 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:02:57 - src._01_setup.output_handler - INFO -     ✓ temporal/score_evolution.csv
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - 
+📊 Score Statistics per Cluster:
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster -1 (nan):
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 0.0, Dynamic: 0.0, Combined: 0.0
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 0 (Mid):
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 41.8, Dynamic: 25.0, Combined: 31.7
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 1 (Low Performers):
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 12.7, Dynamic: 24.0, Combined: 19.4
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 2 (High Performers):
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 32.1, Dynamic: 19.7, Combined: 24.6
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 3 (Upper-Mid):
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 44.1, Dynamic: 33.7, Combined: 37.8
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 4 (Lower-Mid):
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 68.9, Dynamic: 43.9, Combined: 53.9
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - HIERARCHICAL PIPELINE COMPLETED
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - 
+  ⏱️  Duration: 10.3s
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO -   📁 Output: output/germany/02_algorithms/hierarchical
+
+2025-11-04 17:02:57 - src._04_comparison.comparison_pipeline - INFO - 
+--- Running DBSCAN ---
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - Clustering-Algorithmus: dbscan
+2025-11-04 17:02:57 - src._01_setup.output_handler - INFO - ✓ OutputHandler: germany / dbscan (hierarchical mode)
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - 🚀 HIERARCHICAL CLUSTERING ANALYSIS
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - Market: germany
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - Algorithm: dbscan
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - Mode: Hierarchical (Static-Labels bleiben konsistent)
+
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - STATIC ANALYSIS (Master-Clustering)
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+
+2025-11-04 17:02:57 - src._01_setup.config_loader - INFO - Using preset 'pca_optimized' for static analysis: 13 features
+2025-11-04 17:02:57 - src._03_clustering.hierarchical_pipeline - INFO - 📊 Selected 13 features for static analysis
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - 
+================================================================================
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - STATIC CLUSTERING
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - ================================================================================
+
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - Features: 13
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - Cluster: 5
+2025-11-04 17:02:57 - src._03_clustering.algorithms.factory - INFO - Erstelle Clusterer: DBSCANClusterer
+2025-11-04 17:02:57 - src._03_clustering.algorithms.dbscan - INFO - DBSCAN initialisiert: eps=1.5, min_samples=3
+2025-11-04 17:02:57 - src._03_clustering.algorithms.dbscan - INFO -   DBSCAN: 4 Cluster, 78 Noise (49.4%)
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - 
+✓ Clustering abgeschlossen
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO -   Silhouette Score: 0.028
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO -   Davies-Bouldin: 1.128
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO - 
+  Cluster-Verteilung:
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO -     0: Upper-Mid                   70 ( 87.5%)
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO -     1: Mid                          4 (  5.0%)
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO -     2: Low Performers               3 (  3.8%)
+2025-11-04 17:02:57 - src._03_clustering.cluster_engine - INFO -     3: High Performers              3 (  3.8%)
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO - 
+  Speichere static → master_clustering/data/
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (160 Unternehmen)
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (5 Cluster)
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (static)...
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:  70 Unternehmen → 0_upper-mid.csv
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:   4 Unternehmen → 1_mid.csv
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:   3 Unternehmen → 2_low_performers.csv
+2025-11-04 17:02:58 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:   3 Unternehmen → 3_high_performers.csv
+2025-11-04 17:02:58 - src._05_visualization.plot_engine - INFO - Creating all plots for static analysis...
+2025-11-04 17:02:58 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:02:58 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/master_clustering/plots/cluster_distribution.png
+2025-11-04 17:02:58 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:02:59 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/master_clustering/plots/cluster_characteristics.png
+2025-11-04 17:02:59 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:03:00 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/master_clustering/plots/correlation_heatmap.png
+2025-11-04 17:03:00 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:03:01 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/master_clustering/plots/pca_clusters.png
+2025-11-04 17:03:01 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:03:02 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/master_clustering/plots/performance_dashboard.png
+2025-11-04 17:03:02 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:03:02 - src._03_clustering.hierarchical_pipeline - INFO - 
+✓ Master-Labels gespeichert: 5 Cluster
+2025-11-04 17:03:02 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:02 - src._03_clustering.hierarchical_pipeline - INFO - DYNAMIC ANALYSIS (Anreicherung, keine neuen Labels)
+2025-11-04 17:03:02 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+
+2025-11-04 17:03:02 - src._03_clustering.cluster_engine - INFO - 
+Berechne Zeitreihen-Features (min 5 Jahre)...
+2025-11-04 17:03:02 - src._03_clustering.cluster_engine - INFO -   Unternehmen mit >=5 Jahren: 152
+2025-11-04 17:03:02 - src._03_clustering.cluster_engine - INFO - ✓ Zeitreihen-Features für 152 Unternehmen berechnet
+2025-11-04 17:03:02 - src._03_clustering.hierarchical_pipeline - INFO - 
+→ Verwende Master-Labels von Static Analysis
+2025-11-04 17:03:02 - src._03_clustering.hierarchical_pipeline - INFO - → 152 Unternehmen haben Static + Dynamic Daten
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO - 
+  Speichere dynamic → dynamic_enrichment/data/
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (152 Unternehmen)
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (5 Cluster)
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (dynamic)...
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:  66 Unternehmen → 0_upper-mid.csv
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:   4 Unternehmen → 1_mid.csv
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:   3 Unternehmen → 2_low_performers.csv
+2025-11-04 17:03:02 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:   3 Unternehmen → 3_high_performers.csv
+2025-11-04 17:03:02 - src._05_visualization.plot_engine - INFO - Creating all plots for dynamic analysis...
+2025-11-04 17:03:02 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:03:02 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/dynamic_enrichment/plots/cluster_distribution.png
+2025-11-04 17:03:02 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:03:03 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/dynamic_enrichment/plots/cluster_characteristics.png
+2025-11-04 17:03:03 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:03:04 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/dynamic_enrichment/plots/correlation_heatmap.png
+2025-11-04 17:03:04 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:03:05 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/dynamic_enrichment/plots/pca_clusters.png
+2025-11-04 17:03:05 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:03:06 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/dynamic_enrichment/plots/performance_dashboard.png
+2025-11-04 17:03:06 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:03:06 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:06 - src._03_clustering.hierarchical_pipeline - INFO - COMBINED ANALYSIS (Combined-Score aus Static + Dynamic)
+2025-11-04 17:03:06 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+
+2025-11-04 17:03:06 - src._03_clustering.hierarchical_pipeline - INFO -   Common companies: 152
+2025-11-04 17:03:06 - src._03_clustering.hierarchical_pipeline - INFO -   Weights: Static 0.4, Dynamic 0.6
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO - 
+  Speichere combined → combined_scores/data/
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO -     ✓ assignments.csv (152 Unternehmen)
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO -     ✓ profiles.csv (5 Cluster)
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO -     ✓ metrics.json
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO - 
+  Erstelle Cluster-Listen (combined)...
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO -     ✓ Cluster 0:  66 Unternehmen → 0_upper-mid.csv
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO -     ✓ Cluster 1:   4 Unternehmen → 1_mid.csv
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO -     ✓ Cluster 2:   3 Unternehmen → 2_low_performers.csv
+2025-11-04 17:03:06 - src._01_setup.output_handler - INFO -     ✓ Cluster 3:   3 Unternehmen → 3_high_performers.csv
+2025-11-04 17:03:06 - src._05_visualization.plot_engine - INFO - Creating all plots for combined analysis...
+2025-11-04 17:03:06 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Verteilung Plot...
+2025-11-04 17:03:06 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/combined_scores/plots/cluster_distribution.png
+2025-11-04 17:03:06 - src._05_visualization.cluster_visualizer - INFO - Erstelle Cluster-Charakteristika Plot...
+2025-11-04 17:03:06 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/combined_scores/plots/cluster_characteristics.png
+2025-11-04 17:03:06 - src._05_visualization.cluster_visualizer - INFO - Erstelle Korrelations-Heatmap...
+2025-11-04 17:03:07 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/combined_scores/plots/correlation_heatmap.png
+2025-11-04 17:03:07 - src._05_visualization.cluster_visualizer - INFO - Erstelle PCA Cluster Plot...
+2025-11-04 17:03:08 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/combined_scores/plots/pca_clusters.png
+2025-11-04 17:03:08 - src._05_visualization.cluster_visualizer - INFO - Erstelle Performance Dashboard...
+2025-11-04 17:03:09 - src._05_visualization.cluster_visualizer - INFO - ✓ Gespeichert: output/germany/02_algorithms/dbscan/combined_scores/plots/performance_dashboard.png
+2025-11-04 17:03:09 - src._05_visualization.plot_engine - INFO - ✓ Created 5 cluster visualization plots
+2025-11-04 17:03:09 - src._01_setup.output_handler - INFO -     ✓ temporal/score_evolution.csv
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO - 
+📊 Score Statistics per Cluster:
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster -1 (Lower-Mid):
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 0.0, Dynamic: 0.0, Combined: 0.0
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 0 (Upper-Mid):
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 51.3, Dynamic: 27.1, Combined: 36.8
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 1 (Mid):
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 68.1, Dynamic: 42.1, Combined: 52.5
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 2 (Low Performers):
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 72.9, Dynamic: 42.1, Combined: 54.4
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -   Cluster 3 (High Performers):
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -     Static: 74.8, Dynamic: 36.2, Combined: 51.7
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO - HIERARCHICAL PIPELINE COMPLETED
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO - ================================================================================
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO - 
+  ⏱️  Duration: 11.5s
+2025-11-04 17:03:09 - src._03_clustering.hierarchical_pipeline - INFO -   📁 Output: output/germany/02_algorithms/dbscan
+
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - 
+✓ All algorithms completed
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - COMPARISON ANALYSES
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - 1. GICS COMPARISON
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:03:09 - src._04_comparison.comparison_pipeline - INFO - 
+--- GICS Comparison: STATIC ---
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - GICS COMPARISON - STATIC
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - ================================================================================
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - 
+  Vergleiche kmeans mit gsector...
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Cramér's V: 0.305
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Adjusted Rand Index: 0.050
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Chi²: 58.95 (p=0.0006)
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     → moderate Korrelation
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - 
+  Vergleiche hierarchical mit gsector...
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Cramér's V: 0.355
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Adjusted Rand Index: 0.106
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Chi²: 79.57 (p=0.0000)
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     → moderate Korrelation
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - 
+  Vergleiche dbscan mit gsector...
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Cramér's V: 0.300
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Adjusted Rand Index: -0.027
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     ✓ Chi²: 21.66 (p=0.4193)
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO -     → moderate Korrelation
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - === GICS COMPARISON SUMMARY (static) ===
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - ================================================================================
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - kmeans          vs GICS: Cramér's V = 0.305 (moderate Korrelation)
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - hierarchical    vs GICS: Cramér's V = 0.355 (moderate Korrelation)
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - dbscan          vs GICS: Cramér's V = 0.300 (moderate Korrelation)
+2025-11-04 17:03:09 - src._04_comparison.gics_analyzer - INFO - 
+→ Beste GICS-Unabhängigkeit: dbscan (V=0.300)
+2025-11-04 17:03:11 - src._04_comparison.comparison_pipeline - INFO - 
+--- GICS Comparison: DYNAMIC ---
+2025-11-04 17:03:11 - src._04_comparison.comparison_pipeline - WARNING -   ⚠ Keine Daten für dynamic
+2025-11-04 17:03:11 - src._04_comparison.comparison_pipeline - INFO - 
+--- GICS Comparison: COMBINED ---
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - GICS COMPARISON - COMBINED
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - ================================================================================
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - 
+  Vergleiche kmeans mit gsector...
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO -     ✓ Cramér's V: 0.298
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO -     ✓ Adjusted Rand Index: 0.032
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO -     ✓ Chi²: 67.20 (p=0.0009)
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO -     → schwache Korrelation ✓
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - === GICS COMPARISON SUMMARY (combined) ===
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - ================================================================================
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - kmeans          vs GICS: Cramér's V = 0.298 (schwache Korrelation ✓)
+2025-11-04 17:03:11 - src._04_comparison.gics_analyzer - INFO - 
+→ Beste GICS-Unabhängigkeit: kmeans (V=0.298)
+2025-11-04 17:03:11 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:11 - src._04_comparison.comparison_pipeline - INFO - 2. ALGORITHM COMPARISON
+2025-11-04 17:03:11 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:03:11 - src._04_comparison.comparison_pipeline - INFO - 
+--- Algorithm Comparison: STATIC ---
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - ALGORITHM COMPARISON - METRICS
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - ================================================================================
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - 
+Metrics Comparison:
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - Algorithm       Clusters   Silhouette   Davies-B     Noise%    
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - --------------------------------------------------------------------------------
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - kmeans          5          0.116        1.678        -         
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - hierarchical    5          0.153        1.437        -         
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - dbscan          4          0.028        1.128        -         
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - === BEST PERFORMERS ===
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - ================================================================================
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - Best Silhouette Score: hierarchical (0.153)
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - Best Davies-Bouldin:   dbscan (1.128)
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - Most Clusters Found:   kmeans (5 clusters)
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO - 
+  Berechne Cluster-Überlappung...
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO -     kmeans <-> hierarchical: ARI = 0.385
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO -     kmeans <-> dbscan: ARI = 0.079
+2025-11-04 17:03:11 - src._04_comparison.algorithm_analyzer - INFO -     hierarchical <-> dbscan: ARI = 0.126
+2025-11-04 17:03:12 - src._04_comparison.comparison_pipeline - INFO - 
+--- Algorithm Comparison: DYNAMIC ---
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - ALGORITHM COMPARISON - METRICS
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - ================================================================================
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - 
+Metrics Comparison:
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - Algorithm       Clusters   Silhouette   Davies-B     Noise%    
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - --------------------------------------------------------------------------------
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - kmeans          5          0.177        1.451        -         
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - hierarchical    6          nan          nan          -         
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - dbscan          5          nan          nan          -         
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - === BEST PERFORMERS ===
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - ================================================================================
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - Best Silhouette Score: kmeans (0.177)
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - Best Davies-Bouldin:   kmeans (1.451)
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - Most Clusters Found:   hierarchical (6 clusters)
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO - 
+  Berechne Cluster-Überlappung...
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO -     kmeans <-> hierarchical: ARI = 0.044
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO -     kmeans <-> dbscan: ARI = -0.017
+2025-11-04 17:03:12 - src._04_comparison.algorithm_analyzer - INFO -     hierarchical <-> dbscan: ARI = 0.118
+2025-11-04 17:03:13 - src._04_comparison.comparison_pipeline - INFO - 
+--- Algorithm Comparison: COMBINED ---
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - ALGORITHM COMPARISON - METRICS
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - ================================================================================
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - 
+Metrics Comparison:
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - Algorithm       Clusters   Silhouette   Davies-B     Noise%    
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - --------------------------------------------------------------------------------
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - kmeans          6          0.148        1.350        -         
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - hierarchical    6          nan          nan          -         
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - dbscan          5          nan          nan          -         
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - === BEST PERFORMERS ===
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - ================================================================================
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - Best Silhouette Score: kmeans (0.148)
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - Best Davies-Bouldin:   kmeans (1.350)
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - Most Clusters Found:   kmeans (6 clusters)
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO - 
+  Berechne Cluster-Überlappung...
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO -     kmeans <-> hierarchical: ARI = 0.267
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO -     kmeans <-> dbscan: ARI = -0.006
+2025-11-04 17:03:13 - src._04_comparison.algorithm_analyzer - INFO -     hierarchical <-> dbscan: ARI = 0.118
+2025-11-04 17:03:14 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:14 - src._04_comparison.comparison_pipeline - INFO - 3. FEATURE IMPORTANCE
+2025-11-04 17:03:14 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:03:14 - src._04_comparison.comparison_pipeline - INFO - 
+--- Feature Importance: STATIC ---
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - FEATURE IMPORTANCE - STATIC
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - ================================================================================
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - 
+  Berechne Feature Importance für kmeans...
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -     Top 5 Features:
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       ebit_margin                    0.1497
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       current_ratio                  0.1237
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       fcf_margin                     0.1028
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       gross_margin                   0.0908
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       working_capital_ratio          0.0754
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - 
+  Berechne Feature Importance für hierarchical...
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -     Top 5 Features:
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       current_ratio                  0.1488
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       fcf_margin                     0.0992
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       ebit_margin                    0.0961
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       working_capital_ratio          0.0847
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       gross_margin                   0.0800
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - 
+  Berechne Feature Importance für dbscan...
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -     Top 5 Features:
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       current_ratio                  0.1485
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       working_capital_ratio          0.1013
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       financial_leverage             0.0967
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       equity_ratio                   0.0966
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -       roe                            0.0705
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - === FEATURE IMPORTANCE SUMMARY ===
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - ================================================================================
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO - 
+Top 5 Features across all algorithms:
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -   current_ratio                  (avg importance: 0.1403)
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -   ebit_margin                    (avg importance: 0.0995)
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -   fcf_margin                     (avg importance: 0.0905)
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -   working_capital_ratio          (avg importance: 0.0871)
+2025-11-04 17:03:14 - src._04_comparison.feature_analyzer - INFO -   gross_margin                   (avg importance: 0.0802)
+2025-11-04 17:03:16 - src._04_comparison.comparison_pipeline - INFO - 
+--- Feature Importance: COMBINED ---
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - FEATURE IMPORTANCE - COMBINED
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - ================================================================================
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - 
+  Berechne Feature Importance für kmeans...
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -     Top 5 Features:
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       gross_margin                   0.1473
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       ebit_margin                    0.1289
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       ebit_margin                    0.1167
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       roa                            0.0997
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       fcf_margin                     0.0863
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - 
+  Berechne Feature Importance für hierarchical...
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -     Top 5 Features:
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       current_ratio                  0.1999
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       financial_leverage             0.1211
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       fcf_margin                     0.1016
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       ebit_margin                    0.0972
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       ebit_margin                    0.0821
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - 
+  Berechne Feature Importance für dbscan...
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -     Top 5 Features:
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       current_ratio                  0.1910
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       financial_leverage             0.1514
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       fcf_margin                     0.0912
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       roe                            0.0818
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -       debt_to_equity                 0.0779
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - === FEATURE IMPORTANCE SUMMARY ===
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - ================================================================================
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO - 
+Top 5 Features across all algorithms:
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -   current_ratio                  (avg importance: 0.1520)
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -   financial_leverage             (avg importance: 0.1110)
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -   fcf_margin                     (avg importance: 0.0930)
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -   ebit_margin                    (avg importance: 0.0875)
+2025-11-04 17:03:16 - src._04_comparison.feature_analyzer - INFO -   gross_margin                   (avg importance: 0.0865)
+2025-11-04 17:03:18 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:18 - src._04_comparison.comparison_pipeline - INFO - 4. TEMPORAL STABILITY
+2025-11-04 17:03:18 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - TEMPORAL STABILITY ANALYSIS
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - ================================================================================
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+--- KMEANS ---
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+  Berechne Migration Matrix...
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Total year-to-year observations: 1424
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Stayed in same cluster: 1424 (100.0%)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Changed cluster: 0 (0.0%)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+  Berechne Cluster-Stabilität...
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+    Cluster Stability Ranking:
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 0: 100.0% stability (53.0/53.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 1: 100.0% stability (529.0/529.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 2: 100.0% stability (805.0/805.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 3: 100.0% stability (30.0/30.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 4: 100.0% stability (7.0/7.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+--- HIERARCHICAL ---
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+  Berechne Migration Matrix...
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Total year-to-year observations: 1407
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Stayed in same cluster: 1407 (100.0%)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Changed cluster: 0 (0.0%)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+  Berechne Cluster-Stabilität...
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+    Cluster Stability Ranking:
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 0: 100.0% stability (907.0/907.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 1: 100.0% stability (59.0/59.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 2: 100.0% stability (203.0/203.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 3: 100.0% stability (208.0/208.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 4: 100.0% stability (30.0/30.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+--- DBSCAN ---
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+  Berechne Migration Matrix...
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Total year-to-year observations: 739
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Stayed in same cluster: 739 (100.0%)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -     Changed cluster: 0 (0.0%)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+  Berechne Cluster-Stabilität...
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+    Cluster Stability Ranking:
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 0: 100.0% stability (647.0/647.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 1: 100.0% stability (40.0/40.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 2: 100.0% stability (30.0/30.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -       Cluster 3: 100.0% stability (22.0/22.0)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+================================================================================
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - === TEMPORAL STABILITY SUMMARY ===
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - ================================================================================
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+KMEANS:
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -   Average cluster consistency: 100.0%
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -   Most stable cluster: Cluster 0 (100.0% stay)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+HIERARCHICAL:
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -   Average cluster consistency: 100.0%
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -   Most stable cluster: Cluster 0 (100.0% stay)
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO - 
+DBSCAN:
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -   Average cluster consistency: 100.0%
+2025-11-04 17:03:18 - src._04_comparison.temporal_analyzer - INFO -   Most stable cluster: Cluster 0 (100.0% stay)
+2025-11-04 17:03:20 - src._04_comparison.comparison_pipeline - INFO - 
+✓ All comparisons completed
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - 
+================================================================================
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - CREATING COMPANY-LEVEL CLUSTER ANALYSIS
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - ================================================================================
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - → Basis: 160 Unternehmen
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   ✓ K-Means static: 160 Zuordnungen
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   ✓ K-Means dynamic: 152 Zuordnungen
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   ✓ K-Means combined: 152 Zuordnungen
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   ✓ Hierarchical: 160 Zuordnungen
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   ✓ DBSCAN: 80 Zuordnungen, 80 Noise
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - 
+→ Berechne Übereinstimmungs-Metriken...
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   → 152 Unternehmen haben Daten von allen Algorithmen
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - 
+→ Speichere Excel...
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - ✓ Excel erstellt: output/germany/company_cluster_analysis.xlsx
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   → 160 Unternehmen
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO -   → 5 Algorithmus-Spalten
+2025-11-04 17:03:20 - src._04_comparison.company_analysis - INFO - ================================================================================
+2025-11-04 17:03:20 - src._04_comparison.comparison_pipeline - INFO - 
+================================================================================
+2025-11-04 17:03:20 - src._04_comparison.comparison_pipeline - INFO - COMPARISON PIPELINE COMPLETED
+2025-11-04 17:03:20 - src._04_comparison.comparison_pipeline - INFO - ================================================================================
+2025-11-04 17:03:20 - src._04_comparison.comparison_pipeline - INFO -   ⏱️  Duration: 63.6s
+2025-11-04 17:03:20 - src._04_comparison.comparison_pipeline - INFO -   📁 Output: output/germany/03_comparisons
+2025-11-04 17:03:20 - src._04_comparison.comparison_pipeline - INFO -   📊 Excel: output/germany/company_cluster_analysis.xlsx
+2025-11-04 17:03:20 - __main__ - INFO - 
+================================================================================
+2025-11-04 17:03:20 - __main__ - INFO - ✓ Comparison Analysis complete
+2025-11-04 17:03:20 - __main__ - INFO - ✓ Algorithms compared: kmeans, hierarchical, dbscan
+2025-11-04 17:03:20 - __main__ - INFO - ✓ Duration: 63.6s
+2025-11-04 17:03:20 - __main__ - INFO - 
+📂 Output: output/germany/comparisons/
+2025-11-04 17:03:20 - __main__ - INFO -    ├── 01_gics_comparison/
+2025-11-04 17:03:20 - __main__ - INFO -    ├── 02_algorithm_comparison/
+2025-11-04 17:03:20 - __main__ - INFO -    ├── 03_feature_importance/
+2025-11-04 17:03:20 - __main__ - INFO -    └── 04_temporal_stability/
+2025-11-04 17:03:20 - __main__ - INFO - ================================================================================

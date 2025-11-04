@@ -25,7 +25,11 @@
       "Bash(rm:*)",
       "Bash(for dir in output/germany/02_algorithms/kmeans_comparative/static/{1_cluster_quality,2_algorithm_congruence,3_external_validation,4_company_insights,5_pca_analysis})",
       "Bash(for level in 1_cluster_quality 2_algorithm_congruence 3_external_validation 4_company_insights 5_pca_analysis)",
-      "Bash(do echo \"=== $level ===\")"
+      "Bash(do echo \"=== $level ===\")",
+      "Bash(if [ -f pipeline_run.txt ])",
+      "Bash(then echo \"=== INHALT VON pipeline_run.txt ===\")",
+      "Bash(else echo \"Datei wird beim nächsten ''python main.py'' Run erstellt\")",
+      "Bash(fi)"
     ],
     "deny": [],
     "ask": []

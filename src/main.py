@@ -36,28 +36,44 @@ from src._04_comparison.comparison_pipeline import ComparisonPipeline
 # Import config module functions
 config = config_loader
 
-# Logging setup
+# Logging setup - FORCE CONFIGURATION
 # Get project root (parent of src/)
 PROJECT_ROOT = Path(__file__).parent.parent
-LOG_FILE = PROJECT_ROOT / 'pipeline_run.log'
+LOG_FILE = PROJECT_ROOT / 'pipeline_run.txt'
 
-# Configure logging with both file and console handlers
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        # File handler - overwrites on each run (mode='w')
-        logging.FileHandler(LOG_FILE, mode='w', encoding='utf-8'),
-        # Console handler - still shows in terminal
-        logging.StreamHandler()
-    ]
+# Remove all existing handlers from root logger (force clean slate)
+root_logger = logging.getLogger()
+for handler in root_logger.handlers[:]:
+    root_logger.removeHandler(handler)
+
+# Create formatters
+formatter = logging.Formatter(
+    fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
 )
+
+# File handler - overwrites on each run (mode='w')
+file_handler = logging.FileHandler(LOG_FILE, mode='w', encoding='utf-8')
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(formatter)
+
+# Console handler - still shows in terminal
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(formatter)
+
+# Add handlers to root logger
+root_logger.addHandler(file_handler)
+root_logger.addHandler(console_handler)
+root_logger.setLevel(logging.INFO)
+
+# Get logger for this module
 logger = logging.getLogger(__name__)
 
 # Log the start of a new run
 logger.info("=" * 80)
 logger.info("NEW PIPELINE RUN STARTED")
-logger.info(f"Log file: {LOG_FILE}")
+logger.info(f"Log file: {LOG_FILE.absolute()}")
 logger.info("=" * 80)
 
 
