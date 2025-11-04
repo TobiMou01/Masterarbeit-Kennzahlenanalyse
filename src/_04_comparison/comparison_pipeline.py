@@ -526,7 +526,7 @@ class ComparisonPipeline:
         self.run_comparisons()
 
         # 3. Create company-level Excel analysis
-        excel_path = create_company_cluster_excel(
+        excel_paths = create_company_cluster_excel(
             algorithm_results=self.algorithm_results,
             market=self.market,
             output_dir=f'output/{self.market}'
@@ -540,12 +540,14 @@ class ComparisonPipeline:
         logger.info(f"{'='*80}")
         logger.info(f"  ⏱️  Duration: {duration:.1f}s")
         logger.info(f"  📁 Output: {self.base_dir}")
-        if excel_path:
-            logger.info(f"  📊 Excel: {excel_path}")
+        if excel_paths:
+            logger.info(f"  📊 Excel files created: {len(excel_paths)}")
+            for excel_path in excel_paths:
+                logger.info(f"     • {excel_path}")
 
         return {
             'algorithm_results': self.algorithm_results,
             'comparison_results': self.comparison_results,
-            'excel_path': excel_path,
+            'excel_paths': excel_paths,  # Changed from excel_path to excel_paths (list)
             'duration': duration
         }
