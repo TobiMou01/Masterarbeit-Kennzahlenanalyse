@@ -37,12 +37,28 @@ from src._04_comparison.comparison_pipeline import ComparisonPipeline
 config = config_loader
 
 # Logging setup
+# Get project root (parent of src/)
+PROJECT_ROOT = Path(__file__).parent.parent
+LOG_FILE = PROJECT_ROOT / 'pipeline_run.log'
+
+# Configure logging with both file and console handlers
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]
+    handlers=[
+        # File handler - overwrites on each run (mode='w')
+        logging.FileHandler(LOG_FILE, mode='w', encoding='utf-8'),
+        # Console handler - still shows in terminal
+        logging.StreamHandler()
+    ]
 )
 logger = logging.getLogger(__name__)
+
+# Log the start of a new run
+logger.info("=" * 80)
+logger.info("NEW PIPELINE RUN STARTED")
+logger.info(f"Log file: {LOG_FILE}")
+logger.info("=" * 80)
 
 
 def parse_args():

@@ -22,7 +22,10 @@
       "Bash(cp:*)",
       "Bash(echo:*)",
       "Bash(du:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(for dir in output/germany/02_algorithms/kmeans_comparative/static/{1_cluster_quality,2_algorithm_congruence,3_external_validation,4_company_insights,5_pca_analysis})",
+      "Bash(for level in 1_cluster_quality 2_algorithm_congruence 3_external_validation 4_company_insights 5_pca_analysis)",
+      "Bash(do echo \"=== $level ===\")"
     ],
     "deny": [],
     "ask": []

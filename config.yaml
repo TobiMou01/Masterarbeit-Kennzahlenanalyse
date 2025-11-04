@@ -290,7 +290,7 @@ interactive:
       enable_naming: true
       naming_method: hybrid
       enable_validation: true
-      enable_pca: false  # Optional, da rechenintensiv
+      enable_pca: true  # Optional, da rechenintensiv
 
     comparison_mode:
       name: "Comparison Mode"

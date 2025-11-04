@@ -1,4 +1,2 @@
 ,algorithm,cramers_v,interpretation
-0,kmeans,0.3054017661089346,moderate Korrelation
-1,hierarchical,0.35482589190358854,moderate Korrelation
-2,dbscan,0.3004191541334456,moderate Korrelation
+0,kmeans,0.29834183954504656,schwache Korrelation ✓

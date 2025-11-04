@@ -1,0 +1,3 @@
+external_column,cramers_v,interpretation,chi2_statistic,p_value,significant
+gics_sector,0.28116251734514086,Moderate - Orthogonal,0,0.0026361512504719615,True
+size_category,0.18652878176125895,Low - Weak Association,0,0.5654686129326623,False
