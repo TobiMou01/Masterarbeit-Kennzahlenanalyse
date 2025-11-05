@@ -17,6 +17,7 @@ from src._04_comparison.algorithm_analyzer import AlgorithmComparison
 from src._04_comparison.feature_analyzer import FeatureImportance
 from src._04_comparison.temporal_analyzer import TemporalStability
 from src._04_comparison.company_analysis import create_company_cluster_excel
+from src._04_comparison.consolidated_excel_writer import create_consolidated_comparison_excel
 # Note: ComparisonHandler logic integrated into this class
 
 logger = logging.getLogger(__name__)
@@ -525,12 +526,24 @@ class ComparisonPipeline:
         # 2. Run all comparisons
         self.run_comparisons()
 
-        # 3. Create company-level Excel analysis
+        # 3. Create company-level Excel analysis (individual files per algorithm)
         excel_paths = create_company_cluster_excel(
             algorithm_results=self.algorithm_results,
             market=self.market,
             output_dir=f'output/{self.market}'
         )
+
+        # 4. Create consolidated Excel with all algorithms (NEW!)
+        logger.info(f"\n→ Creating consolidated algorithm comparison Excel...")
+        consolidated_excel_path = create_consolidated_comparison_excel(
+            algorithm_results=self.algorithm_results,
+            market=self.market,
+            output_dir=str(self.base_dir)
+        )
+
+        if consolidated_excel_path:
+            excel_paths.append(consolidated_excel_path)
+            logger.info(f"  ✓ Consolidated Excel created: {consolidated_excel_path}")
 
         # Duration
         duration = (datetime.now() - start_time).total_seconds()
