@@ -15,6 +15,10 @@ from src._01_setup.output_handler import OutputHandler
 from src._05_visualization.plot_engine import create_all_plots
 from src._01_setup import config_loader as config
 
+# New imports for comprehensive scoring
+from src._04_scoring import ScoreCalculator
+from src._01_setup.feature_selector import FeatureSelector
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,6 +50,11 @@ class HierarchicalPipeline:
         # Initialize engine and output handler
         self.engine = ClusteringEngine(config_dict=config_dict)
         self.output = OutputHandler(market=market, algorithm=self.algorithm)
+
+        # Initialize scoring modules
+        self.feature_selector = FeatureSelector()
+        self.score_calculator = ScoreCalculator(feature_selector=self.feature_selector)
+        logger.info("  ✓ Scoring modules initialized")
 
         # Results storage
         self.results = {}
@@ -124,8 +133,14 @@ class HierarchicalPipeline:
         self.master_labels = df_result['cluster'].copy()
         self.master_cluster_names = df_result['cluster_name'].copy()
 
-        # Calculate Static Scores (distance to cluster center)
-        df_result['static_score'] = self._calculate_scores(df_result, features, profiles)
+        # Calculate Comprehensive Scores
+        df_result = self._apply_scoring(
+            df=df_result,
+            features=features,
+            cluster_column='cluster',
+            profiles=profiles,
+            analysis_type='static'
+        )
 
         # Save results
         self._save_analysis_results(df_result, profiles, metrics, features, 'static', sort_by='roa')
@@ -171,26 +186,39 @@ class HierarchicalPipeline:
 
         logger.info(f"→ {len(common_gvkeys)} Unternehmen haben Static + Dynamic Daten")
 
-        # Add master labels AND static_score
+        # Add master labels
         df_result = df_result[df_result['gvkey'].isin(common_gvkeys)].copy()
         label_map = static_df.set_index('gvkey')['cluster'].to_dict()
         name_map = static_df.set_index('gvkey')['cluster_name'].to_dict()
-        static_score_map = static_df.set_index('gvkey')['static_score'].to_dict()
 
         df_result['cluster'] = df_result['gvkey'].map(label_map)
         df_result['cluster_name'] = df_result['gvkey'].map(name_map)
-        df_result['static_score'] = df_result['gvkey'].map(static_score_map)
+
+        # Copy all scores from static analysis
+        score_columns = [col for col in static_df.columns if 'score' in col.lower()]
+        for score_col in score_columns:
+            score_map = static_df.set_index('gvkey')[score_col].to_dict()
+            df_result[f'static_{score_col}'] = df_result['gvkey'].map(score_map)
 
         # Calculate DYNAMIC Scores (based on dynamic features)
         # Berechne Profile der Dynamic-Features pro Cluster
         dynamic_profiles = df_result.groupby('cluster')[features].mean()
-        df_result['dynamic_score'] = self._calculate_scores(df_result, features, dynamic_profiles)
+
+        # Apply comprehensive dynamic scoring
+        df_result = self._apply_scoring(
+            df=df_result,
+            features=features,
+            cluster_column='cluster',
+            profiles=dynamic_profiles,
+            analysis_type='dynamic'
+        )
 
         # Enriched cluster names
         df_result = self._enrich_cluster_names_with_trends(df_result, features)
 
         # Save results
-        profiles = df_result.groupby('cluster')[features + ['static_score', 'dynamic_score']].mean()
+        all_score_cols = [col for col in df_result.columns if 'score' in col.lower()]
+        profiles = df_result.groupby('cluster')[features + all_score_cols].mean()
         metrics = {
             'n_companies': len(df_result),
             'n_clusters': len(df_result['cluster'].unique()),
@@ -234,44 +262,52 @@ class HierarchicalPipeline:
 
         logger.info(f"  Weights: Static {weights['static']}, Dynamic {weights['dynamic']}")
 
-        # Merge datasets
-        df_merged = df_static[df_static['gvkey'].isin(common_gvkeys)][
-            ['gvkey', 'conm', 'cluster', 'cluster_name', 'static_score']
-        ].merge(
-            df_dynamic[df_dynamic['gvkey'].isin(common_gvkeys)][
-                ['gvkey', 'dynamic_score']
-            ],
-            on='gvkey'
-        )
-
-        # Calculate COMBINED SCORE
-        df_merged['combined_score'] = (
-            weights['static'] * df_merged['static_score'] +
-            weights['dynamic'] * df_merged['dynamic_score']
-        )
-
-        # Enhanced cluster names based on combined score
-        df_result = self._enhance_cluster_names_with_scores(df_merged)
-
-        # Profiles
-        all_features = []
+        # Get features for combined analysis
         features_static = config.get_value(self.config, 'combined_analysis', 'features_static',
                                           default=['roa', 'roe', 'ebit_margin'])
         features_dynamic = config.get_value(self.config, 'combined_analysis', 'features_dynamic',
                                            default=['roa_trend', 'roa_volatility', 'roe_trend', 'revt_cagr'])
 
-        # Get actual feature values
+        # Merge datasets with cluster assignments and feature values
+        merge_cols_static = ['gvkey', 'conm', 'cluster', 'cluster_name']
+        merge_cols_static.extend([f for f in features_static if f in df_static.columns])
+
+        merge_cols_dynamic = ['gvkey']
+        merge_cols_dynamic.extend([f for f in features_dynamic if f in df_dynamic.columns])
+
+        df_merged = df_static[df_static['gvkey'].isin(common_gvkeys)][merge_cols_static].merge(
+            df_dynamic[df_dynamic['gvkey'].isin(common_gvkeys)][merge_cols_dynamic],
+            on='gvkey'
+        )
+
+        # Collect all available features for combined analysis
+        all_features = []
         for feat in features_static:
-            if feat in df_static.columns:
-                df_result[feat] = df_result['gvkey'].map(df_static.set_index('gvkey')[feat])
+            if feat in df_merged.columns:
                 all_features.append(feat)
-
         for feat in features_dynamic:
-            if feat in df_dynamic.columns:
-                df_result[feat] = df_result['gvkey'].map(df_dynamic.set_index('gvkey')[feat])
+            if feat in df_merged.columns:
                 all_features.append(feat)
 
-        profiles = df_result.groupby('cluster')[all_features + ['static_score', 'dynamic_score', 'combined_score']].mean()
+        # Calculate profiles for combined features
+        combined_profiles = df_merged.groupby('cluster')[all_features].mean()
+
+        # Apply comprehensive combined scoring
+        df_result = self._apply_scoring(
+            df=df_merged,
+            features=all_features,
+            cluster_column='cluster',
+            profiles=combined_profiles,
+            analysis_type='combined'
+        )
+
+        # Enhanced cluster names based on combined score
+        if 'overall_score' in df_result.columns:
+            df_result = self._enhance_cluster_names_with_scores(df_result)
+
+        # Update profiles with all scores
+        all_score_cols = [col for col in df_result.columns if 'score' in col.lower()]
+        profiles = df_result.groupby('cluster')[all_features + all_score_cols].mean()
 
         # Metrics
         n_clusters = len(df_result['cluster'].unique())
@@ -309,50 +345,46 @@ class HierarchicalPipeline:
         # Print score statistics
         self._print_score_statistics(df_result)
 
-    def _calculate_scores(self, df: pd.DataFrame, features: list, profiles: pd.DataFrame) -> pd.Series:
+    def _apply_scoring(
+        self,
+        df: pd.DataFrame,
+        features: list,
+        cluster_column: str,
+        profiles: pd.DataFrame,
+        analysis_type: str
+    ) -> pd.DataFrame:
         """
-        Calculate scores (0-100) based on distance to cluster center
+        Apply comprehensive scoring to clustered data using ScoreCalculator
+
+        Calculates:
+        - Proximity Score (distance to cluster center)
+        - Dimensional Scores (per category: Profitability, Leverage, Efficiency, Growth)
+        - Relative Score (Z-score vs cluster average)
+        - Overall Score (weighted combination)
 
         Args:
             df: DataFrame with cluster assignments
-            features: List of features to consider
-            profiles: Cluster profiles (centers)
+            features: List of features used for clustering
+            cluster_column: Name of cluster column (default: 'cluster')
+            profiles: Cluster profiles DataFrame
+            analysis_type: 'static', 'dynamic', or 'combined'
 
         Returns:
-            Series with scores (0-100)
+            DataFrame with added score columns
         """
-        from sklearn.preprocessing import StandardScaler
-        from sklearn.metrics.pairwise import euclidean_distances
+        logger.info(f"\n  💯 Calculating Comprehensive Scores ({analysis_type})...")
 
-        # Prepare features
-        X = df[features].fillna(0).values
-        scaler = StandardScaler()
-        X_scaled = scaler.fit_transform(X)
+        # Calculate all scores using ScoreCalculator
+        df_scored = self.score_calculator.calculate_all_scores(
+            df=df,
+            features=features,
+            cluster_column=cluster_column,
+            profiles=profiles
+        )
 
-        # Calculate distance to own cluster center
-        scores = []
-        for i, (idx, row) in enumerate(df.iterrows()):
-            cluster_id = row['cluster']
-            if cluster_id == -1:  # Noise in DBSCAN
-                scores.append(0)
-                continue
+        logger.info(f"  ✓ Comprehensive scores calculated for {len(df_scored)} companies")
 
-            # Point coordinates (use enumerate index, not dataframe index)
-            point = X_scaled[i].reshape(1, -1)
-
-            # Cluster center
-            center_features = profiles.loc[cluster_id, features].fillna(0).values
-            center_scaled = scaler.transform(center_features.reshape(1, -1))
-
-            # Euclidean distance
-            dist = euclidean_distances(point, center_scaled)[0][0]
-
-            # Convert distance to score (closer = higher score)
-            # Use exponential decay: score = 100 * exp(-dist)
-            score = 100 * np.exp(-dist / 2)  # Divide by 2 to make scores more spread out
-            scores.append(min(100, max(0, score)))  # Clamp to [0, 100]
-
-        return pd.Series(scores, index=df.index)
+        return df_scored
 
     def _enrich_cluster_names_with_trends(self, df: pd.DataFrame, features: list) -> pd.DataFrame:
         """Add trend information to cluster names"""
@@ -386,9 +418,10 @@ class HierarchicalPipeline:
         return df
 
     def _enhance_cluster_names_with_scores(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Enhance cluster names based on combined scores"""
-        # Calculate average combined score per cluster
-        cluster_scores = df.groupby('cluster')['combined_score'].mean()
+        """Enhance cluster names based on overall scores"""
+        # Calculate average overall score per cluster
+        score_col = 'overall_score' if 'overall_score' in df.columns else 'proximity_score'
+        cluster_scores = df.groupby('cluster')[score_col].mean()
 
         enhanced_names = {}
         for cluster_id in df['cluster'].unique():
@@ -418,13 +451,19 @@ class HierarchicalPipeline:
         """Analyze how scores evolved from Static → Dynamic → Combined"""
         migration_data = []
 
+        # Use overall_score if available, else proximity_score
+        static_score_col = 'overall_score' if 'overall_score' in df_static.columns else 'proximity_score'
+        dynamic_score_col = 'overall_score' if 'overall_score' in df_dynamic.columns else 'proximity_score'
+        combined_score_col = 'overall_score' if 'overall_score' in df_combined.columns else 'proximity_score'
+
         for _, row in df_combined.iterrows():
             gvkey = row['gvkey']
             cluster = row['cluster']
 
-            static_score = row['static_score']
-            dynamic_score = row['dynamic_score']
-            combined_score = row['combined_score']
+            # Get scores from static and dynamic dataframes
+            static_score = df_static[df_static['gvkey'] == gvkey][static_score_col].iloc[0] if len(df_static[df_static['gvkey'] == gvkey]) > 0 else 0
+            dynamic_score = df_dynamic[df_dynamic['gvkey'] == gvkey][dynamic_score_col].iloc[0] if len(df_dynamic[df_dynamic['gvkey'] == gvkey]) > 0 else 0
+            combined_score = row[combined_score_col] if combined_score_col in row else 0
 
             # Classify pattern
             if combined_score >= 70:
@@ -453,16 +492,25 @@ class HierarchicalPipeline:
     def _print_score_statistics(self, df: pd.DataFrame):
         """Print score statistics per cluster"""
         logger.info("\n📊 Score Statistics per Cluster:")
+
+        # Find available score columns
+        score_cols = [col for col in df.columns if 'score' in col.lower() and col != 'cluster']
+
         for cluster_id in sorted(df['cluster'].unique()):
             cluster_df = df[df['cluster'] == cluster_id]
-            name = cluster_df['cluster_name'].iloc[0]
-
-            avg_static = cluster_df['static_score'].mean()
-            avg_dynamic = cluster_df['dynamic_score'].mean()
-            avg_combined = cluster_df['combined_score'].mean()
+            name = cluster_df['cluster_name'].iloc[0] if 'cluster_name' in cluster_df.columns else f"Cluster {cluster_id}"
 
             logger.info(f"  Cluster {cluster_id} ({name}):")
-            logger.info(f"    Static: {avg_static:.1f}, Dynamic: {avg_dynamic:.1f}, Combined: {avg_combined:.1f}")
+
+            # Print available scores
+            score_info = []
+            for score_col in score_cols:
+                if score_col in cluster_df.columns:
+                    avg_score = cluster_df[score_col].mean()
+                    score_info.append(f"{score_col}: {avg_score:.1f}")
+
+            if score_info:
+                logger.info(f"    {', '.join(score_info)}")
 
     def _save_analysis_results(self, df: pd.DataFrame, profiles: pd.DataFrame,
                                metrics: Dict, features: list, analysis_type: str, sort_by: str):
