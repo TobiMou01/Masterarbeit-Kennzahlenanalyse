@@ -18,6 +18,7 @@ from src._04_comparison.feature_analyzer import FeatureImportance
 from src._04_comparison.temporal_analyzer import TemporalStability
 from src._04_comparison.company_analysis import create_company_cluster_excel
 from src._04_comparison.consolidated_excel_writer import create_consolidated_comparison_excel
+from src._04_comparison.research_excel_writer import create_research_excel
 # Note: ComparisonHandler logic integrated into this class
 
 logger = logging.getLogger(__name__)
@@ -544,6 +545,18 @@ class ComparisonPipeline:
         if consolidated_excel_path:
             excel_paths.append(consolidated_excel_path)
             logger.info(f"  ✓ Consolidated Excel created: {consolidated_excel_path}")
+
+        # 5. Create research-oriented Excel file (Section 0 + 1)
+        logger.info(f"\n→ Creating research analysis Excel (Sections 0-1)...")
+        research_excel_path = create_research_excel(
+            algorithm_results=self.algorithm_results,
+            output_dir=Path(f'output/{self.market}/03_comparisons'),
+            market=self.market
+        )
+
+        if research_excel_path:
+            excel_paths.append(research_excel_path)
+            logger.info(f"  ✓ Research Excel created: {research_excel_path}")
 
         # Duration
         duration = (datetime.now() - start_time).total_seconds()
