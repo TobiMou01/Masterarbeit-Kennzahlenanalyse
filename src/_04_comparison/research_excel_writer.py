@@ -764,29 +764,42 @@ class ResearchExcelWriter:
                 # Create contingency table
                 contingency = pd.crosstab(algo_df['cluster'], algo_df['gsector'])
 
-                # Calculate Cramér's V
-                cramers_v = self.gics_analyzer.cramers_v(contingency.values)
+                # Validate contingency table
+                if contingency.size == 0 or contingency.shape[0] < 2 or contingency.shape[1] < 2:
+                    logger.warning(f"  ⚠ {algo}: Contingency table too small (shape={contingency.shape}), skipping")
+                    continue
 
-                # Chi-Square test
-                chi2, p_value, dof, _ = chi2_contingency(contingency.values)
+                # Check if table has any data
+                if contingency.sum().sum() == 0:
+                    logger.warning(f"  ⚠ {algo}: Contingency table is empty, skipping")
+                    continue
 
-                # Interpretation
-                if cramers_v < 0.2:
-                    interpretation = "Very weak correlation (good!)"
-                elif cramers_v < 0.3:
-                    interpretation = "Weak correlation"
-                elif cramers_v < 0.5:
-                    interpretation = "Moderate correlation"
-                else:
-                    interpretation = "Strong correlation"
+                try:
+                    # Calculate Cramér's V
+                    cramers_v = self.gics_analyzer.cramers_v(contingency.values)
 
-                cramers_results.append({
-                    'Algorithm': algo,
-                    'Cramers_V': cramers_v,
-                    'Chi2': chi2,
-                    'p_value': p_value,
-                    'Interpretation': interpretation
-                })
+                    # Chi-Square test
+                    chi2, p_value, dof, _ = chi2_contingency(contingency.values)
+
+                    # Interpretation
+                    if cramers_v < 0.2:
+                        interpretation = "Very weak correlation (good!)"
+                    elif cramers_v < 0.3:
+                        interpretation = "Weak correlation"
+                    elif cramers_v < 0.5:
+                        interpretation = "Moderate correlation"
+                    else:
+                        interpretation = "Strong correlation"
+
+                    cramers_results.append({
+                        'Algorithm': algo,
+                        'Cramers_V': cramers_v,
+                        'Chi2': chi2,
+                        'p_value': p_value,
+                        'Interpretation': interpretation
+                    })
+                except Exception as e:
+                    logger.warning(f"  ⚠ {algo}: Could not calculate Cramér's V: {e}")
 
         if cramers_results:
             cramers_df = pd.DataFrame(cramers_results)
@@ -841,8 +854,12 @@ class ResearchExcelWriter:
                     merged = merged[(merged['cluster_1'] >= 0) & (merged['cluster_2'] >= 0)]
 
                     if len(merged) > 0:
-                        ari = adjusted_rand_score(merged['cluster_1'], merged['cluster_2'])
-                        ari_row[algo2] = ari
+                        try:
+                            ari = adjusted_rand_score(merged['cluster_1'], merged['cluster_2'])
+                            ari_row[algo2] = ari
+                        except Exception as e:
+                            logger.warning(f"  ⚠ Could not calculate ARI for {algo1} vs {algo2}: {e}")
+                            ari_row[algo2] = 0.0
                     else:
                         ari_row[algo2] = 0.0
 
@@ -906,13 +923,18 @@ class ResearchExcelWriter:
                 algo_df = algo_df[algo_df['cluster'] >= 0]
 
                 if len(algo_df) > 0:
+                    # Create contingency table
+                    contingency = pd.crosstab(algo_df['cluster'], algo_df['gsector'])
+
+                    # Skip if contingency is too small
+                    if contingency.size == 0 or contingency.shape[0] < 1 or contingency.shape[1] < 1:
+                        logger.warning(f"  ⚠ {algo}: Contingency table too small for 2b, skipping")
+                        continue
+
                     ws[f'A{row}'] = f"{algo.upper()}"
                     ws[f'A{row}'].font = Font(bold=True)
                     ws[f'A{row}'].fill = PatternFill(start_color=self.colors[algo], fill_type='solid')
                     row += 1
-
-                    # Create contingency table
-                    contingency = pd.crosstab(algo_df['cluster'], algo_df['gsector'])
 
                     # Write table
                     start_row = row
@@ -927,14 +949,15 @@ class ResearchExcelWriter:
                         row += 1
 
                     # Add heatmap-style conditional formatting
-                    max_col = contingency.shape[1] + 1
-                    ws.conditional_formatting.add(
-                        f'B{start_row+1}:{chr(64+max_col)}{row-1}',
-                        ColorScaleRule(
-                            start_type='num', start_value=0, start_color='FFFFFF',
-                            end_type='max', end_color='4472C4'
+                    if row > start_row + 1:  # Only if we have data rows
+                        max_col = contingency.shape[1] + 1
+                        ws.conditional_formatting.add(
+                            f'B{start_row+1}:{chr(64+max_col)}{row-1}',
+                            ColorScaleRule(
+                                start_type='num', start_value=0, start_color='FFFFFF',
+                                end_type='max', end_color='4472C4'
+                            )
                         )
-                    )
 
                     row += 1
 
