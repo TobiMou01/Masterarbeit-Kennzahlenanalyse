@@ -21,6 +21,7 @@ from openpyxl.styles import PatternFill, Font, Alignment, Border, Side
 from openpyxl.utils.dataframe import dataframe_to_rows
 from openpyxl.chart import BarChart, ScatterChart, Reference, LineChart
 from openpyxl.chart.marker import Marker
+from openpyxl.chart.series import Series
 from openpyxl.formatting.rule import ColorScaleRule
 from openpyxl.drawing.image import Image as XLImage
 from PIL import Image
@@ -1004,21 +1005,26 @@ class ResearchExcelWriter:
                     row += 1
 
                 # Create scatter chart
-                chart = ScatterChart()
-                chart.title = f"{algo1.upper()} vs {algo2.upper()} Overall Score"
-                chart.x_axis.title = f"{algo1.upper()} Score"
-                chart.y_axis.title = f"{algo2.upper()} Score"
+                try:
+                    chart = ScatterChart()
+                    chart.title = f"{algo1.upper()} vs {algo2.upper()} Overall Score"
+                    chart.x_axis.title = f"{algo1.upper()} Score"
+                    chart.y_axis.title = f"{algo2.upper()} Score"
+                    chart.style = 13
 
-                xvalues = Reference(ws, min_col=2, min_row=start_row, max_row=row-1)
-                yvalues = Reference(ws, min_col=3, min_row=start_row, max_row=row-1)
+                    xvalues = Reference(ws, min_col=2, min_row=start_row, max_row=row-1)
+                    yvalues = Reference(ws, min_col=3, min_row=start_row, max_row=row-1)
 
-                series = chart.series.append(xvalues)
-                series.yvalues = yvalues
+                    # Create series properly
+                    series = Series(values=yvalues, xvalues=xvalues, title="")
+                    chart.series.append(series)
 
-                chart.height = 15
-                chart.width = 20
+                    chart.height = 15
+                    chart.width = 20
 
-                ws.add_chart(chart, f'H3')
+                    ws.add_chart(chart, f'H3')
+                except Exception as e:
+                    logger.warning(f"  ⚠ Could not create scatter chart: {e}")
 
         logger.info("  ✓ Section 2b sheet created")
 
