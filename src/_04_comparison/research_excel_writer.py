@@ -446,6 +446,15 @@ class ResearchExcelWriter:
 
         row = 3
 
+        # Interpretation box - Kernfrage 1
+        row = self._add_interpretation_box(ws, row, "KERNFRAGE 1: HOMOGENITÄT", [
+            "Bilden kennzahlenbasierte Cluster intern homogenere Gruppen als traditionelle Klassifikationen?",
+            "Silhouette Score > 0.5 zeigt gute interne Homogenität (Werte zwischen -1 und 1)",
+            "Niedrige Intra-Cluster-Varianz = Unternehmen im Cluster sind sich ähnlich",
+            "Vergleich: Cluster-Homogenität vs. GICS-Branchen-Homogenität (siehe Section 2)"
+        ], merge_cols=10)
+        row += 1
+
         # ===== CLUSTER STATISTICS PER ALGORITHM =====
         for algo in df['algorithm'].unique():
             algo_df = df[df['algorithm'] == algo].copy()
@@ -462,16 +471,27 @@ class ResearchExcelWriter:
                 cluster_df = algo_df[algo_df['cluster'] == cluster_id]
 
                 stats = {
-                    'Cluster': cluster_id,
-                    'Size': len(cluster_df),
-                    'Size %': f"{len(cluster_df)/len(algo_df)*100:.1f}%"
+                    'Cluster ID': cluster_id,
+                    'Size (N)': len(cluster_df),
+                    'Size (%)': f"{len(cluster_df)/len(algo_df)*100:.1f}%"
                 }
 
-                # Add score statistics
+                # Add score statistics with improved headers
+                score_name_mapping = {
+                    'overall_score': 'Overall Score',
+                    'proximity_score': 'Proximity Score',
+                    'profitability_score': 'Profitability Score',
+                    'leverage_score': 'Leverage Score',
+                    'efficiency_score': 'Efficiency Score',
+                    'growth_score': 'Growth Score',
+                    'relative_score': 'Relative Score'
+                }
+
                 for score_col in self.score_columns:
                     if score_col in cluster_df.columns:
-                        stats[f'{score_col}_mean'] = cluster_df[score_col].mean()
-                        stats[f'{score_col}_std'] = cluster_df[score_col].std()
+                        display_name = score_name_mapping.get(score_col, score_col)
+                        stats[f'{display_name} (Ø)'] = cluster_df[score_col].mean()
+                        stats[f'{display_name} (σ)'] = cluster_df[score_col].std()
 
                 cluster_stats.append(stats)
 
@@ -548,6 +568,31 @@ class ResearchExcelWriter:
 
         row += 20
 
+        # ===== EMBED PERFORMANCE DASHBOARD PNGs =====
+        ws[f'A{row}'] = "ALGORITHM PERFORMANCE VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Try to embed performance dashboard for each algorithm
+        embedded_count = 0
+        chart_col_offset = 0
+        for algo in df['algorithm'].unique():
+            png_path = Path(f'output/{self.market}/02_algorithms/{algo}/combined_scores/plots/performance_dashboard.png')
+            if png_path.exists():
+                # Calculate column position (stagger horizontally)
+                col_letter = chr(65 + chart_col_offset)  # A, J, S (every 9 columns)
+                self._embed_png(ws, png_path, f'{col_letter}{row}', scale=0.35)
+                embedded_count += 1
+                chart_col_offset += 9
+
+        if embedded_count == 0:
+            ws[f'A{row}'] = "Performance dashboard plots not available"
+            ws[f'A{row}'].font = Font(italic=True, size=9)
+            row += 1
+        else:
+            row += 25  # Space for embedded images
+
         # ===== SCORE DISTRIBUTION TABLE =====
         if 'overall_score' in df.columns:
             ws[f'A{row}'] = "OVERALL SCORE DISTRIBUTION"
@@ -602,16 +647,16 @@ class ResearchExcelWriter:
             sector_df = df[df['gsector'] == sector]
 
             metrics = {
-                'Sector': sector,
-                'N_Companies': len(sector_df),
-                'N_Clusters': sector_df['cluster'].nunique(),
-                'Outlier_Rate_%': f"{sector_df['is_outlier'].mean()*100:.1f}" if 'is_outlier' in sector_df.columns else 'N/A'
+                'GICS Sector': sector,
+                'Companies (N)': len(sector_df),
+                'Clusters (N)': sector_df['cluster'].nunique(),
+                'Outlier Rate (%)': f"{sector_df['is_outlier'].mean()*100:.1f}" if 'is_outlier' in sector_df.columns else 'N/A'
             }
 
             # Add score statistics
             if 'overall_score' in sector_df.columns:
-                metrics['Avg_Score'] = sector_df['overall_score'].mean()
-                metrics['Score_StdDev'] = sector_df['overall_score'].std()
+                metrics['Avg Score (Ø)'] = sector_df['overall_score'].mean()
+                metrics['Score StdDev (σ)'] = sector_df['overall_score'].std()
 
             sector_metrics.append(metrics)
 
@@ -631,8 +676,9 @@ class ResearchExcelWriter:
             row += 1
 
         # Add conditional formatting for scores
-        if 'Avg_Score' in sector_df.columns:
-            score_col = chr(64 + sector_df.columns.get_loc('Avg_Score') + 1)
+        sector_df_check = pd.DataFrame(sector_metrics)
+        if 'Avg Score (Ø)' in sector_df_check.columns:
+            score_col = chr(64 + sector_df_check.columns.get_loc('Avg Score (Ø)') + 1)
             ws.conditional_formatting.add(
                 f'{score_col}{start_row+1}:{score_col}{row-1}',
                 ColorScaleRule(
@@ -641,6 +687,12 @@ class ResearchExcelWriter:
                     end_type='max', end_color='C6EFCE'
                 )
             )
+
+            # Add color legend
+            row += 1
+            ws[f'A{row}'] = "Color Legend: 🔴 Red = Low Score | 🟡 Yellow = Medium | 🟢 Green = High Score"
+            ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+            ws.merge_cells(f'A{row}:F{row}')
 
         # Column widths
         for col in range(1, 7):
@@ -750,6 +802,15 @@ class ResearchExcelWriter:
 
         row = 3
 
+        # Interpretation box - Kernfrage 2
+        row = self._add_interpretation_box(ws, row, "KERNFRAGE 2: KONGRUENZ", [
+            "Wie stark stimmen kennzahlenbasierte Cluster mit bestehenden Klassifikationen überein?",
+            "Cramér's V misst Korrelation zwischen Cluster und GICS-Sektor (0 = keine, 1 = perfekt)",
+            "Niedrige Werte (<0.3) erwünscht: Cluster bieten neue Perspektive jenseits von Branchen",
+            "ARI (Adjusted Rand Index) misst Übereinstimmung zwischen Algorithmen (0-1)"
+        ], merge_cols=8)
+        row += 1
+
         # ===== CRAMÉR'S V: CLUSTER VS GICS SECTOR =====
         ws[f'A{row}'] = "CRAMÉR'S V: CLUSTER VS GICS SECTOR"
         ws[f'A{row}'].font = Font(size=12, bold=True)
@@ -796,9 +857,9 @@ class ResearchExcelWriter:
 
                     cramers_results.append({
                         'Algorithm': algo,
-                        'Cramers_V': cramers_v,
-                        'Chi2': chi2,
-                        'p_value': p_value,
+                        "Cramér's V (0-1)": cramers_v,
+                        'Chi² Statistic': chi2,
+                        'p-value (Sig.)': p_value,
                         'Interpretation': interpretation
                     })
                 except Exception as e:
@@ -829,6 +890,12 @@ class ResearchExcelWriter:
                     end_type='num', end_value=0.6, end_color='FFC7CE'
                 )
             )
+
+            # Add color legend
+            row += 1
+            ws[f'A{row}'] = "Color Legend: 🟢 Green = Weak correlation (good) | 🟡 Yellow = Moderate | 🔴 Red = Strong (clusters = sectors)"
+            ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+            ws.merge_cells(f'A{row}:E{row}')
 
         row += 2
 
@@ -894,6 +961,12 @@ class ResearchExcelWriter:
                         end_type='num', end_value=1, end_color='C6EFCE'
                     )
                 )
+
+            # Add color legend
+            row += 1
+            ws[f'A{row}'] = "Color Legend: 🟢 Green = High agreement | 🟡 Yellow = Moderate | 🔴 Red = Low agreement between algorithms"
+            ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+            ws.merge_cells(f'A{row}:E{row}')
 
         # Column widths
         for col in range(1, 9):
@@ -962,6 +1035,11 @@ class ResearchExcelWriter:
                             )
                         )
 
+                        # Add color legend
+                        ws[f'A{row}'] = "Color Legend: White = Few companies | Dark Blue = Many companies"
+                        ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+                        ws.merge_cells(f'A{row}:F{row}')
+
                     row += 1
 
         row += 2
@@ -1027,6 +1105,23 @@ class ResearchExcelWriter:
                     ws.add_chart(chart, f'H3')
                 except Exception as e:
                     logger.warning(f"  ⚠ Could not create scatter chart: {e}")
+
+        row += 2
+
+        # ===== EMBED ALGORITHM OVERLAP PNGs =====
+        ws[f'A{row}'] = "ALGORITHM OVERLAP VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:F{row}')
+        row += 1
+
+        # Try to embed algorithm overlap plot if it exists
+        overlap_png_path = Path(f'output/{self.market}/03_comparisons/plots/algorithm_overlap.png')
+        if overlap_png_path.exists():
+            self._embed_png(ws, overlap_png_path, f'A{row}', scale=0.5)
+            row += 30
+        else:
+            ws[f'A{row}'] = "Algorithm overlap visualization not available"
+            ws[f'A{row}'].font = Font(italic=True, size=9)
 
         logger.info("  ✓ Section 2b sheet created")
 
@@ -1135,6 +1230,15 @@ class ResearchExcelWriter:
 
         row = 3
 
+        # Interpretation box - Kernfrage 3
+        row = self._add_interpretation_box(ws, row, "KERNFRAGE 3: TREIBER", [
+            "Welche Finanzkennzahlen bestimmen die Cluster-Zugehörigkeit?",
+            "Feature Importance via Random Forest: Supervised Learning zur Identifikation der Treiber",
+            "Höhere Importance = Diese Kennzahl ist wichtiger für die Cluster-Trennung",
+            "Cluster-Profile zeigen durchschnittliche Werte pro Cluster für jede Kennzahl"
+        ], merge_cols=8)
+        row += 1
+
         # ===== CLUSTER PROFILES (MEAN FEATURE VALUES) =====
         ws[f'A{row}'] = "CLUSTER PROFILES (MEAN FEATURE VALUES)"
         ws[f'A{row}'].font = Font(size=12, bold=True)
@@ -1194,6 +1298,11 @@ class ResearchExcelWriter:
                         end_type='max', end_color='C6EFCE'
                     )
                 )
+
+                # Add color legend
+                ws[f'A{row}'] = "Color Legend: 🔴 Red = Low values | 🟡 Yellow = Medium | 🟢 Green = High values"
+                ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+                ws.merge_cells(f'A{row}:H{row}')
 
             row += 1
 
@@ -1356,6 +1465,31 @@ class ResearchExcelWriter:
             ws[f'A{row}'] = "Feature importance could not be calculated"
             row += 1
 
+        row += 2
+
+        # ===== EMBED CORRELATION HEATMAP PNGs =====
+        ws[f'A{row}'] = "FEATURE CORRELATION HEATMAPS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:E{row}')
+        row += 1
+
+        # Try to embed correlation heatmap for each algorithm
+        embedded_count = 0
+        chart_col_offset = 0
+        for algo in df['algorithm'].unique():
+            png_path = Path(f'output/{self.market}/02_algorithms/{algo}/combined_scores/plots/correlation_heatmap.png')
+            if png_path.exists():
+                col_letter = chr(65 + chart_col_offset)
+                self._embed_png(ws, png_path, f'{col_letter}{row}', scale=0.4)
+                embedded_count += 1
+                chart_col_offset += 10
+
+        if embedded_count == 0:
+            ws[f'A{row}'] = "Correlation heatmap plots not available"
+            ws[f'A{row}'].font = Font(italic=True, size=9)
+        else:
+            row += 30  # Space for embedded images
+
         logger.info("  ✓ Section 3b sheet created")
 
     def _create_section_3c_sector(self, wb: Workbook, df: pd.DataFrame):
@@ -1420,6 +1554,12 @@ class ResearchExcelWriter:
                 )
             )
 
+            # Add color legend
+            row += 1
+            ws[f'A{row}'] = "Color Legend: 🔴 Red = Low values | 🟡 Yellow = Medium | 🟢 Green = High values"
+            ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+            ws.merge_cells(f'A{row}:F{row}')
+
         # Column widths
         ws.column_dimensions['A'].width = 30
         for col in range(2, 10):
@@ -1449,6 +1589,15 @@ class ResearchExcelWriter:
 
         row = 3
 
+        # Interpretation box - Kernfrage 4
+        row = self._add_interpretation_box(ws, row, "KERNFRAGE 4: STABILITÄT & KONTEXT", [
+            "Wie stabil sind Cluster über Zeit und über verschiedene Kontexte (Größenklassen)?",
+            "Score StdDev < 10 = Hohe Stabilität innerhalb des Clusters",
+            "Migrationsmatrizen zeigen Cluster-Wechsel über Zeit (wenn zeitliche Daten vorliegen)",
+            "Größenklassen-Analyse: Gelten Cluster auch für kleine, mittlere und große Unternehmen?"
+        ], merge_cols=8)
+        row += 1
+
         # ===== CLUSTER STABILITY METRICS =====
         ws[f'A{row}'] = "CLUSTER STABILITY METRICS"
         ws[f'A{row}'].font = Font(size=12, bold=True)
@@ -1471,16 +1620,16 @@ class ResearchExcelWriter:
 
                 metrics = {
                     'Algorithm': algo,
-                    'Cluster': cluster_id,
-                    'Size': len(cluster_df),
-                    'Size_%': f"{len(cluster_df)/len(algo_df)*100:.1f}%"
+                    'Cluster ID': cluster_id,
+                    'Size (N)': len(cluster_df),
+                    'Size (%)': f"{len(cluster_df)/len(algo_df)*100:.1f}%"
                 }
 
                 # Score stability (std dev)
                 if 'overall_score' in cluster_df.columns:
-                    metrics['Score_Mean'] = cluster_df['overall_score'].mean()
-                    metrics['Score_StdDev'] = cluster_df['overall_score'].std()
-                    metrics['Score_Stability'] = 'High' if metrics['Score_StdDev'] < 10 else ('Medium' if metrics['Score_StdDev'] < 20 else 'Low')
+                    metrics['Score Mean (Ø)'] = cluster_df['overall_score'].mean()
+                    metrics['Score StdDev (σ)'] = cluster_df['overall_score'].std()
+                    metrics['Stability Level'] = 'High' if metrics['Score StdDev (σ)'] < 10 else ('Medium' if metrics['Score StdDev (σ)'] < 20 else 'Low')
 
                 stability_data.append(metrics)
 
@@ -1681,6 +1830,11 @@ class ResearchExcelWriter:
                         )
                     )
 
+                    # Add color legend
+                    ws[f'A{row}'] = "Color Legend: White = Few companies | Dark Blue = Many companies"
+                    ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+                    ws.merge_cells(f'A{row}:F{row}')
+
                 row += 1
 
         row += 2
@@ -1723,6 +1877,12 @@ class ResearchExcelWriter:
                     )
                 )
 
+                # Add color legend
+                row += 1
+                ws[f'A{row}'] = "Color Legend: 🔴 Red = Low score | 🟡 Yellow = Medium | 🟢 Green = High score"
+                ws[f'A{row}'].font = Font(size=9, italic=True, color='666666')
+                ws.merge_cells(f'A{row}:F{row}')
+
         # Column widths
         ws.column_dimensions['A'].width = 25
         for col in range(2, 9):
@@ -1764,6 +1924,68 @@ class ResearchExcelWriter:
         except Exception as e:
             logger.error(f"Error embedding PNG {png_path}: {e}")
             return False
+
+    def _add_interpretation_box(self, ws, row: int, title: str, points: List[str], merge_cols: int = 6) -> int:
+        """
+        Add interpretation help box to worksheet
+
+        Args:
+            ws: Worksheet
+            row: Starting row
+            title: Box title (e.g., "KERNFRAGE 1: HOMOGENITÄT")
+            points: List of interpretation points
+            merge_cols: Number of columns to merge
+
+        Returns:
+            Next row number after the box
+        """
+        # Title
+        ws[f'A{row}'] = f"📊 {title}"
+        ws[f'A{row}'].font = Font(size=11, bold=True, color="1F4E78")
+        ws[f'A{row}'].fill = PatternFill(start_color='FFF4E6', fill_type='solid')
+        ws[f'A{row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+        ws.merge_cells(f'A{row}:{chr(64+merge_cols)}{row}')
+
+        # Add border
+        border = Border(
+            left=Side(style='medium', color='1F4E78'),
+            right=Side(style='medium', color='1F4E78'),
+            top=Side(style='medium', color='1F4E78'),
+            bottom=Side(style='thin', color='1F4E78')
+        )
+        ws[f'A{row}'].border = border
+        row += 1
+
+        # Interpretation points
+        for point in points:
+            ws[f'A{row}'] = f"  • {point}"
+            ws[f'A{row}'].font = Font(size=10)
+            ws[f'A{row}'].fill = PatternFill(start_color='FFF9F0', fill_type='solid')
+            ws[f'A{row}'].alignment = Alignment(horizontal='left', vertical='center', wrap_text=True)
+            ws.merge_cells(f'A{row}:{chr(64+merge_cols)}{row}')
+
+            # Border for content
+            border = Border(
+                left=Side(style='medium', color='1F4E78'),
+                right=Side(style='medium', color='1F4E78'),
+                bottom=Side(style='thin', color='E7E6E6')
+            )
+            ws[f'A{row}'].border = border
+            row += 1
+
+        # Bottom border for last row
+        last_row = row - 1
+        ws[f'A{last_row}'].border = Border(
+            left=Side(style='medium', color='1F4E78'),
+            right=Side(style='medium', color='1F4E78'),
+            bottom=Side(style='medium', color='1F4E78')
+        )
+
+        # Set row heights for better readability
+        for r in range(row - len(points) - 1, row):
+            ws.row_dimensions[r].height = 25
+
+        return row + 1
 
     def _apply_border(self, ws, cell_range: str, style: str = 'thin'):
         """Apply border to cell range"""
