@@ -25,6 +25,14 @@ from openpyxl.formatting.rule import ColorScaleRule
 from openpyxl.drawing.image import Image as XLImage
 from PIL import Image
 import io
+from scipy.stats import chi2_contingency
+from sklearn.metrics import adjusted_rand_score
+
+# Import comparison analyzers
+from src._04_comparison.gics_analyzer import GICSComparison
+from src._04_comparison.algorithm_analyzer import AlgorithmComparison
+from src._04_comparison.feature_analyzer import FeatureImportance
+from src._03_clustering.cluster_naming import ClusterNamer
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +65,12 @@ class ResearchExcelWriter:
 
         # Load config
         self.config = self._load_config()
+
+        # Initialize comparison analyzers
+        self.gics_analyzer = GICSComparison()
+        self.algo_analyzer = AlgorithmComparison()
+        self.feature_analyzer = FeatureImportance()
+        self.cluster_namer = ClusterNamer()
 
         # Score columns
         self.score_columns = [
@@ -146,11 +160,15 @@ class ResearchExcelWriter:
         self._create_section_1_homogeneity(wb, overview_df)
         logger.info("  ✓ Section 1 complete")
 
-        # Section 2: Kongruenz (TODO)
-        logger.info("\n→ Step 6: Section 2 (Kongruenz) - TODO")
+        # Section 2: Kongruenz
+        logger.info("\n→ Step 6: Creating Section 2 (Kongruenz)...")
+        self._create_section_2_congruence(wb, overview_df)
+        logger.info("  ✓ Section 2 complete")
 
-        # Section 3: Treiber (TODO)
-        logger.info("\n→ Step 7: Section 3 (Treiber) - TODO")
+        # Section 3: Treiber
+        logger.info("\n→ Step 7: Creating Section 3 (Treiber)...")
+        self._create_section_3_drivers(wb, overview_df)
+        logger.info("  ✓ Section 3 complete")
 
         # Section 4: Stabilität (TODO)
         logger.info("\n→ Step 8: Section 4 (Stabilität) - TODO")
@@ -701,6 +719,682 @@ class ResearchExcelWriter:
             ws.column_dimensions[chr(64+col)].width = 15
 
         logger.info("  ✓ Section 1d sheet created")
+
+    # =========================================================================
+    # SECTION 2: KONGRUENZ
+    # =========================================================================
+
+    def _create_section_2_congruence(self, wb: Workbook, df: pd.DataFrame):
+        """Create Section 2: Kongruenz (3 sheets)"""
+        self._create_section_2a_tables(wb, df)
+        self._create_section_2b_charts(wb, df)
+        self._create_section_2c_algorithms(wb, df)
+
+    def _create_section_2a_tables(self, wb: Workbook, df: pd.DataFrame):
+        """Section 2a: Kongruenz Tables (Cramér's V, ARI, Chi-Square)"""
+        ws = wb.create_sheet("2a_Kongruenz_Tabellen")
+
+        # Title
+        ws['A1'] = "SECTION 2a: KONGRUENZ - TABLES"
+        ws['A1'].font = Font(size=14, bold=True, color="FFFFFF")
+        ws['A1'].fill = PatternFill(start_color=self.colors['header'], fill_type='solid')
+        ws.merge_cells('A1:H1')
+
+        if 'gsector' not in df.columns:
+            ws['A3'] = "No GICS sector data available for congruence analysis"
+            logger.warning("  ⚠ No GICS sector data for Section 2a")
+            return
+
+        row = 3
+
+        # ===== CRAMÉR'S V: CLUSTER VS GICS SECTOR =====
+        ws[f'A{row}'] = "CRAMÉR'S V: CLUSTER VS GICS SECTOR"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws[f'A{row}'].fill = PatternFill(start_color=self.colors['subheader'], fill_type='solid')
+        ws.merge_cells(f'A{row}:E{row}')
+        row += 1
+
+        # Calculate Cramér's V for each algorithm
+        cramers_results = []
+        for algo in df['algorithm'].unique():
+            algo_df = df[df['algorithm'] == algo].copy()
+            algo_df = algo_df[algo_df['cluster'] >= 0]  # Remove noise
+
+            if len(algo_df) > 0 and 'gsector' in algo_df.columns:
+                # Create contingency table
+                contingency = pd.crosstab(algo_df['cluster'], algo_df['gsector'])
+
+                # Calculate Cramér's V
+                cramers_v = self.gics_analyzer.cramers_v(contingency.values)
+
+                # Chi-Square test
+                chi2, p_value, dof, _ = chi2_contingency(contingency.values)
+
+                # Interpretation
+                if cramers_v < 0.2:
+                    interpretation = "Very weak correlation (good!)"
+                elif cramers_v < 0.3:
+                    interpretation = "Weak correlation"
+                elif cramers_v < 0.5:
+                    interpretation = "Moderate correlation"
+                else:
+                    interpretation = "Strong correlation"
+
+                cramers_results.append({
+                    'Algorithm': algo,
+                    'Cramers_V': cramers_v,
+                    'Chi2': chi2,
+                    'p_value': p_value,
+                    'Interpretation': interpretation
+                })
+
+        if cramers_results:
+            cramers_df = pd.DataFrame(cramers_results)
+
+            # Write to sheet
+            start_row = row
+            for r_idx, row_data in enumerate(dataframe_to_rows(cramers_df, index=False, header=True)):
+                for c_idx, value in enumerate(row_data):
+                    cell = ws.cell(row=row, column=c_idx+1, value=value)
+                    if r_idx == 0:  # Header
+                        cell.font = Font(bold=True)
+                        cell.fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+                    elif isinstance(value, float):
+                        cell.number_format = '0.0000'
+                row += 1
+
+            # Add conditional formatting
+            cramers_col = 'B'
+            ws.conditional_formatting.add(
+                f'{cramers_col}{start_row+1}:{cramers_col}{row-1}',
+                ColorScaleRule(
+                    start_type='num', start_value=0, start_color='C6EFCE',
+                    mid_type='num', mid_value=0.3, mid_color='FFEB9C',
+                    end_type='num', end_value=0.6, end_color='FFC7CE'
+                )
+            )
+
+        row += 2
+
+        # ===== ADJUSTED RAND INDEX: ALGORITHM COMPARISON =====
+        ws[f'A{row}'] = "ADJUSTED RAND INDEX: ALGORITHM COMPARISON"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws[f'A{row}'].fill = PatternFill(start_color=self.colors['subheader'], fill_type='solid')
+        ws.merge_cells(f'A{row}:E{row}')
+        row += 1
+
+        # Calculate ARI between algorithms
+        algorithms = df['algorithm'].unique().tolist()
+        ari_matrix = []
+
+        for algo1 in algorithms:
+            ari_row = {'Algorithm': algo1}
+            for algo2 in algorithms:
+                if algo1 == algo2:
+                    ari_row[algo2] = 1.0
+                else:
+                    # Merge clusters from both algorithms
+                    df1 = df[df['algorithm'] == algo1][['gvkey', 'cluster']].copy()
+                    df2 = df[df['algorithm'] == algo2][['gvkey', 'cluster']].copy()
+
+                    merged = df1.merge(df2, on='gvkey', suffixes=('_1', '_2'))
+                    merged = merged[(merged['cluster_1'] >= 0) & (merged['cluster_2'] >= 0)]
+
+                    if len(merged) > 0:
+                        ari = adjusted_rand_score(merged['cluster_1'], merged['cluster_2'])
+                        ari_row[algo2] = ari
+                    else:
+                        ari_row[algo2] = 0.0
+
+            ari_matrix.append(ari_row)
+
+        if ari_matrix:
+            ari_df = pd.DataFrame(ari_matrix)
+
+            # Write to sheet
+            start_row = row
+            for r_idx, row_data in enumerate(dataframe_to_rows(ari_df, index=False, header=True)):
+                for c_idx, value in enumerate(row_data):
+                    cell = ws.cell(row=row, column=c_idx+1, value=value)
+                    if r_idx == 0:  # Header
+                        cell.font = Font(bold=True)
+                        cell.fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+                    elif isinstance(value, float):
+                        cell.number_format = '0.0000'
+                row += 1
+
+            # Add conditional formatting (higher ARI = better agreement)
+            for col_idx in range(2, len(algorithms)+2):
+                col_letter = chr(64+col_idx)
+                ws.conditional_formatting.add(
+                    f'{col_letter}{start_row+1}:{col_letter}{row-1}',
+                    ColorScaleRule(
+                        start_type='num', start_value=0, start_color='FFC7CE',
+                        mid_type='num', mid_value=0.5, mid_color='FFEB9C',
+                        end_type='num', end_value=1, end_color='C6EFCE'
+                    )
+                )
+
+        # Column widths
+        for col in range(1, 9):
+            ws.column_dimensions[chr(64+col)].width = 18
+
+        logger.info("  ✓ Section 2a sheet created")
+
+    def _create_section_2b_charts(self, wb: Workbook, df: pd.DataFrame):
+        """Section 2b: Kongruenz Charts (Heatmaps, Scatter plots)"""
+        ws = wb.create_sheet("2b_Kongruenz_Charts")
+
+        # Title
+        ws['A1'] = "SECTION 2b: KONGRUENZ - CHARTS"
+        ws['A1'].font = Font(size=14, bold=True, color="FFFFFF")
+        ws['A1'].fill = PatternFill(start_color=self.colors['header'], fill_type='solid')
+        ws.merge_cells('A1:H1')
+
+        row = 3
+
+        # ===== CONTINGENCY TABLE: CLUSTER VS GICS SECTOR =====
+        if 'gsector' in df.columns:
+            ws[f'A{row}'] = "CONTINGENCY TABLE: CLUSTERS VS GICS SECTORS"
+            ws[f'A{row}'].font = Font(size=12, bold=True)
+            ws.merge_cells(f'A{row}:F{row}')
+            row += 1
+
+            # Create contingency table for each algorithm
+            for algo in df['algorithm'].unique():
+                algo_df = df[df['algorithm'] == algo].copy()
+                algo_df = algo_df[algo_df['cluster'] >= 0]
+
+                if len(algo_df) > 0:
+                    ws[f'A{row}'] = f"{algo.upper()}"
+                    ws[f'A{row}'].font = Font(bold=True)
+                    ws[f'A{row}'].fill = PatternFill(start_color=self.colors[algo], fill_type='solid')
+                    row += 1
+
+                    # Create contingency table
+                    contingency = pd.crosstab(algo_df['cluster'], algo_df['gsector'])
+
+                    # Write table
+                    start_row = row
+                    for r_idx, row_data in enumerate(dataframe_to_rows(contingency, index=True, header=True)):
+                        if r_idx == 0:
+                            continue
+                        for c_idx, value in enumerate(row_data):
+                            cell = ws.cell(row=row, column=c_idx+1, value=value)
+                            if r_idx == 1:  # Header
+                                cell.font = Font(bold=True)
+                                cell.fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+                        row += 1
+
+                    # Add heatmap-style conditional formatting
+                    max_col = contingency.shape[1] + 1
+                    ws.conditional_formatting.add(
+                        f'B{start_row+1}:{chr(64+max_col)}{row-1}',
+                        ColorScaleRule(
+                            start_type='num', start_value=0, start_color='FFFFFF',
+                            end_type='max', end_color='4472C4'
+                        )
+                    )
+
+                    row += 1
+
+        row += 2
+
+        # ===== ALGORITHM AGREEMENT SCATTER PLOT DATA =====
+        ws[f'A{row}'] = "ALGORITHM SCORE COMPARISON (for scatter plots)"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:F{row}')
+        row += 1
+
+        # Prepare data for scatter plots
+        algorithms = df['algorithm'].unique().tolist()
+        if len(algorithms) >= 2 and 'overall_score' in df.columns:
+            algo1, algo2 = algorithms[0], algorithms[1]
+
+            # Pivot data
+            df_pivot = df.pivot_table(
+                index='gvkey',
+                columns='algorithm',
+                values='overall_score',
+                aggfunc='first'
+            ).reset_index()
+
+            if algo1 in df_pivot.columns and algo2 in df_pivot.columns:
+                scatter_data = df_pivot[['gvkey', algo1, algo2]].dropna()
+
+                # Write scatter data
+                ws[f'A{row}'] = "Company"
+                ws[f'B{row}'] = f"{algo1} Score"
+                ws[f'C{row}'] = f"{algo2} Score"
+                for col in ['A', 'B', 'C']:
+                    ws[f'{col}{row}'].font = Font(bold=True)
+                    ws[f'{col}{row}'].fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+                row += 1
+
+                start_row = row
+                for _, row_data in scatter_data.head(50).iterrows():  # Limit to 50 for readability
+                    ws[f'A{row}'] = row_data['gvkey']
+                    ws[f'B{row}'] = row_data[algo1]
+                    ws[f'C{row}'] = row_data[algo2]
+                    ws[f'B{row}'].number_format = '0.00'
+                    ws[f'C{row}'].number_format = '0.00'
+                    row += 1
+
+                # Create scatter chart
+                chart = ScatterChart()
+                chart.title = f"{algo1.upper()} vs {algo2.upper()} Overall Score"
+                chart.x_axis.title = f"{algo1.upper()} Score"
+                chart.y_axis.title = f"{algo2.upper()} Score"
+
+                xvalues = Reference(ws, min_col=2, min_row=start_row, max_row=row-1)
+                yvalues = Reference(ws, min_col=3, min_row=start_row, max_row=row-1)
+
+                series = chart.series.append(xvalues)
+                series.yvalues = yvalues
+
+                chart.height = 15
+                chart.width = 20
+
+                ws.add_chart(chart, f'H3')
+
+        logger.info("  ✓ Section 2b sheet created")
+
+    def _create_section_2c_algorithms(self, wb: Workbook, df: pd.DataFrame):
+        """Section 2c: Algorithm Comparison Metrics"""
+        ws = wb.create_sheet("2c_Kongruenz_Algorithmen")
+
+        # Title
+        ws['A1'] = "SECTION 2c: ALGORITHM COMPARISON"
+        ws['A1'].font = Font(size=14, bold=True, color="FFFFFF")
+        ws['A1'].fill = PatternFill(start_color=self.colors['header'], fill_type='solid')
+        ws.merge_cells('A1:G1')
+
+        row = 3
+
+        # ===== ALGORITHM AGREEMENT SUMMARY =====
+        ws[f'A{row}'] = "ALGORITHM AGREEMENT SUMMARY"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws[f'A{row}'].fill = PatternFill(start_color=self.colors['subheader'], fill_type='solid')
+        ws.merge_cells(f'A{row}:D{row}')
+        row += 1
+
+        if 'algorithm_agreement' in df.columns:
+            # Calculate agreement stats per company
+            agreement_stats = df.groupby('gvkey').agg({
+                'algorithm_agreement': 'first',
+                'unique_clusters': 'first',
+                'conm': 'first'
+            }).reset_index()
+
+            agreement_stats = agreement_stats.sort_values('algorithm_agreement')
+
+            # Summary
+            summary = [
+                ("Total Companies", len(agreement_stats)),
+                ("Perfect Agreement (100%)", len(agreement_stats[agreement_stats['algorithm_agreement'] == 100])),
+                ("High Agreement (>80%)", len(agreement_stats[agreement_stats['algorithm_agreement'] > 80])),
+                ("Moderate Agreement (50-80%)", len(agreement_stats[(agreement_stats['algorithm_agreement'] >= 50) & (agreement_stats['algorithm_agreement'] <= 80)])),
+                ("Low Agreement (<50%)", len(agreement_stats[agreement_stats['algorithm_agreement'] < 50])),
+                ("Average Agreement", f"{agreement_stats['algorithm_agreement'].mean():.1f}%"),
+            ]
+
+            for label, value in summary:
+                ws[f'A{row}'] = label
+                ws[f'B{row}'] = value
+                ws[f'A{row}'].font = Font(bold=True)
+                row += 1
+
+            row += 2
+
+            # ===== LOW AGREEMENT COMPANIES =====
+            ws[f'A{row}'] = "COMPANIES WITH LOW ALGORITHM AGREEMENT (<50%)"
+            ws[f'A{row}'].font = Font(size=12, bold=True)
+            ws.merge_cells(f'A{row}:E{row}')
+            row += 1
+
+            low_agreement = agreement_stats[agreement_stats['algorithm_agreement'] < 50]
+
+            if len(low_agreement) > 0:
+                low_agreement_display = low_agreement[['conm', 'gvkey', 'algorithm_agreement', 'unique_clusters']]
+
+                # Write to sheet
+                for r_idx, row_data in enumerate(dataframe_to_rows(low_agreement_display, index=False, header=True)):
+                    for c_idx, value in enumerate(row_data):
+                        cell = ws.cell(row=row, column=c_idx+1, value=value)
+                        if r_idx == 0:
+                            cell.font = Font(bold=True)
+                            cell.fill = PatternFill(start_color=self.colors['warning'], fill_type='solid')
+                        elif isinstance(value, float):
+                            cell.number_format = '0.0'
+                    row += 1
+            else:
+                ws[f'A{row}'] = "No companies with low agreement found"
+                row += 1
+
+        else:
+            ws[f'A{row}'] = "Algorithm agreement metrics not available"
+            row += 1
+
+        # Column widths
+        ws.column_dimensions['A'].width = 40
+        for col in range(2, 8):
+            ws.column_dimensions[chr(64+col)].width = 18
+
+        logger.info("  ✓ Section 2c sheet created")
+
+    # =========================================================================
+    # SECTION 3: TREIBER (DRIVERS)
+    # =========================================================================
+
+    def _create_section_3_drivers(self, wb: Workbook, df: pd.DataFrame):
+        """Create Section 3: Treiber (3 sheets)"""
+        self._create_section_3a_tables(wb, df)
+        self._create_section_3b_charts(wb, df)
+        self._create_section_3c_sector(wb, df)
+
+    def _create_section_3a_tables(self, wb: Workbook, df: pd.DataFrame):
+        """Section 3a: Treiber Tables (Feature importance, cluster profiles)"""
+        ws = wb.create_sheet("3a_Treiber_Tabellen")
+
+        # Title
+        ws['A1'] = "SECTION 3a: TREIBER - TABLES"
+        ws['A1'].font = Font(size=14, bold=True, color="FFFFFF")
+        ws['A1'].fill = PatternFill(start_color=self.colors['header'], fill_type='solid')
+        ws.merge_cells('A1:H1')
+
+        row = 3
+
+        # ===== CLUSTER PROFILES (MEAN FEATURE VALUES) =====
+        ws[f'A{row}'] = "CLUSTER PROFILES (MEAN FEATURE VALUES)"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws[f'A{row}'].fill = PatternFill(start_color=self.colors['subheader'], fill_type='solid')
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Get feature columns (financial ratios)
+        feature_candidates = ['roa', 'roe', 'ebit_margin', 'gross_margin', 'debt_to_equity',
+                            'current_ratio', 'asset_turnover', 'fcf_margin', 'revenue_growth']
+        feature_cols = [f for f in feature_candidates if f in df.columns]
+
+        if len(feature_cols) == 0:
+            ws[f'A{row}'] = "No feature columns available"
+            logger.warning("  ⚠ No feature columns for Section 3a")
+            return
+
+        # Calculate cluster profiles for each algorithm
+        for algo in df['algorithm'].unique():
+            algo_df = df[df['algorithm'] == algo].copy()
+            algo_df = algo_df[algo_df['cluster'] >= 0]
+
+            if len(algo_df) == 0:
+                continue
+
+            ws[f'A{row}'] = f"{algo.upper()} - CLUSTER PROFILES"
+            ws[f'A{row}'].font = Font(bold=True)
+            ws[f'A{row}'].fill = PatternFill(start_color=self.colors[algo], fill_type='solid')
+            ws.merge_cells(f'A{row}:H{row}')
+            row += 1
+
+            # Calculate mean per cluster
+            cluster_profiles = algo_df.groupby('cluster')[feature_cols].mean()
+
+            # Write profiles
+            start_row = row
+            for r_idx, row_data in enumerate(dataframe_to_rows(cluster_profiles, index=True, header=True)):
+                if r_idx == 0:
+                    continue
+                for c_idx, value in enumerate(row_data):
+                    cell = ws.cell(row=row, column=c_idx+1, value=value)
+                    if r_idx == 1:  # Header
+                        cell.font = Font(bold=True)
+                        cell.fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+                    elif isinstance(value, float):
+                        cell.number_format = '0.00'
+                row += 1
+
+            # Add heatmap conditional formatting
+            if len(cluster_profiles) > 0:
+                max_col = len(feature_cols) + 1
+                ws.conditional_formatting.add(
+                    f'B{start_row+1}:{chr(64+max_col)}{row-1}',
+                    ColorScaleRule(
+                        start_type='min', start_color='FFC7CE',
+                        mid_type='percentile', mid_value=50, mid_color='FFEB9C',
+                        end_type='max', end_color='C6EFCE'
+                    )
+                )
+
+            row += 1
+
+        row += 2
+
+        # ===== CLUSTER NAMES (if available) =====
+        ws[f'A{row}'] = "CLUSTER NAMES (BASED ON DOMINANT FEATURES)"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws[f'A{row}'].fill = PatternFill(start_color=self.colors['subheader'], fill_type='solid')
+        ws.merge_cells(f'A{row}:D{row}')
+        row += 1
+
+        # Try to generate cluster names
+        cluster_names_data = []
+        for algo in df['algorithm'].unique():
+            algo_df = df[df['algorithm'] == algo].copy()
+            algo_df = algo_df[algo_df['cluster'] >= 0]
+
+            if len(algo_df) == 0:
+                continue
+
+            # Calculate cluster profiles
+            cluster_profiles = algo_df.groupby('cluster')[feature_cols].mean()
+
+            if len(cluster_profiles) > 0:
+                try:
+                    # Generate names
+                    names = self.cluster_namer.generate_names(
+                        profiles=cluster_profiles,
+                        features=feature_cols,
+                        style='hybrid',
+                        top_n=2
+                    )
+
+                    for cluster_id, name in names.items():
+                        cluster_names_data.append({
+                            'Algorithm': algo,
+                            'Cluster': cluster_id,
+                            'Name': name
+                        })
+                except Exception as e:
+                    logger.warning(f"  ⚠ Could not generate names for {algo}: {e}")
+
+        if cluster_names_data:
+            names_df = pd.DataFrame(cluster_names_data)
+
+            # Write to sheet
+            for r_idx, row_data in enumerate(dataframe_to_rows(names_df, index=False, header=True)):
+                for c_idx, value in enumerate(row_data):
+                    cell = ws.cell(row=row, column=c_idx+1, value=value)
+                    if r_idx == 0:
+                        cell.font = Font(bold=True)
+                        cell.fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+                row += 1
+        else:
+            ws[f'A{row}'] = "Cluster names not available"
+            row += 1
+
+        # Column widths
+        ws.column_dimensions['A'].width = 20
+        for col in range(2, 10):
+            ws.column_dimensions[chr(64+col)].width = 15
+
+        logger.info("  ✓ Section 3a sheet created")
+
+    def _create_section_3b_charts(self, wb: Workbook, df: pd.DataFrame):
+        """Section 3b: Treiber Charts (Feature importance bar charts)"""
+        ws = wb.create_sheet("3b_Treiber_Charts")
+
+        # Title
+        ws['A1'] = "SECTION 3b: TREIBER - CHARTS"
+        ws['A1'].font = Font(size=14, bold=True, color="FFFFFF")
+        ws['A1'].fill = PatternFill(start_color=self.colors['header'], fill_type='solid')
+        ws.merge_cells('A1:H1')
+
+        row = 3
+
+        # Get feature columns
+        feature_candidates = ['roa', 'roe', 'ebit_margin', 'gross_margin', 'debt_to_equity',
+                            'current_ratio', 'asset_turnover', 'fcf_margin', 'revenue_growth']
+        feature_cols = [f for f in feature_candidates if f in df.columns]
+
+        if len(feature_cols) == 0:
+            ws[f'A{row}'] = "No feature columns available"
+            logger.warning("  ⚠ No feature columns for Section 3b")
+            return
+
+        # ===== FEATURE IMPORTANCE (Random Forest) =====
+        ws[f'A{row}'] = "FEATURE IMPORTANCE (RANDOM FOREST)"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:E{row}')
+        row += 1
+
+        # Calculate feature importance for each algorithm
+        all_importance = []
+        for algo in df['algorithm'].unique():
+            algo_df = df[df['algorithm'] == algo].copy()
+
+            if 'cluster' not in algo_df.columns or len(algo_df) == 0:
+                continue
+
+            try:
+                importance_df = self.feature_analyzer.compute_importance(
+                    df=algo_df,
+                    feature_cols=feature_cols,
+                    cluster_col='cluster',
+                    algorithm_name=algo
+                )
+
+                if importance_df is not None:
+                    all_importance.append(importance_df)
+            except Exception as e:
+                logger.warning(f"  ⚠ Could not compute importance for {algo}: {e}")
+
+        if all_importance:
+            # Combine all importance scores
+            combined_importance = pd.concat(all_importance)
+
+            # Average across algorithms
+            avg_importance = combined_importance.groupby('feature')['importance'].mean().sort_values(ascending=False)
+
+            # Create data for sheet
+            importance_data = pd.DataFrame({
+                'Feature': avg_importance.index,
+                'Avg_Importance': avg_importance.values
+            })
+
+            # Write to sheet
+            start_row = row
+            ws[f'A{row}'] = "Feature"
+            ws[f'B{row}'] = "Avg Importance"
+            for col in ['A', 'B']:
+                ws[f'{col}{row}'].font = Font(bold=True)
+                ws[f'{col}{row}'].fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+            row += 1
+
+            for _, row_data in importance_data.iterrows():
+                ws[f'A{row}'] = row_data['Feature']
+                ws[f'B{row}'] = row_data['Avg_Importance']
+                ws[f'B{row}'].number_format = '0.0000'
+                row += 1
+
+            # Add bar chart
+            chart = BarChart()
+            chart.title = "Feature Importance (Avg across Algorithms)"
+            chart.x_axis.title = "Feature"
+            chart.y_axis.title = "Importance"
+            chart.type = "col"
+
+            data = Reference(ws, min_col=2, min_row=start_row, max_row=row-1)
+            cats = Reference(ws, min_col=1, min_row=start_row+1, max_row=row-1)
+
+            chart.add_data(data, titles_from_data=True)
+            chart.set_categories(cats)
+            chart.height = 15
+            chart.width = 20
+
+            ws.add_chart(chart, 'D3')
+        else:
+            ws[f'A{row}'] = "Feature importance could not be calculated"
+            row += 1
+
+        logger.info("  ✓ Section 3b sheet created")
+
+    def _create_section_3c_sector(self, wb: Workbook, df: pd.DataFrame):
+        """Section 3c: Sector-specific Feature Analysis"""
+        ws = wb.create_sheet("3c_Treiber_Sektor")
+
+        # Title
+        ws['A1'] = "SECTION 3c: SECTOR-SPECIFIC FEATURES"
+        ws['A1'].font = Font(size=14, bold=True, color="FFFFFF")
+        ws['A1'].fill = PatternFill(start_color=self.colors['header'], fill_type='solid')
+        ws.merge_cells('A1:F1')
+
+        if 'gsector' not in df.columns:
+            ws['A3'] = "No sector data available"
+            logger.warning("  ⚠ No sector data for Section 3c")
+            return
+
+        row = 3
+
+        # Get feature columns
+        feature_candidates = ['roa', 'roe', 'ebit_margin', 'gross_margin', 'debt_to_equity',
+                            'current_ratio', 'asset_turnover', 'fcf_margin']
+        feature_cols = [f for f in feature_candidates if f in df.columns]
+
+        if len(feature_cols) == 0:
+            ws['A3'] = "No feature columns available"
+            return
+
+        # ===== SECTOR-LEVEL FEATURE MEANS =====
+        ws[f'A{row}'] = "SECTOR-LEVEL FEATURE AVERAGES"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws[f'A{row}'].fill = PatternFill(start_color=self.colors['subheader'], fill_type='solid')
+        ws.merge_cells(f'A{row}:F{row}')
+        row += 1
+
+        # Calculate sector-level means
+        sector_means = df.groupby('gsector')[feature_cols].mean()
+
+        # Write to sheet
+        start_row = row
+        for r_idx, row_data in enumerate(dataframe_to_rows(sector_means, index=True, header=True)):
+            if r_idx == 0:
+                continue
+            for c_idx, value in enumerate(row_data):
+                cell = ws.cell(row=row, column=c_idx+1, value=value)
+                if r_idx == 1:
+                    cell.font = Font(bold=True)
+                    cell.fill = PatternFill(start_color=self.colors['neutral'], fill_type='solid')
+                elif isinstance(value, float):
+                    cell.number_format = '0.00'
+            row += 1
+
+        # Add conditional formatting
+        if len(sector_means) > 0:
+            max_col = len(feature_cols) + 1
+            ws.conditional_formatting.add(
+                f'B{start_row+1}:{chr(64+max_col)}{row-1}',
+                ColorScaleRule(
+                    start_type='min', start_color='FFC7CE',
+                    mid_type='percentile', mid_value=50, mid_color='FFEB9C',
+                    end_type='max', end_color='C6EFCE'
+                )
+            )
+
+        # Column widths
+        ws.column_dimensions['A'].width = 30
+        for col in range(2, 10):
+            ws.column_dimensions[chr(64+col)].width = 15
+
+        logger.info("  ✓ Section 3c sheet created")
 
     # =========================================================================
     # HELPER METHODS
