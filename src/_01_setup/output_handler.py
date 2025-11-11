@@ -90,13 +90,15 @@ class OutputHandler:
             self.analysis_types = {
                 'static': 'static',
                 'dynamic': 'dynamic',
-                'combined': 'combined'
+                'combined': 'combined',
+                'unified': 'unified'
             }
         else:  # hierarchical mode
             self.analysis_types = {
                 'static': 'master_clustering',
                 'dynamic': 'dynamic_enrichment',
-                'combined': 'combined_scores'
+                'combined': 'combined_scores',
+                'unified': 'unified_all_features'
             }
 
         # Create directory structure

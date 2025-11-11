@@ -28,7 +28,7 @@ import pandas as pd
 
 from src._01_setup import config_loader
 from src._01_setup.interactive_menu import InteractiveMenu
-from src._02_processing import data_cleaner as preprocessing
+from src._02_preprocessing import data_cleaner as preprocessing
 from src._03_clustering.pipeline import ClusteringPipeline
 from src._03_clustering.hierarchical_pipeline import HierarchicalPipeline
 from src._04_comparison.comparison_pipeline import ComparisonPipeline
@@ -153,7 +153,14 @@ def main():
             args.compare = session_config.get('comparison_mode', False)
 
             # Store session config for pipeline
-            analyses = session_config.get('analyses', ['static'])
+            # Check analysis mode from config
+            analysis_mode = config.get_value(cfg, 'analysis', 'mode', default='sequential')
+
+            # Get analyses from session or apply mode logic
+            if analysis_mode == 'unified':
+                analyses = ['unified']
+            else:
+                analyses = session_config.get('analyses', ['static'])
             kmeans_mode = session_config.get('kmeans_mode', 'comparative')
             hierarchical_mode = session_config.get('hierarchical_mode', 'hierarchical')
             dbscan_mode = session_config.get('dbscan_mode', 'hierarchical')
@@ -191,13 +198,21 @@ def main():
                 if config_algorithms:
                     args.algorithms = config_algorithms
 
-            # Auto-detect analyses
+            # Auto-detect analyses based on analysis mode
+            analysis_mode = config.get_value(cfg, 'analysis', 'mode', default='sequential')
+
             if args.only_static:
                 analyses = ['static']
             elif args.only_dynamic:
                 analyses = ['dynamic']
+            elif analysis_mode == 'unified':
+                # Unified Mode: Eine Analyse mit allen Features
+                analyses = ['unified']
+                logger.info(f"📊 Analysis Mode: UNIFIED (alle Features zusammen)")
             else:
+                # Sequential Mode: 3 separate Analysen
                 analyses = ['static', 'dynamic', 'combined']
+                logger.info(f"📊 Analysis Mode: SEQUENTIAL (3-stufig)")
 
             # Default modes
             kmeans_mode = 'comparative'
@@ -208,7 +223,23 @@ def main():
         # Preprocessing
         if not args.skip_prep:
             input_dir = config.get_value(cfg, 'data', 'input_dir', default='data/raw')
-            df_features = preprocessing.run_preprocessing(input_dir, args.market)
+
+            # Preprocessing Config auslesen
+            impute = config.get_value(cfg, 'preprocessing', 'imputation', 'enabled', default=True)
+            impute_method = config.get_value(cfg, 'preprocessing', 'imputation', 'method', default='median')
+            impute_threshold = config.get_value(cfg, 'preprocessing', 'imputation', 'threshold', default=0.5)
+            smooth_static = config.get_value(cfg, 'preprocessing', 'cagr_smoothing', 'enabled', default=False)
+            cagr_years = config.get_value(cfg, 'preprocessing', 'cagr_smoothing', 'years', default=3)
+
+            df_features = preprocessing.run_preprocessing(
+                input_dir,
+                args.market,
+                impute=impute,
+                impute_method=impute_method,
+                impute_threshold=impute_threshold,
+                smooth_static=smooth_static,
+                cagr_years=cagr_years
+            )
         else:
             logger.info("⏭️  Skipping preprocessing")
             df_features = preprocessing.load_processed_data(args.market)
@@ -299,7 +330,8 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
             df_all=df_all,
             df_latest=df_latest,
             run_static='static' in analyses,
-            run_dynamic='dynamic' in analyses or 'combined' in analyses
+            run_dynamic='dynamic' in analyses or 'combined' in analyses,
+            run_unified='unified' in analyses
         )
 
         # Pause after each stage if interactive
@@ -313,6 +345,9 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
             if 'combined' in analyses:
                 output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types['combined']
                 InteractiveMenu.pause_for_review('Combined', output_dir)
+            if 'unified' in analyses:
+                output_dir = pipeline.output.algorithm_dir / pipeline.output.analysis_types.get('unified', 'unified')
+                InteractiveMenu.pause_for_review('Unified', output_dir)
 
     elif mode == 'both':
         # K-Means: Run BOTH modes and compare
@@ -333,7 +368,8 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
             df_all=df_all,
             df_latest=df_latest,
             run_static='static' in analyses,
-            run_dynamic='dynamic' in analyses or 'combined' in analyses
+            run_dynamic='dynamic' in analyses or 'combined' in analyses,
+            run_unified='unified' in analyses
         )
 
         # Mode 2: Hierarchical
@@ -351,7 +387,8 @@ def run_single_algorithm_mode(cfg, market, algorithm, analyses, df_all, df_lates
             df_all=df_all,
             df_latest=df_latest,
             run_static='static' in analyses,
-            run_dynamic='dynamic' in analyses or 'combined' in analyses
+            run_dynamic='dynamic' in analyses or 'combined' in analyses,
+            run_unified='unified' in analyses
         )
 
         # Compare results
