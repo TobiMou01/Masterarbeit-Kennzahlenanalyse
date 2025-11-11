@@ -100,7 +100,8 @@ class ClusteringPipeline:
         df_all: pd.DataFrame,
         df_latest: pd.DataFrame,
         run_static: bool = True,
-        run_dynamic: bool = True
+        run_dynamic: bool = True,
+        run_unified: bool = False
     ) -> Dict:
         """
         Run complete clustering analysis
@@ -110,6 +111,7 @@ class ClusteringPipeline:
             df_latest: Latest year only
             run_static: Run static analysis
             run_dynamic: Run dynamic analysis
+            run_unified: Run unified analysis (all features together)
 
         Returns:
             Dictionary with all results
@@ -124,15 +126,22 @@ class ClusteringPipeline:
         df_static = None
         df_dynamic = None
 
-        # Run analyses
-        if run_static:
+        # Unified mode: Run all features together
+        if run_unified:
+            # For unified, we need both datasets but only run unified analysis
             df_static = self._run_static_analysis(df_latest)
-
-        if run_dynamic:
             df_dynamic = self._run_dynamic_analysis(df_all)
+            self._run_unified_analysis(df_static, df_dynamic)
+        else:
+            # Sequential mode: Run analyses separately
+            if run_static:
+                df_static = self._run_static_analysis(df_latest)
 
-        if run_static and run_dynamic:
-            self._run_combined_analysis(df_static, df_dynamic)
+            if run_dynamic:
+                df_dynamic = self._run_dynamic_analysis(df_all)
+
+            if run_static and run_dynamic:
+                self._run_combined_analysis(df_static, df_dynamic)
 
         # Generate summary report (if enabled in config)
         if config.get_value(self.config, 'output', 'create_summary_report', default=True):
@@ -413,6 +422,150 @@ class ClusteringPipeline:
             'total': len(df_migration),
             'patterns': df_migration['pattern'].value_counts().to_dict() if 'pattern' in df_migration.columns else {}
         }
+
+    def _run_unified_analysis(self, df_static: pd.DataFrame, df_dynamic: pd.DataFrame):
+        """
+        Run unified analysis (ALL static + dynamic features together)
+
+        Unterschied zu Combined:
+        - Combined: Ausgewählte Subset der Features
+        - Unified: ALLE verfügbaren static + dynamic Features
+        """
+        logger.info("\n" + "=" * 80)
+        logger.info("UNIFIED ANALYSIS (All Features)")
+        logger.info("=" * 80 + "\n")
+
+        # Find common companies
+        common_gvkeys = set(df_static['gvkey']).intersection(set(df_dynamic['gvkey']))
+        logger.info(f"  Common companies: {len(common_gvkeys)}")
+
+        # Get ALL static features from config
+        features_static = config.get_features_for_analysis(
+            self.config, 'static_analysis',
+            default_features=['roa', 'roe', 'ebit_margin', 'debt_to_equity', 'current_ratio']
+        )
+
+        # Get ALL dynamic features that exist in df_dynamic
+        # (dynamic_analysis.features defines base features, they are expanded with suffixes)
+        dynamic_base_features = config.get_value(
+            self.config, 'dynamic_analysis', 'features',
+            default=['roa', 'roe', 'ebit_margin', 'revt']
+        )
+
+        # Find all dynamic columns (with suffixes) in df_dynamic
+        features_dynamic = []
+        suffixes = ['_trend', '_volatility', '_cagr', '_growth']
+        for base in dynamic_base_features:
+            for suffix in suffixes:
+                col = f"{base}{suffix}"
+                if col in df_dynamic.columns:
+                    features_dynamic.append(col)
+
+        # Also include composite features if they exist
+        composite_features = ['revenue_growth', 'fcf_growth', 'margin_trend', 'leverage_trend',
+                             'margin_volatility', 'growth_quality']
+        for feat in composite_features:
+            if feat in df_dynamic.columns and feat not in features_dynamic:
+                features_dynamic.append(feat)
+
+        logger.info(f"  Static features: {len(features_static)}")
+        logger.info(f"  Dynamic features: {len(features_dynamic)}")
+        logger.info(f"  Total features: {len(features_static) + len(features_dynamic)}")
+
+        n_clusters = config.get_value(self.config, 'unified_analysis', 'n_clusters', default=5)
+
+        # Merge datasets
+        cols_static = ['gvkey'] + features_static
+
+        # Include company name if available
+        if 'company_name' in df_static.columns:
+            cols_static.append('company_name')
+        elif 'conm' in df_static.columns:
+            cols_static.append('conm')
+
+        # Include metadata columns for external validation
+        metadata_cols = ['revt', 'at', 'sale', 'gsector', 'gsubind', 'ggroup', 'gind']
+        for col in metadata_cols:
+            if col in df_static.columns and col not in cols_static:
+                cols_static.append(col)
+
+        df_static_sub = df_static[df_static['gvkey'].isin(common_gvkeys)][cols_static]
+        df_dynamic_sub = df_dynamic[df_dynamic['gvkey'].isin(common_gvkeys)][['gvkey'] + features_dynamic]
+        df_merged = df_static_sub.merge(df_dynamic_sub, on='gvkey')
+
+        # Run clustering
+        features_unified = features_static + features_dynamic
+        df_result, profiles, metrics = self.engine.perform_clustering(
+            df_merged, features_unified, n_clusters, 'unified'
+        )
+
+        # ========== NEW INTEGRATION: Scoring, Naming, Validation ==========
+
+        # 1. Apply Scoring
+        df_result = self._apply_scoring(
+            df=df_result,
+            features=features_unified,
+            cluster_column='cluster',
+            profiles=profiles,
+            analysis_type='unified'
+        )
+
+        # 2. Generate Cluster Names
+        cluster_names, naming_summary = self._apply_cluster_naming(
+            df=df_result,
+            profiles=profiles,
+            analysis_type='unified'
+        )
+        df_result['cluster_name'] = df_result['cluster'].map(cluster_names)
+
+        # 3. Run Validation (alternative algorithms, external metrics)
+        validation_results, df_validation = self._run_validation(
+            df=df_result,
+            features=features_unified,
+            analysis_type='unified'
+        )
+
+        # Merge validation results
+        if df_validation is not None:
+            df_result = df_result.merge(
+                df_validation[['gvkey', 'cluster_kmeans_alt', 'cluster_dbscan_alt']],
+                on='gvkey',
+                how='left'
+            )
+
+        # 4. Save results
+        self._save_analysis_results(
+            df=df_result,
+            profiles=profiles,
+            metrics=metrics,
+            features=features_unified,
+            analysis_type='unified',
+            sort_by='composite_score' if self.scoring_enabled else 'cluster'
+        )
+
+        # Migration analysis (using static clusters as "from")
+        df_migration = df_result.copy()
+        if 'cluster_static' in df_result.columns:
+            df_migration['cluster_from'] = df_result['cluster_static']
+            df_migration['cluster_to'] = df_result['cluster']
+            df_migration['pattern'] = df_migration.apply(
+                lambda row: f"{int(row['cluster_from'])} → {int(row['cluster_to'])}", axis=1
+            )
+
+        # Store
+        self.results['unified'] = {
+            'n_companies': metrics['n_companies'],
+            'n_clusters': n_clusters,
+            'metrics': metrics,
+            'profiles': profiles,
+            'df': df_result,
+            'cluster_names': cluster_names
+        }
+        if 'cluster_static' in df_result.columns:
+            self.results['migration'] = {
+                'total': len(df_migration),
+                'patterns': df_migration['pattern'].value_counts().to_dict() if 'pattern' in df_migration.columns else {}
+            }
 
     def _save_analysis_results(
         self,

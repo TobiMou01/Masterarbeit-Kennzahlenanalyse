@@ -25,6 +25,23 @@ preprocessing:
       - oancf
 
 # ========================================
+# ANALYSIS MODE (NEU: Exposé-Anforderung)
+# ========================================
+analysis:
+  mode: 'sequential'  # 'sequential' oder 'unified'
+
+  # Sequential Mode (Standard):
+  #   - 3 separate Analysen: static → dynamic → combined
+  #   - Separate Clusterings für jede Dimension
+  #   - Beste Vergleichbarkeit zwischen Dimensionen
+
+  # Unified Mode:
+  #   - EINE Analyse mit allen Features zusammen
+  #   - Static + Dynamic Features gleichzeitig im Clustering
+  #   - Ganzheitliche Unternehmensbetrachtung
+  #   - Schnellere Ausführung (nur 1 Clustering statt 3)
+
+# ========================================
 # CLUSTERING ALGORITHM
 # ========================================
 classification:
@@ -143,6 +160,13 @@ combined_analysis:
     - fcf_growth
     - margin_volatility
     - growth_quality
+
+# Unified Analysis (für analysis.mode='unified')
+unified_analysis:
+  n_clusters: 5
+  # Features werden automatisch kombiniert aus:
+  # - Alle static_analysis.features
+  # - Alle dynamic_analysis.features (mit Suffixen)
 
 # ========================================
 # DATA & MARKET SETTINGS

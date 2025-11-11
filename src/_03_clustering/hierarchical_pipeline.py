@@ -69,7 +69,8 @@ class HierarchicalPipeline:
         df_all: pd.DataFrame,
         df_latest: pd.DataFrame,
         run_static: bool = True,
-        run_dynamic: bool = True
+        run_dynamic: bool = True,
+        run_unified: bool = False
     ) -> Dict:
         """
         Run complete hierarchical analysis
@@ -79,6 +80,7 @@ class HierarchicalPipeline:
             df_latest: Latest year only
             run_static: Run static analysis
             run_dynamic: Run dynamic analysis
+            run_unified: Run unified analysis (all features together)
 
         Returns:
             Dictionary with all results
@@ -94,15 +96,27 @@ class HierarchicalPipeline:
         df_static = None
         df_dynamic = None
 
-        # Run analyses
-        if run_static:
-            df_static = self._run_static_analysis(df_latest)
+        # Unified mode: Run all features together
+        if run_unified:
+            # For unified, hierarchical mode doesn't apply (no master labels)
+            logger.warning("⚠️  Unified mode with Hierarchical pipeline: using standard clustering")
+            # Fall back to parent class unified analysis if it exists
+            if hasattr(super(), '_run_unified_analysis'):
+                df_static = self._run_static_analysis(df_latest)
+                df_dynamic = self._run_dynamic_analysis(df_all)
+                super()._run_unified_analysis(df_static, df_dynamic)
+            else:
+                logger.warning("⚠️  Unified analysis not supported in Hierarchical mode, skipping")
+        else:
+            # Sequential mode: Run analyses separately
+            if run_static:
+                df_static = self._run_static_analysis(df_latest)
 
-        if run_dynamic and self.master_labels is not None:
-            df_dynamic = self._run_dynamic_analysis(df_all)
+            if run_dynamic and self.master_labels is not None:
+                df_dynamic = self._run_dynamic_analysis(df_all)
 
-        if run_static and run_dynamic and self.master_labels is not None:
-            self._run_combined_analysis(df_static, df_dynamic)
+            if run_static and run_dynamic and self.master_labels is not None:
+                self._run_combined_analysis(df_static, df_dynamic)
 
         # Print summary
         self._print_summary()
