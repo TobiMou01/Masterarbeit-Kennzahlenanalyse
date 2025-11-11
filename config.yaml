@@ -236,11 +236,25 @@ pca:
   compare_spaces: false  # Compare clustering in original vs PCA space (for validation)
 
 # ========================================
-# VISUALIZATION
+# VISUALIZATION (NEU: Granulare Kontrolle)
 # ========================================
 visualization:
   dpi: 300  # High resolution for publications
   format: 'png'  # Output format (png, pdf, svg)
+
+  # Granulare Kontrolle über einzelne Plot-Typen
+  plots:
+    # Basis-Plots (cluster_visualizer.py)
+    cluster_distribution: true      # Verteilung der Unternehmen auf Cluster
+    cluster_characteristics: true   # Kennzahlen-Profile pro Cluster
+    correlation_heatmap: true       # Feature-Korrelationsmatrix
+    pca_clusters: true              # PCA-Visualisierung (2D/3D)
+    performance_dashboard: true     # Konsolidiertes Performance-Dashboard
+
+    # Erweiterte Analysen (nur wenn entsprechende Module enabled)
+    algorithm_congruence: true      # Robustness-Check (alternative Algorithmen)
+    company_insights: true          # Top/Bottom Companies pro Cluster
+    detailed_pca: true              # Detaillierte PCA-Analyse (nur wenn pca.enabled=true)
 
   score_plots:
     - distribution  # Box plots per cluster
