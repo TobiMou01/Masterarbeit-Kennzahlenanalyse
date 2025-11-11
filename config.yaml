@@ -4,6 +4,27 @@
 # Kompakte, klare Konfiguration für 3-stufige Analyse
 
 # ========================================
+# PREPROCESSING
+# ========================================
+preprocessing:
+  # Imputation fehlender Werte
+  imputation:
+    enabled: true
+    method: 'median'  # 'median' oder 'mean'
+    threshold: 0.5    # Max. Anteil fehlender Werte (0-1)
+
+  # CAGR-Glättung für statische Finanzdaten
+  cagr_smoothing:
+    enabled: false    # Reduziert Volatilität in Basisdaten
+    years: 3          # Anzahl Jahre für CAGR-Berechnung
+    fields:           # Zu glättende Felder (optional, sonst default)
+      - revt
+      - at
+      - ebit
+      - ebitda
+      - oancf
+
+# ========================================
 # CLUSTERING ALGORITHM
 # ========================================
 classification:

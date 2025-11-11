@@ -28,7 +28,7 @@ import pandas as pd
 
 from src._01_setup import config_loader
 from src._01_setup.interactive_menu import InteractiveMenu
-from src._02_processing import data_cleaner as preprocessing
+from src._02_preprocessing import data_cleaner as preprocessing
 from src._03_clustering.pipeline import ClusteringPipeline
 from src._03_clustering.hierarchical_pipeline import HierarchicalPipeline
 from src._04_comparison.comparison_pipeline import ComparisonPipeline
@@ -208,7 +208,23 @@ def main():
         # Preprocessing
         if not args.skip_prep:
             input_dir = config.get_value(cfg, 'data', 'input_dir', default='data/raw')
-            df_features = preprocessing.run_preprocessing(input_dir, args.market)
+
+            # Preprocessing Config auslesen
+            impute = config.get_value(cfg, 'preprocessing', 'imputation', 'enabled', default=True)
+            impute_method = config.get_value(cfg, 'preprocessing', 'imputation', 'method', default='median')
+            impute_threshold = config.get_value(cfg, 'preprocessing', 'imputation', 'threshold', default=0.5)
+            smooth_static = config.get_value(cfg, 'preprocessing', 'cagr_smoothing', 'enabled', default=False)
+            cagr_years = config.get_value(cfg, 'preprocessing', 'cagr_smoothing', 'years', default=3)
+
+            df_features = preprocessing.run_preprocessing(
+                input_dir,
+                args.market,
+                impute=impute,
+                impute_method=impute_method,
+                impute_threshold=impute_threshold,
+                smooth_static=smooth_static,
+                cagr_years=cagr_years
+            )
         else:
             logger.info("⏭️  Skipping preprocessing")
             df_features = preprocessing.load_processed_data(args.market)

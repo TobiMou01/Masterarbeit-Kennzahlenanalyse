@@ -673,12 +673,90 @@ def clean_calculated_features(df):
     return df
 
 
-def create_all_features(df):
+def smooth_with_cagr(df, years=3, fields=None):
+    """
+    Glättet statische Finanzdaten mit N-Jahres-CAGR.
+
+    Anwendung: Reduziert Volatilität in Basisdaten (Revenue, Assets, etc.)
+    für stabilere Clustering-Ergebnisse.
+
+    Args:
+        df: DataFrame mit Finanzdaten
+        years: Anzahl Jahre für CAGR (default: 3)
+        fields: Liste der zu glättenden Felder (default: wichtige Basis-Felder)
+
+    Returns:
+        DataFrame mit geglätteten Werten
+    """
+    logger.info(f"Glättung mit {years}-Jahres-CAGR...")
+
+    df = df.copy()
+
+    if 'gvkey' not in df.columns or 'fyear' not in df.columns:
+        logger.warning("  ⚠ gvkey/fyear fehlt - überspringe CAGR-Glättung")
+        return df
+
+    # Standard-Felder für Glättung (wichtige Basisdaten)
+    if fields is None:
+        fields = ['revt', 'at', 'ebit', 'ebitda', 'oancf', 'capx', 'ib']
+
+    # Nur verfügbare Felder
+    available_fields = [f for f in fields if f in df.columns]
+
+    if not available_fields:
+        logger.warning("  ⚠ Keine Felder zum Glätten gefunden")
+        return df
+
+    # Nach Unternehmen und Jahr sortieren
+    df = df.sort_values(['gvkey', 'fyear'])
+
+    for field in available_fields:
+        # Berechne rolling CAGR
+        # CAGR = (End_Value / Start_Value)^(1/years) - 1
+
+        def calc_cagr(group):
+            """Berechnet CAGR für eine Gruppe"""
+            if len(group) < years:
+                return group  # Zu wenig Jahre
+
+            # Rolling window
+            group_sorted = group.sort_values('fyear')
+            smoothed = group_sorted[field].copy()
+
+            for i in range(years, len(group_sorted)):
+                start_val = group_sorted[field].iloc[i - years]
+                end_val = group_sorted[field].iloc[i]
+
+                if pd.notna(start_val) and pd.notna(end_val) and start_val > 0 and end_val > 0:
+                    cagr = (end_val / start_val) ** (1 / years) - 1
+                    # Geglätteter Wert: Start * (1 + CAGR)^years
+                    smoothed.iloc[i] = start_val * ((1 + cagr) ** years)
+
+            group_sorted[f'{field}_smoothed'] = smoothed
+            return group_sorted
+
+        # Gruppiere und glätte
+        df = df.groupby('gvkey', group_keys=False).apply(lambda g: calc_cagr(g) if len(g) >= years else g)
+
+        # Verwende geglättete Werte (falls vorhanden)
+        if f'{field}_smoothed' in df.columns:
+            # Ersetze Originalwerte durch geglättete (optional: behalte Original als backup)
+            df[f'{field}_original'] = df[field]
+            df[field] = df[f'{field}_smoothed'].fillna(df[field])
+            df = df.drop(f'{field}_smoothed', axis=1)
+            logger.info(f"  ✓ {field} geglättet ({years}-Jahres-CAGR)")
+
+    return df
+
+
+def create_all_features(df, smooth_static=False, cagr_years=3):
     """
     Führt alle Feature Engineering Schritte aus.
 
     Args:
         df: Bereinigter Input DataFrame
+        smooth_static: Führe CAGR-Glättung für statische Daten durch (default: False)
+        cagr_years: Anzahl Jahre für CAGR-Glättung (default: 3)
 
     Returns:
         DataFrame mit allen berechneten Kennzahlen
@@ -686,6 +764,10 @@ def create_all_features(df):
     logger.info("\n" + "="*50)
     logger.info("STARTE FEATURE ENGINEERING")
     logger.info("="*50 + "\n")
+
+    # Optional: CAGR-Glättung für Basis-Daten (VOR Kennzahlen-Berechnung)
+    if smooth_static:
+        df = smooth_with_cagr(df, years=cagr_years)
 
     # Statische Kennzahlen berechnen
     df = calculate_profitability_ratios(df)
