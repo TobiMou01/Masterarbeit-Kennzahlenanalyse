@@ -12,9 +12,12 @@ Provides comprehensive scoring mechanisms:
 from src._04_scoring.score_calculator import ScoreCalculator
 from src._04_scoring.score_evolution import ScoreEvolutionTracker
 from src._04_scoring.score_analyzer import ScoreAnalyzer
+from src._04_scoring.score_integrator import apply_scoring, track_score_evolution
 
 __all__ = [
     'ScoreCalculator',
     'ScoreEvolutionTracker',
-    'ScoreAnalyzer'
+    'ScoreAnalyzer',
+    'apply_scoring',
+    'track_score_evolution'
 ]

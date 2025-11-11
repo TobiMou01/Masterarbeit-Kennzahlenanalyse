@@ -18,6 +18,7 @@ from src._01_setup import config_loader as config
 # New imports for comprehensive scoring
 from src._04_scoring import ScoreCalculator
 from src._01_setup.feature_selector import FeatureSelector
+from src._04_scoring.score_integrator import apply_scoring
 
 logger = logging.getLogger(__name__)
 
@@ -148,13 +149,8 @@ class HierarchicalPipeline:
         self.master_cluster_names = df_result['cluster_name'].copy()
 
         # Calculate Comprehensive Scores
-        df_result = self._apply_scoring(
-            df=df_result,
-            features=features,
-            cluster_column='cluster',
-            profiles=profiles,
-            analysis_type='static'
-        )
+        df_result = apply_scoring(df=df_result, features=features, cluster_column='cluster', profiles=profiles, analysis_type='static'
+        , config=self.config, scoring_enabled=self.scoring_enabled)
 
         # Save results
         self._save_analysis_results(df_result, profiles, metrics, features, 'static', sort_by='roa')
@@ -219,13 +215,8 @@ class HierarchicalPipeline:
         dynamic_profiles = df_result.groupby('cluster')[features].mean()
 
         # Apply comprehensive dynamic scoring
-        df_result = self._apply_scoring(
-            df=df_result,
-            features=features,
-            cluster_column='cluster',
-            profiles=dynamic_profiles,
-            analysis_type='dynamic'
-        )
+        df_result = apply_scoring(df=df_result, features=features, cluster_column='cluster', profiles=dynamic_profiles, analysis_type='dynamic'
+        , config=self.config, scoring_enabled=self.scoring_enabled)
 
         # Enriched cluster names
         df_result = self._enrich_cluster_names_with_trends(df_result, features)
@@ -307,13 +298,8 @@ class HierarchicalPipeline:
         combined_profiles = df_merged.groupby('cluster')[all_features].mean()
 
         # Apply comprehensive combined scoring
-        df_result = self._apply_scoring(
-            df=df_merged,
-            features=all_features,
-            cluster_column='cluster',
-            profiles=combined_profiles,
-            analysis_type='combined'
-        )
+        df_result = apply_scoring(df=df_merged, features=all_features, cluster_column='cluster', profiles=combined_profiles, analysis_type='combined'
+        , config=self.config, scoring_enabled=self.scoring_enabled)
 
         # Enhanced cluster names based on combined score
         if 'overall_score' in df_result.columns:
@@ -359,47 +345,6 @@ class HierarchicalPipeline:
         # Print score statistics
         self._print_score_statistics(df_result)
 
-    def _apply_scoring(
-        self,
-        df: pd.DataFrame,
-        features: list,
-        cluster_column: str,
-        profiles: pd.DataFrame,
-        analysis_type: str
-    ) -> pd.DataFrame:
-        """
-        Apply comprehensive scoring to clustered data using ScoreCalculator
-
-        Calculates:
-        - Proximity Score (distance to cluster center)
-        - Dimensional Scores (per category: Profitability, Leverage, Efficiency, Growth)
-        - Relative Score (Z-score vs cluster average)
-        - Overall Score (weighted combination)
-
-        Args:
-            df: DataFrame with cluster assignments
-            features: List of features used for clustering
-            cluster_column: Name of cluster column (default: 'cluster')
-            profiles: Cluster profiles DataFrame
-            analysis_type: 'static', 'dynamic', or 'combined'
-
-        Returns:
-            DataFrame with added score columns
-        """
-        logger.info(f"\n  💯 Calculating Comprehensive Scores ({analysis_type})...")
-
-        # Calculate all scores using ScoreCalculator
-        df_scored = self.score_calculator.calculate_all_scores(
-            df=df,
-            features=features,
-            cluster_column=cluster_column,
-            profiles=profiles
-        )
-
-        logger.info(f"  ✓ Comprehensive scores calculated for {len(df_scored)} companies")
-
-        return df_scored
-
     def _enrich_cluster_names_with_trends(self, df: pd.DataFrame, features: list) -> pd.DataFrame:
         """Add trend information to cluster names"""
         # Calculate average trend per cluster
@@ -430,101 +375,6 @@ class HierarchicalPipeline:
 
         df['cluster_name_enriched'] = df['cluster'].map(enhanced_names)
         return df
-
-    def _enhance_cluster_names_with_scores(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Enhance cluster names based on overall scores"""
-        # Calculate average overall score per cluster
-        score_col = 'overall_score' if 'overall_score' in df.columns else 'proximity_score'
-        cluster_scores = df.groupby('cluster')[score_col].mean()
-
-        enhanced_names = {}
-        for cluster_id in df['cluster'].unique():
-            if cluster_id == -1:
-                enhanced_names[cluster_id] = "Noise"
-                continue
-
-            base_name = df[df['cluster'] == cluster_id]['cluster_name'].iloc[0]
-            avg_score = cluster_scores[cluster_id]
-
-            if avg_score >= 80:
-                tier = "Champions"
-            elif avg_score >= 65:
-                tier = "Strong"
-            elif avg_score >= 50:
-                tier = "Solid"
-            else:
-                tier = "Challenged"
-
-            enhanced_names[cluster_id] = f"{base_name} ({tier})"
-
-        df['cluster_name_enhanced'] = df['cluster'].map(enhanced_names)
-        return df
-
-    def _analyze_score_evolution(self, df_static: pd.DataFrame, df_dynamic: pd.DataFrame,
-                                 df_combined: pd.DataFrame) -> pd.DataFrame:
-        """Analyze how scores evolved from Static → Dynamic → Combined"""
-        migration_data = []
-
-        # Use overall_score if available, else proximity_score
-        static_score_col = 'overall_score' if 'overall_score' in df_static.columns else 'proximity_score'
-        dynamic_score_col = 'overall_score' if 'overall_score' in df_dynamic.columns else 'proximity_score'
-        combined_score_col = 'overall_score' if 'overall_score' in df_combined.columns else 'proximity_score'
-
-        for _, row in df_combined.iterrows():
-            gvkey = row['gvkey']
-            cluster = row['cluster']
-
-            # Get scores from static and dynamic dataframes
-            static_score = df_static[df_static['gvkey'] == gvkey][static_score_col].iloc[0] if len(df_static[df_static['gvkey'] == gvkey]) > 0 else 0
-            dynamic_score = df_dynamic[df_dynamic['gvkey'] == gvkey][dynamic_score_col].iloc[0] if len(df_dynamic[df_dynamic['gvkey'] == gvkey]) > 0 else 0
-            combined_score = row[combined_score_col] if combined_score_col in row else 0
-
-            # Classify pattern
-            if combined_score >= 70:
-                pattern = "Strong Overall"
-            elif static_score >= 60 and dynamic_score >= 60:
-                pattern = "Balanced"
-            elif static_score >= 70 > dynamic_score:
-                pattern = "Strong Now, Weak Trend"
-            elif dynamic_score >= 70 > static_score:
-                pattern = "Weak Now, Strong Trend"
-            else:
-                pattern = "Challenged"
-
-            migration_data.append({
-                'gvkey': gvkey,
-                'cluster': cluster,
-                'cluster_name': row['cluster_name'],
-                'static_score': static_score,
-                'dynamic_score': dynamic_score,
-                'combined_score': combined_score,
-                'pattern': pattern
-            })
-
-        return pd.DataFrame(migration_data)
-
-    def _print_score_statistics(self, df: pd.DataFrame):
-        """Print score statistics per cluster"""
-        logger.info("\n📊 Score Statistics per Cluster:")
-
-        # Find available score columns
-        score_cols = [col for col in df.columns if 'score' in col.lower() and col != 'cluster']
-
-        for cluster_id in sorted(df['cluster'].unique()):
-            cluster_df = df[df['cluster'] == cluster_id]
-            name = cluster_df['cluster_name'].iloc[0] if 'cluster_name' in cluster_df.columns else f"Cluster {cluster_id}"
-
-            logger.info(f"  Cluster {cluster_id} ({name}):")
-
-            # Print available scores
-            score_info = []
-            for score_col in score_cols:
-                if score_col in cluster_df.columns:
-                    avg_score = cluster_df[score_col].mean()
-                    score_info.append(f"{score_col}: {avg_score:.1f}")
-
-            if score_info:
-                logger.info(f"    {', '.join(score_info)}")
 
     def _save_analysis_results(self, df: pd.DataFrame, profiles: pd.DataFrame,
                                metrics: Dict, features: list, analysis_type: str, sort_by: str):
