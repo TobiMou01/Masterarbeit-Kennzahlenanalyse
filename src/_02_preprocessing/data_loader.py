@@ -196,30 +196,92 @@ def clean_numeric_columns(df):
     return df
 
 
-def clean_data(df):
+def impute_missing_values(df, method='median', threshold=0.5):
     """
-    Bereinigt DataFrame: Duplikate, leere Spalten, etc.
-    
+    Systematische Imputation fehlender Werte.
+
+    Strategie:
+    - Spalten mit >threshold missing → nicht imputieren (zu wenig Daten)
+    - Restliche Spalten: Median (robust gegen Outlier)
+    - Optional: Branchen-spezifische Imputation (falls GICS verfügbar)
+
+    Args:
+        df: DataFrame mit fehlenden Werten
+        method: Imputation-Methode ('median', 'mean')
+        threshold: Max. Anteil fehlender Werte für Imputation (0-1)
+
+    Returns:
+        DataFrame mit imputierten Werten
+    """
+    logger.info(f"Starte Imputation (method={method}, threshold={threshold*100:.0f}%)...")
+
+    df = df.copy()
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+
+    imputed_cols = []
+    skipped_cols = []
+
+    for col in numeric_cols:
+        missing_pct = df[col].isna().sum() / len(df)
+
+        if missing_pct == 0:
+            continue  # Keine fehlenden Werte
+
+        if missing_pct > threshold:
+            skipped_cols.append((col, missing_pct))
+            continue  # Zu viele fehlende Werte
+
+        # Imputation
+        if method == 'median':
+            fill_value = df[col].median()
+        elif method == 'mean':
+            fill_value = df[col].mean()
+        else:
+            fill_value = df[col].median()
+
+        df[col] = df[col].fillna(fill_value)
+        imputed_cols.append((col, missing_pct, fill_value))
+
+    if imputed_cols:
+        logger.info(f"  ✓ {len(imputed_cols)} Spalten imputiert")
+        for col, pct, val in imputed_cols[:5]:  # Top 5 loggen
+            logger.debug(f"    {col}: {pct*100:.1f}% missing → filled with {val:.2f}")
+
+    if skipped_cols:
+        logger.info(f"  ⚠ {len(skipped_cols)} Spalten übersprungen (>threshold)")
+        for col, pct in skipped_cols[:3]:
+            logger.debug(f"    {col}: {pct*100:.1f}% missing")
+
+    return df
+
+
+def clean_data(df, impute=True, impute_method='median', impute_threshold=0.5):
+    """
+    Bereinigt DataFrame: Duplikate, leere Spalten, Imputation.
+
     Args:
         df: Input DataFrame
-        
+        impute: Führe Imputation durch (default: True)
+        impute_method: Imputation-Methode ('median', 'mean')
+        impute_threshold: Max. Anteil fehlender Werte für Imputation
+
     Returns:
         tuple: (Bereinigter DataFrame, Data Quality Report)
     """
     logger.info("Starte Datenbereinigung...")
-    
+
     initial_rows = len(df)
     initial_cols = len(df.columns)
-    
+
     # Numerische Spalten bereinigen
     df = clean_numeric_columns(df)
-    
+
     # 1. Entferne komplett leere Spalten
     empty_cols = df.columns[df.isna().all()].tolist()
     if empty_cols:
         logger.info(f"Entferne {len(empty_cols)} leere Spalten")
         df = df.drop(columns=empty_cols)
-    
+
     # 2. Entferne Duplikate basierend auf gvkey + datadate
     if 'gvkey' in df.columns and 'datadate' in df.columns:
         duplicates = df.duplicated(subset=['gvkey', 'datadate'], keep='first')
@@ -227,8 +289,12 @@ def clean_data(df):
         if n_duplicates > 0:
             logger.info(f"Entferne {n_duplicates} Duplikate (gvkey + datadate)")
             df = df[~duplicates]
-    
-    # 3. Data Quality Report erstellen
+
+    # 3. Imputation fehlender Werte (NEU)
+    if impute:
+        df = impute_missing_values(df, method=impute_method, threshold=impute_threshold)
+
+    # 4. Data Quality Report erstellen
     report = {
         'initial_rows': initial_rows,
         'initial_columns': initial_cols,
@@ -239,11 +305,11 @@ def clean_data(df):
         'missing_values_per_column': df.isna().sum().to_dict(),
         'missing_percentage': (df.isna().sum() / len(df) * 100).to_dict()
     }
-    
+
     logger.info(f"✓ Bereinigung abgeschlossen:")
     logger.info(f"  Zeilen: {initial_rows} → {len(df)} ({report['rows_removed']} entfernt)")
     logger.info(f"  Spalten: {initial_cols} → {len(df.columns)} ({report['columns_removed']} entfernt)")
-    
+
     return df, report
 
 

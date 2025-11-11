@@ -9,23 +9,36 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 import seaborn as sns
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
 import logging
 
 logger = logging.getLogger(__name__)
 
+# SHAP (optional, falls installiert)
+try:
+    import shap
+    SHAP_AVAILABLE = True
+except ImportError:
+    SHAP_AVAILABLE = False
+    logger.warning("⚠ SHAP not available. Install with: pip install shap")
+
 
 class FeatureImportance:
-    """Berechnet Feature Importance für Clustering-Ergebnisse"""
+    """Berechnet Feature Importance für Clustering-Ergebnisse (Random Forest + SHAP)"""
 
-    def __init__(self, n_estimators: int = 100, random_state: int = 42):
+    def __init__(self, n_estimators: int = 100, random_state: int = 42, use_shap: bool = True):
         """
         Args:
             n_estimators: Anzahl Trees im Random Forest
             random_state: Random State für Reproduzierbarkeit
+            use_shap: Verwende SHAP-Analysen (falls verfügbar)
         """
         self.n_estimators = n_estimators
         self.random_state = random_state
+        self.use_shap = use_shap and SHAP_AVAILABLE
+        self.rf_model = None
+        self.shap_values = None
+        self.shap_explainer = None
 
     def compute_importance(
         self,
@@ -94,7 +107,10 @@ class FeatureImportance:
 
         rf.fit(X_scaled, y)
 
-        # Feature Importance
+        # Speichere Modell für SHAP
+        self.rf_model = rf
+
+        # Feature Importance (Gini)
         importances = rf.feature_importances_
 
         # Als DataFrame
@@ -105,9 +121,20 @@ class FeatureImportance:
         }).sort_values('importance', ascending=False)
 
         # Log Top 5
-        logger.info(f"    Top 5 Features:")
+        logger.info(f"    Top 5 Features (Gini):")
         for idx, row in importance_df.head(5).iterrows():
             logger.info(f"      {row['feature']:<30} {row['importance']:.4f}")
+
+        # Optional: SHAP-Werte berechnen
+        if self.use_shap:
+            logger.info(f"\n    Berechne SHAP-Werte...")
+            shap_importance = self._compute_shap_values(X_scaled, available_features)
+
+            if shap_importance is not None:
+                importance_df['shap_importance'] = importance_df['feature'].map(
+                    lambda f: shap_importance.get(f, 0)
+                )
+                logger.info(f"    ✓ SHAP-Werte berechnet")
 
         return importance_df
 
@@ -167,9 +194,105 @@ class FeatureImportance:
         # Top Features über alle Algorithmen
         top_features = all_importance.groupby('feature')['importance'].mean().sort_values(ascending=False).head(5)
 
-        logger.info("\nTop 5 Features across all algorithms:")
+        logger.info("\nTop 5 Features across all algorithms (Gini):")
         for feature, importance in top_features.items():
             logger.info(f"  {feature:<30} (avg importance: {importance:.4f})")
+
+        # SHAP Summary (falls vorhanden)
+        if 'shap_importance' in all_importance.columns:
+            shap_top = all_importance.groupby('feature')['shap_importance'].mean().sort_values(ascending=False).head(5)
+            logger.info("\nTop 5 Features across all algorithms (SHAP):")
+            for feature, importance in shap_top.items():
+                logger.info(f"  {feature:<30} (avg SHAP: {importance:.4f})")
+
+    def _compute_shap_values(
+        self,
+        X_scaled: np.ndarray,
+        feature_names: List[str]
+    ) -> Optional[Dict[str, float]]:
+        """
+        Berechnet SHAP-Werte für Random Forest.
+
+        Args:
+            X_scaled: Skalierte Feature-Matrix
+            feature_names: Feature-Namen
+
+        Returns:
+            Dict mit SHAP-Importances pro Feature
+        """
+        if not SHAP_AVAILABLE or self.rf_model is None:
+            return None
+
+        try:
+            # SHAP TreeExplainer
+            explainer = shap.TreeExplainer(self.rf_model)
+            shap_values = explainer.shap_values(X_scaled)
+
+            # Speichern für spätere Plots
+            self.shap_explainer = explainer
+            self.shap_values = shap_values
+
+            # Für Multi-Class: shap_values ist Liste von Arrays
+            # Wir nehmen den Durchschnitt über alle Klassen
+            if isinstance(shap_values, list):
+                # Mean absolute SHAP über alle Klassen
+                shap_importance = np.mean([np.abs(sv).mean(axis=0) for sv in shap_values], axis=0)
+            else:
+                shap_importance = np.abs(shap_values).mean(axis=0)
+
+            # Als Dict
+            shap_dict = {feature_names[i]: shap_importance[i] for i in range(len(feature_names))}
+
+            return shap_dict
+
+        except Exception as e:
+            logger.warning(f"    ⚠ SHAP-Berechnung fehlgeschlagen: {e}")
+            return None
+
+    def plot_shap_summary(
+        self,
+        X_scaled: np.ndarray,
+        feature_names: List[str],
+        algorithm_name: str
+    ) -> Optional[plt.Figure]:
+        """
+        Erstellt SHAP Summary Plot.
+
+        Args:
+            X_scaled: Skalierte Feature-Matrix
+            feature_names: Feature-Namen
+            algorithm_name: Algorithmus-Name
+
+        Returns:
+            Matplotlib Figure
+        """
+        if not SHAP_AVAILABLE or self.shap_values is None:
+            return None
+
+        fig = plt.figure(figsize=(10, 8))
+
+        # SHAP Summary Plot
+        if isinstance(self.shap_values, list):
+            # Multi-class: Nutze erste Klasse für Summary
+            shap.summary_plot(
+                self.shap_values[0],
+                X_scaled,
+                feature_names=feature_names,
+                show=False
+            )
+        else:
+            shap.summary_plot(
+                self.shap_values,
+                X_scaled,
+                feature_names=feature_names,
+                show=False
+            )
+
+        plt.title(f'SHAP Feature Importance - {algorithm_name.upper()}',
+                  fontsize=14, fontweight='bold', pad=20)
+        plt.tight_layout()
+
+        return fig
 
     def plot_importance(
         self,

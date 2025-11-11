@@ -6,18 +6,31 @@ Handles data loading, cleaning, and feature engineering
 import pandas as pd
 import logging
 from pathlib import Path
-from src._02_processing import data_loader, feature_engineer
+from src._02_preprocessing import data_loader, feature_engineer
 
 logger = logging.getLogger(__name__)
 
 
-def run_preprocessing(input_dir: str, market: str) -> pd.DataFrame:
+def run_preprocessing(
+    input_dir: str,
+    market: str,
+    impute=True,
+    impute_method='median',
+    impute_threshold=0.5,
+    smooth_static=False,
+    cagr_years=3
+) -> pd.DataFrame:
     """
-    Complete preprocessing: Load → Clean → Engineer Features
+    Complete preprocessing: Load → Clean → Impute → Engineer Features → (Optional: CAGR Smoothing)
 
     Args:
         input_dir: Input directory (e.g., 'data/raw')
         market: Market name (e.g., 'germany')
+        impute: Führe Imputation durch (default: True)
+        impute_method: Imputation-Methode ('median', 'mean')
+        impute_threshold: Max. Anteil fehlender Werte für Imputation (0-1)
+        smooth_static: Führe CAGR-Glättung für statische Daten durch (default: False)
+        cagr_years: Anzahl Jahre für CAGR-Glättung (default: 3)
 
     Returns:
         DataFrame with all features
@@ -35,12 +48,21 @@ def run_preprocessing(input_dir: str, market: str) -> pd.DataFrame:
 
     logger.info(f"  Loaded: {len(df)} rows")
 
-    # 2. Clean data
-    df_cleaned, _ = data_loader.clean_data(df)
+    # 2. Clean data (inkl. Imputation)
+    df_cleaned, _ = data_loader.clean_data(
+        df,
+        impute=impute,
+        impute_method=impute_method,
+        impute_threshold=impute_threshold
+    )
     df_final = data_loader.filter_relevant_columns(df_cleaned)
 
-    # 3. Feature engineering
-    df_features = feature_engineer.create_all_features(df_final)
+    # 3. Feature engineering (inkl. optionale CAGR-Glättung)
+    df_features = feature_engineer.create_all_features(
+        df_final,
+        smooth_static=smooth_static,
+        cagr_years=cagr_years
+    )
 
     # 4. Save processed data
     output_dir = Path(f'data/processed/{market}')

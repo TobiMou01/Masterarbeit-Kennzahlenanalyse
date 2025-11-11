@@ -1,8 +1,8 @@
 """
-Visualization Phase - Plots and Summary Generation
+Visualization Phase - Plots and Charts for Clustering Analysis
 """
 
 from . import plot_engine
-from . import summary_generator
+from . import plot_engine_insights
 
-__all__ = ['plot_engine', 'summary_generator']
+__all__ = ['plot_engine', 'plot_engine_insights']

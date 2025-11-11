@@ -14,6 +14,8 @@ from scipy import stats
 from src._01_setup import config_loader as config
 from src._03_clustering.algorithms.factory import ClustererFactory
 from src._03_clustering.algorithms.base import BaseClusterer
+from src._02_preprocessing.pca_transformer import PCATransformer
+from src._03_clustering.k_selector import KSelector
 
 logger = logging.getLogger(__name__)
 
@@ -70,7 +72,26 @@ class ClusteringEngine:
         logger.info(f"{analysis_type.upper()} CLUSTERING")
         logger.info(f"{'='*80}\n")
         logger.info(f"Features: {len(features)}")
+
+        # 0. Optional: Automatische k-Bestimmung
+        k_selection_mode = config.get_value(self.config, 'cluster_selection', 'mode', default='manual')
+
+        if k_selection_mode == 'auto' and self.algorithm == 'kmeans':
+            logger.info("\n🔍 Automatische k-Bestimmung aktiviert")
+            n_clusters = self._determine_optimal_k(df, features, analysis_type)
+            logger.info(f"  ✓ Optimales k: {n_clusters}\n")
+
         logger.info(f"Cluster: {n_clusters}")
+
+        # 1. Optional: PCA-Transformation VOR Clustering
+        pca_enabled = config.get_value(self.config, 'pca', 'enabled', default=False)
+        pca_metadata = None
+        original_features = features.copy()
+
+        if pca_enabled and config.get_value(self.config, 'pca', 'run_before_clustering', default=True):
+            logger.info("\n🔬 PCA-Preprocessing aktiviert")
+            df, features, pca_metadata = self._apply_pca_preprocessing(df, features)
+            logger.info(f"  ✓ Features: {len(original_features)} → {len(features)} (PCA)")
 
         # 1. Clusterer erstellen mit Factory Pattern
         algo_config = config.get_value(self.config, 'classification', self.algorithm, default={})
@@ -126,9 +147,98 @@ class ClusteringEngine:
         # Scaler & Model zu metrics
         metrics['scaler'] = clusterer.get_scaler()
         metrics['model'] = clusterer.get_model()
+        metrics['features_used'] = features
+        metrics['original_features'] = original_features
+        if pca_metadata:
+            metrics['pca_metadata'] = pca_metadata
 
         return df_result, cluster_profiles, metrics
 
+
+    def _determine_optimal_k(
+        self,
+        df: pd.DataFrame,
+        features: List[str],
+        analysis_type: str
+    ) -> int:
+        """
+        Bestimmt automatisch optimale Clusterzahl mittels KSelector.
+
+        Args:
+            df: DataFrame mit Features
+            features: Feature-Liste
+            analysis_type: Analyse-Typ
+
+        Returns:
+            Optimale Clusterzahl
+        """
+        # Config auslesen
+        k_range = config.get_value(self.config, 'cluster_selection', 'k_range', default=[2, 10])
+        methods = config.get_value(self.config, 'cluster_selection', 'methods', default=['elbow', 'silhouette', 'gap'])
+
+        # Daten vorbereiten (Standardisierung)
+        from sklearn.preprocessing import StandardScaler
+
+        X = df[features].copy()
+        X = X.fillna(X.median())  # Handle NaN
+        X = X.replace([np.inf, -np.inf], np.nan).fillna(X.median())  # Handle inf
+
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+
+        # KSelector anwenden
+        selector = KSelector(k_range=k_range, random_state=self.random_state)
+        optimal_k, results = selector.find_optimal_k(X_scaled, methods=methods)
+
+        return optimal_k
+
+    def _apply_pca_preprocessing(
+        self,
+        df: pd.DataFrame,
+        features: List[str]
+    ) -> Tuple[pd.DataFrame, List[str], Dict]:
+        """
+        Wendet PCA-Transformation VOR Clustering an.
+
+        Args:
+            df: DataFrame mit Features
+            features: Original Feature-Liste
+
+        Returns:
+            Tuple von (df_transformed, pca_feature_names, pca_metadata)
+        """
+        n_components = config.get_value(self.config, 'pca', 'n_components', default=0.90)
+
+        # PCA Transformer initialisieren
+        pca_transformer = PCATransformer(
+            n_components=n_components,
+            random_state=self.random_state
+        )
+
+        # PCA fit & transform
+        X_pca, variance_summary = pca_transformer.fit_transform(df, features)
+
+        # PCA-Features als DataFrame
+        pca_feature_names = [f'PC{i+1}' for i in range(pca_transformer.pca.n_components_)]
+
+        df_pca = df[['gvkey']].copy()
+        for i, col in enumerate(pca_feature_names):
+            df_pca[col] = X_pca[:, i]
+
+        # Metadata
+        pca_metadata = {
+            'n_components': pca_transformer.pca.n_components_,
+            'variance_explained': pca_transformer.pca.explained_variance_ratio_.sum(),
+            'variance_summary': variance_summary,
+            'component_loadings': pca_transformer.get_component_loadings(features),
+            'original_features': features,
+            'transformer': pca_transformer
+        }
+
+        logger.info(f"  Components: {pca_metadata['n_components']}")
+        logger.info(f"  Variance Explained: {pca_metadata['variance_explained']:.1%}")
+
+        return df_pca, pca_feature_names, pca_metadata
 
     def _compute_profiles(
         self,
