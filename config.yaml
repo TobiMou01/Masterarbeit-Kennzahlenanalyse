@@ -51,10 +51,15 @@ classification:
     # Erwarte mit diesen Werten: 4-8 Cluster mit 5-15% Noise
 
 # ========================================
-# CLUSTER-ANZAHL
+# CLUSTER-ANZAHL (K-SELECTION)
 # ========================================
+cluster_selection:
+  mode: 'manual'  # 'auto' oder 'manual'
+  k_range: [2, 10]  # Range für automatische Bestimmung
+  methods: ['elbow', 'silhouette', 'gap']  # Methoden für auto-Modus
+
 static_analysis:
-  n_clusters: 5  # Empfohlen: 3-7
+  n_clusters: 5  # Wird verwendet wenn mode='manual'
 
 dynamic_analysis:
   n_clusters: 5
@@ -201,10 +206,10 @@ validation:
 # PCA INTEGRATION
 # ========================================
 pca:
-  enabled: false  # Enable PCA validation (requires extended features)
-  n_components: 0.85  # Preserve 85% variance (or int for exact number)
-  extended_features_preset: 'pca_optimized'  # Feature preset for PCA
-  compare_with_original: true  # Compare PCA vs original clustering
+  enabled: false  # Enable PCA preprocessing (dimensionality reduction)
+  run_before_clustering: true  # Apply PCA BEFORE clustering (recommended)
+  n_components: 0.90  # Preserve 90% variance (or int for exact number)
+  compare_spaces: false  # Compare clustering in original vs PCA space (for validation)
 
 # ========================================
 # VISUALIZATION

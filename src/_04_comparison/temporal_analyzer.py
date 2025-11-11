@@ -57,11 +57,18 @@ class TemporalStability:
             logger.warning("    ⚠ Keine Migrations-Daten gefunden")
             return None, None
 
-        # Migration Matrix
+        # Migration Matrix (Counts)
         migration_counts = pd.crosstab(
             df_migrations['prev_cluster'].astype(int),
             df_migrations[cluster_col].astype(int),
             margins=True
+        )
+
+        # Übergangswahrscheinlichkeiten (normalisiert pro Zeile)
+        migration_probs = pd.crosstab(
+            df_migrations['prev_cluster'].astype(int),
+            df_migrations[cluster_col].astype(int),
+            normalize='index'  # Zeilennormalisierung
         )
 
         # Statistiken
@@ -73,7 +80,9 @@ class TemporalStability:
             'total_migrations': total_migrations,
             'stayed_same': stayed_same,
             'changed_cluster': total_migrations - stayed_same,
-            'consistency_rate': consistency_rate
+            'consistency_rate': consistency_rate,
+            'migration_counts': migration_counts,
+            'transition_probabilities': migration_probs  # NEU
         }
 
         logger.info(f"    Total year-to-year observations: {total_migrations}")
@@ -144,6 +153,84 @@ class TemporalStability:
             logger.info(f"      Cluster {int(row['cluster'])}: {row['stability_rate']*100:.1f}% stability ({row['stayed_same']}/{row['total_observations']})")
 
         return stability_df
+
+    def compute_persistence_rate(
+        self,
+        df: pd.DataFrame,
+        year_col: str = 'fyear',
+        cluster_col: str = 'cluster',
+        company_id_col: str = 'gvkey'
+    ) -> pd.DataFrame:
+        """
+        Berechnet Persistenzrate und durchschnittliche Verweildauer pro Cluster.
+
+        Persistenzrate: Wahrscheinlichkeit, dass ein Unternehmen im nächsten Jahr
+        im gleichen Cluster bleibt.
+
+        Verweildauer: Durchschnittliche Anzahl aufeinanderfolgender Jahre im selben Cluster.
+
+        Args:
+            df: DataFrame mit Zeitreihen
+            year_col: Jahr-Spalte
+            cluster_col: Cluster-Spalte
+            company_id_col: Company ID Spalte
+
+        Returns:
+            DataFrame mit Persistenzraten pro Cluster
+        """
+        logger.info("\n  Berechne Persistenzrate und Verweildauer...")
+
+        df_sorted = df.sort_values([company_id_col, year_col])
+        df_sorted = df_sorted[df_sorted[cluster_col] >= 0]
+
+        # Cluster-Wechsel identifizieren
+        df_sorted['cluster_changed'] = (
+            df_sorted.groupby(company_id_col)[cluster_col].shift(1) != df_sorted[cluster_col]
+        )
+
+        # Verweildauer berechnen (aufeinanderfolgende Jahre im selben Cluster)
+        df_sorted['persistence_group'] = df_sorted.groupby(company_id_col)['cluster_changed'].cumsum()
+
+        # Berechne Verweildauer pro Gruppe
+        persistence_groups = df_sorted.groupby([company_id_col, 'persistence_group', cluster_col]).size()
+
+        # Pro Cluster
+        persistence_data = []
+        for cluster_id in sorted(df_sorted[cluster_col].unique()):
+            # Alle Verweildauer-Perioden für diesen Cluster
+            cluster_periods = persistence_groups[persistence_groups.index.get_level_values(cluster_col) == cluster_id]
+
+            if len(cluster_periods) == 0:
+                continue
+
+            avg_persistence = cluster_periods.mean()
+            median_persistence = cluster_periods.median()
+            max_persistence = cluster_periods.max()
+
+            # Persistenzrate (% der Fälle, wo Unternehmen >1 Jahr bleibt)
+            persistence_rate = (cluster_periods > 1).sum() / len(cluster_periods)
+
+            persistence_data.append({
+                'cluster': cluster_id,
+                'avg_persistence_years': avg_persistence,
+                'median_persistence_years': median_persistence,
+                'max_persistence_years': max_persistence,
+                'persistence_rate': persistence_rate,
+                'n_periods': len(cluster_periods)
+            })
+
+        persistence_df = pd.DataFrame(persistence_data).sort_values('avg_persistence_years', ascending=False)
+
+        # Log
+        logger.info(f"\n    Persistence Ranking:")
+        for _, row in persistence_df.iterrows():
+            logger.info(
+                f"      Cluster {int(row['cluster'])}: "
+                f"{row['avg_persistence_years']:.1f} Jahre avg, "
+                f"{row['persistence_rate']*100:.1f}% persistence rate"
+            )
+
+        return persistence_df
 
     def analyze_all_algorithms(
         self,
