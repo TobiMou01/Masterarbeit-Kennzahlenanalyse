@@ -60,7 +60,7 @@ class HierarchicalPipeline:
         if self.scoring_enabled:
             from src._04_scoring.score_evolution import ScoreEvolutionTracker
             from src._04_scoring.score_analyzer import ScoreAnalyzer
-            from src._05_visualization.plot_engine_score_distributions import PlotEngineScoreDistributions as PlotEngineScores  # Migrated from plot_engine_scores
+            from src._05_visualization.plot_engine_scores_wrapper import PlotEngineScores  # Unified wrapper combining distributions + analysis
 
             self.score_calculator = ScoreCalculator(feature_selector=self.feature_selector)
             self.score_tracker = ScoreEvolutionTracker()

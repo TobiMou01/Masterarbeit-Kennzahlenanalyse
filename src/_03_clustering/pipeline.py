@@ -22,7 +22,7 @@ from src._04_scoring import ScoreCalculator, ScoreEvolutionTracker, ScoreAnalyze
 from src._06_validation import AlgorithmComparison, ExternalValidation
 from src._03_clustering.cluster_naming import ClusterNamer
 from src._01_setup.feature_selector import FeatureSelector
-from src._05_visualization.plot_engine_score_distributions import PlotEngineScoreDistributions  # Migrated from plot_engine_scores
+from src._05_visualization.plot_engine_scores_wrapper import PlotEngineScores  # Unified wrapper combining distributions + analysis
 from src._05_visualization.plot_engine_validation import PlotEngineValidation
 from src._05_visualization.plot_engine_pca import PlotEnginePCA
 
@@ -74,7 +74,7 @@ class ClusteringPipeline:
             self.score_calculator = ScoreCalculator(feature_selector=self.feature_selector)
             self.score_tracker = ScoreEvolutionTracker()
             self.score_analyzer = ScoreAnalyzer()
-            self.plot_engine_scores = PlotEngineScoreDistributions()
+            self.plot_engine_scores = PlotEngineScores()
             logger.info("  ✓ Scoring modules initialized")
 
         # Check if naming is enabled (default: True)

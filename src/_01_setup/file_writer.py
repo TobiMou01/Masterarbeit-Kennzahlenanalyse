@@ -4,6 +4,7 @@ Handles all file writing operations for OutputHandler
 """
 
 import pandas as pd
+import numpy as np
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Optional
@@ -12,6 +13,63 @@ import joblib
 import json
 
 logger = logging.getLogger(__name__)
+
+
+def convert_numpy_types(obj):
+    """
+    Recursively convert NumPy types to native Python types for JSON serialization
+
+    Args:
+        obj: Object to convert (can be dict, list, numpy type, etc.)
+
+    Returns:
+        Object with all numpy types converted to Python native types
+    """
+    # Handle pandas DataFrames/Series first (before pd.isna check)
+    if isinstance(obj, (pd.DataFrame, pd.Series)):
+        return convert_numpy_types(obj.to_dict())
+    elif isinstance(obj, dict):
+        return {k: convert_numpy_types(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_numpy_types(item) for item in obj]
+    elif isinstance(obj, tuple):
+        return tuple(convert_numpy_types(item) for item in obj)
+    elif isinstance(obj, (np.integer, np.int64, np.int32, np.int16, np.int8)):
+        return int(obj)
+    elif isinstance(obj, (np.floating, np.float64, np.float32, np.float16)):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return convert_numpy_types(obj.tolist())
+    elif isinstance(obj, np.bool_):
+        return bool(obj)
+    # Check for scalar NaN values (not DataFrames/Series)
+    elif isinstance(obj, (int, float, str, bool, type(None))):
+        return obj
+    else:
+        # Try pd.isna only for scalar values
+        try:
+            if pd.isna(obj):
+                return None
+        except (ValueError, TypeError):
+            pass
+
+        # For any other objects, check if they're common non-serializable types
+        # (models, transformers, functions, etc.)
+        if hasattr(obj, '__module__') and hasattr(obj, '__class__'):
+            # Check for common non-serializable types
+            class_name = obj.__class__.__name__
+            module_name = obj.__module__ if hasattr(obj, '__module__') else ''
+
+            # Check for sklearn, scipy, or other ML library objects
+            if 'sklearn' in module_name or 'scipy' in module_name:
+                return f"<{class_name}>"
+
+            # Check for common non-serializable class names
+            if any(x in class_name.lower() for x in ['transformer', 'model', 'scaler', 'estimator', 'pipeline', 'pca']):
+                return f"<{class_name}>"
+
+        # For everything else, try to return as-is (will fail at json.dump if not serializable)
+        return obj
 
 
 class FileWriter:
@@ -69,8 +127,11 @@ class FileWriter:
 
         # 3. Metrics
         if metrics:
+            # Filter out non-serializable objects (models, transformers, scalers)
             metrics_clean = {k: v for k, v in metrics.items()
-                           if k not in ['scaler', 'model']}
+                           if k not in ['scaler', 'model', 'pca', 'pca_transformer', 'transformer']}
+            # Convert numpy types to native Python types for JSON serialization
+            metrics_clean = convert_numpy_types(metrics_clean)
             metrics_path = data_dir / 'metrics.json'
             with open(metrics_path, 'w') as f:
                 json.dump(metrics_clean, f, indent=2)
