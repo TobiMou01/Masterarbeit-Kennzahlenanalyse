@@ -125,13 +125,33 @@ class HierarchicalClusterer(BaseClusterer):
         Returns:
             Dictionary mit Metriken
         """
+        # Count actual clusters
+        unique_labels = np.unique(labels)
+        n_actual_clusters = len(unique_labels)
+
         metrics = {
-            'silhouette': silhouette_score(X, labels),
-            'davies_bouldin': davies_bouldin_score(X, labels),
             'n_clusters': self.n_clusters,
+            'n_actual_clusters': n_actual_clusters,
             'linkage': self.linkage,
             'distance_metric': self.distance_metric
         }
+
+        # Calculate clustering metrics only if we have enough clusters and samples
+        if n_actual_clusters >= 2 and len(labels) > n_actual_clusters:
+            try:
+                metrics['silhouette'] = silhouette_score(X, labels)
+                metrics['davies_bouldin'] = davies_bouldin_score(X, labels)
+            except Exception as e:
+                logger.warning(f"Could not calculate clustering metrics: {e}")
+                metrics['silhouette'] = -999  # Sentinel value
+                metrics['davies_bouldin'] = -999
+        else:
+            logger.warning(
+                f"Too few clusters ({n_actual_clusters}) or samples for metrics calculation. "
+                "Setting metrics to -999."
+            )
+            metrics['silhouette'] = -999
+            metrics['davies_bouldin'] = -999
 
         # Hierarchical Clustering hat kein Inertia-Konzept wie K-Means
         # Aber wir können die Anzahl der Leaves und Children speichern
