@@ -1,19 +1,28 @@
 """
-Comparison Phase - GICS, Algorithm, Feature, Temporal Analysis
+Comparison Phase - Algorithm and Feature Analysis
 """
 
-from . import comparison_engine
-from . import gics_analyzer
-from . import algorithm_analyzer
-from . import feature_analyzer
-from . import temporal_analyzer
-from . import consolidated_excel_writer
+from .comparison_pipeline import ComparisonPipeline
+from .feature_analyzer import FeatureAnalyzer
+from .temporal_analyzer import TemporalAnalyzer
+from .company_analysis import CompanyAnalysis
+
+# Excel Writers - NEW modular structure
+from .section_writers import create_research_excel, ResearchExcelCoordinator
+
+# Legacy (backward compatible)
+from .research_excel_writer import ResearchExcelWriter  # Legacy
+from .consolidated_excel_writer import ConsolidatedExcelWriter
 
 __all__ = [
-    'comparison_engine',
-    'gics_analyzer',
-    'algorithm_analyzer',
-    'feature_analyzer',
-    'temporal_analyzer',
-    'consolidated_excel_writer'
+    'ComparisonPipeline',
+    'FeatureAnalyzer',
+    'TemporalAnalyzer',
+    'CompanyAnalysis',
+    # New modular Excel writers
+    'create_research_excel',
+    'ResearchExcelCoordinator',
+    # Legacy
+    'ResearchExcelWriter',
+    'ConsolidatedExcelWriter',
 ]

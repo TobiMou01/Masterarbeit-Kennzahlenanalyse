@@ -1,9 +1,26 @@
 """
-Setup Phase - Environment, Config, Logging
+Setup Phase - Configuration and Output Management
 """
 
-from . import config_loader
-from . import environment
-from . import logger
+from .logger import setup_logger
+from .config_loader import ConfigLoader
+from .environment import Environment
 
-__all__ = ['config_loader', 'environment', 'logger']
+# Output Handler - NEW modular structure
+from .path_manager import PathManager
+from .data_formatter import DataFormatter
+from .file_writer import FileWriter
+from .output_coordinator import OutputHandler  # Backward compatible name
+
+# Legacy (kept for compatibility)
+# from .output_handler import OutputHandler
+
+__all__ = [
+    'setup_logger',
+    'ConfigLoader',
+    'Environment',
+    'PathManager',
+    'DataFormatter',
+    'FileWriter',
+    'OutputHandler',
+]
