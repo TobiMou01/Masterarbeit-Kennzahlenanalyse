@@ -34,12 +34,25 @@ env/
 *~
 
 # Jupyter Notebook
-.ipynb_checkpoints
+.ipynb_checkpoints/
+# Keep example notebooks, ignore outputs in them
+!notebooks/*.ipynb
 
-# Data files (optional - uncomment if you don't want to track data)
-# data/
-# *.csv
-# *.xlsx
+# Output files - Keep structure, ignore large files
+output/**/*.png
+output/**/*.pkl
+output/**/*.xlsx
+output/**/checkpoints/*.pkl
+output/**/checkpoints/*.json
+
+# Keep structure & documentation
+!output/**/README.md
+!output/**/.gitkeep
+!output/99_summary/*.md
+
+# Keep config snapshots for reproducibility
+!output/**/00_config/*.yaml
+!output/**/00_config/*.json
 
 # OS
 .DS_Store
