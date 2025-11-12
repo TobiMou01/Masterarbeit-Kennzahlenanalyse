@@ -53,7 +53,7 @@ def apply_scoring(
             df=df,
             features=features,
             cluster_column=cluster_column,
-            cluster_profiles=profiles
+            profiles=profiles
         )
         
         # Log score statistics

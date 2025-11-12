@@ -61,7 +61,7 @@ def perform_validation(
         # 1. Algorithm Comparison (K-Means vs Hierarchical vs DBSCAN)
         logger.info(f"     → Comparing alternative algorithms...")
 
-        algo_results, df_algo = algorithm_comparison.compare_algorithms(
+        algo_results, df_algo = algorithm_comparison.compare_multiple_algorithms(
             df=df,
             features=features,
             original_labels=df['cluster'].values,
