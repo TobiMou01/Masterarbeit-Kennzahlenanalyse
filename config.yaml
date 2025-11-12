@@ -4,6 +4,44 @@
 # Kompakte, klare Konfiguration für 3-stufige Analyse
 
 # ========================================
+# PREPROCESSING
+# ========================================
+preprocessing:
+  # Imputation fehlender Werte
+  imputation:
+    enabled: true
+    method: 'median'  # 'median' oder 'mean'
+    threshold: 0.5    # Max. Anteil fehlender Werte (0-1)
+
+  # CAGR-Glättung für statische Finanzdaten
+  cagr_smoothing:
+    enabled: false    # Reduziert Volatilität in Basisdaten
+    years: 3          # Anzahl Jahre für CAGR-Berechnung
+    fields:           # Zu glättende Felder (optional, sonst default)
+      - revt
+      - at
+      - ebit
+      - ebitda
+      - oancf
+
+# ========================================
+# ANALYSIS MODE (NEU: Exposé-Anforderung)
+# ========================================
+analysis:
+  mode: 'sequential'  # 'sequential' oder 'unified'
+
+  # Sequential Mode (Standard):
+  #   - 3 separate Analysen: static → dynamic → combined
+  #   - Separate Clusterings für jede Dimension
+  #   - Beste Vergleichbarkeit zwischen Dimensionen
+
+  # Unified Mode:
+  #   - EINE Analyse mit allen Features zusammen
+  #   - Static + Dynamic Features gleichzeitig im Clustering
+  #   - Ganzheitliche Unternehmensbetrachtung
+  #   - Schnellere Ausführung (nur 1 Clustering statt 3)
+
+# ========================================
 # CLUSTERING ALGORITHM
 # ========================================
 classification:
@@ -30,10 +68,15 @@ classification:
     # Erwarte mit diesen Werten: 4-8 Cluster mit 5-15% Noise
 
 # ========================================
-# CLUSTER-ANZAHL
+# CLUSTER-ANZAHL (K-SELECTION)
 # ========================================
+cluster_selection:
+  mode: 'manual'  # 'auto' oder 'manual'
+  k_range: [2, 10]  # Range für automatische Bestimmung
+  methods: ['elbow', 'silhouette', 'gap']  # Methoden für auto-Modus
+
 static_analysis:
-  n_clusters: 5  # Empfohlen: 3-7
+  n_clusters: 5  # Wird verwendet wenn mode='manual'
 
 dynamic_analysis:
   n_clusters: 5
@@ -118,6 +161,13 @@ combined_analysis:
     - margin_volatility
     - growth_quality
 
+# Unified Analysis (für analysis.mode='unified')
+unified_analysis:
+  n_clusters: 5
+  # Features werden automatisch kombiniert aus:
+  # - Alle static_analysis.features
+  # - Alle dynamic_analysis.features (mit Suffixen)
+
 # ========================================
 # DATA & MARKET SETTINGS
 # ========================================
@@ -180,17 +230,31 @@ validation:
 # PCA INTEGRATION
 # ========================================
 pca:
-  enabled: false  # Enable PCA validation (requires extended features)
-  n_components: 0.85  # Preserve 85% variance (or int for exact number)
-  extended_features_preset: 'pca_optimized'  # Feature preset for PCA
-  compare_with_original: true  # Compare PCA vs original clustering
+  enabled: false  # Enable PCA preprocessing (dimensionality reduction)
+  run_before_clustering: true  # Apply PCA BEFORE clustering (recommended)
+  n_components: 0.90  # Preserve 90% variance (or int for exact number)
+  compare_spaces: false  # Compare clustering in original vs PCA space (for validation)
 
 # ========================================
-# VISUALIZATION
+# VISUALIZATION (NEU: Granulare Kontrolle)
 # ========================================
 visualization:
   dpi: 300  # High resolution for publications
   format: 'png'  # Output format (png, pdf, svg)
+
+  # Granulare Kontrolle über einzelne Plot-Typen
+  plots:
+    # Basis-Plots (cluster_visualizer.py)
+    cluster_distribution: true      # Verteilung der Unternehmen auf Cluster
+    cluster_characteristics: true   # Kennzahlen-Profile pro Cluster
+    correlation_heatmap: true       # Feature-Korrelationsmatrix
+    pca_clusters: true              # PCA-Visualisierung (2D/3D)
+    performance_dashboard: true     # Konsolidiertes Performance-Dashboard
+
+    # Erweiterte Analysen (nur wenn entsprechende Module enabled)
+    algorithm_congruence: true      # Robustness-Check (alternative Algorithmen)
+    company_insights: true          # Top/Bottom Companies pro Cluster
+    detailed_pca: true              # Detaillierte PCA-Analyse (nur wenn pca.enabled=true)
 
   score_plots:
     - distribution  # Box plots per cluster
