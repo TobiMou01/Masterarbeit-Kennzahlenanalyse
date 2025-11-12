@@ -18,6 +18,10 @@ from .data_formatter import DataFormatter
 from .file_writer import FileWriter
 from .output_coordinator import OutputHandler  # Backward compatible name
 
+# Reproducibility & Jupyter support
+from . import config_exporter
+from . import checkpoint_manager
+
 # Legacy (kept for compatibility)
 # from .output_handler import OutputHandler
 
@@ -32,4 +36,6 @@ __all__ = [
     'DataFormatter',
     'FileWriter',
     'OutputHandler',
+    'config_exporter',
+    'checkpoint_manager',
 ]
