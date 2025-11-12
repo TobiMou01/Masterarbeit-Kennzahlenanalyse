@@ -196,8 +196,12 @@ class ClusteringPipeline:
         # 3. Perform External Validation
         perform_validation(
             df=df_result,
-            cluster_column='cluster',
-            analysis_type='static'
+            features=features,
+            analysis_type='static',
+            config=self.config,
+            validation_enabled=self.validation_enabled,
+            algorithm_comparison=self.algorithm_comparison,
+            external_validation=self.external_validation
         )
 
         # 4. Create Score Visualizations
@@ -264,8 +268,12 @@ class ClusteringPipeline:
         # 3. Perform External Validation
         perform_validation(
             df=df_result,
-            cluster_column='cluster',
-            analysis_type='dynamic'
+            features=features,
+            analysis_type='dynamic',
+            config=self.config,
+            validation_enabled=self.validation_enabled,
+            algorithm_comparison=self.algorithm_comparison,
+            external_validation=self.external_validation
         )
 
         # 4. Create Score Visualizations
@@ -364,8 +372,12 @@ class ClusteringPipeline:
         # 3. Perform External Validation
         perform_validation(
             df=df_result,
-            cluster_column='cluster',
-            analysis_type='combined'
+            features=features,
+            analysis_type='combined',
+            config=self.config,
+            validation_enabled=self.validation_enabled,
+            algorithm_comparison=self.algorithm_comparison,
+            external_validation=self.external_validation
         )
 
         # 4. Create Score Visualizations
