@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 def create_pca_plots(
     df: pd.DataFrame,
     features: List[str],
-    analysis_type: str
+    analysis_type: str,
+    output
 ):
     """
     Create PCA visualization plots
@@ -135,7 +136,8 @@ def create_company_insights_plots(
     df: pd.DataFrame,
     profiles: pd.DataFrame,
     features: List[str],
-    analysis_type: str
+    analysis_type: str,
+    output
 ):
     """
     Create company insights plots
@@ -381,7 +383,8 @@ def create_company_insights_plots(
 
 def create_algorithm_congruence_plots(
     df: pd.DataFrame,
-    analysis_type: str
+    analysis_type: str,
+    output
 ):
     """
     Create algorithm congruence plots
@@ -528,7 +531,8 @@ def create_algorithm_congruence_plots(
 def create_score_visualizations(
     df: pd.DataFrame,
     cluster_column: str,
-    analysis_type: str
+    analysis_type: str,
+    output
 ):
     """
     Create score visualizations
