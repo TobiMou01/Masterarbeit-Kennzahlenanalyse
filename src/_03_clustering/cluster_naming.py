@@ -216,6 +216,10 @@ class ClusterNamer:
         Returns:
             Technical cluster name
         """
+        # Check if dominant_features is empty
+        if dominant_features.empty:
+            return f"Cluster {cluster_id}"
+
         cluster_dominant = dominant_features[dominant_features['cluster'] == cluster_id]
 
         if len(cluster_dominant) == 0:
@@ -392,17 +396,18 @@ class ClusterNamer:
         # Build hybrid name
         hybrid_name = f"{performance_level} ({archetype})"
 
-        # Optionally add top feature for context
-        cluster_dominant = dominant_features[dominant_features['cluster'] == cluster_id]
+        # Optionally add top feature for context (if dominant_features is not empty)
+        if not dominant_features.empty:
+            cluster_dominant = dominant_features[dominant_features['cluster'] == cluster_id]
 
-        if len(cluster_dominant) > 0:
-            top_feature = cluster_dominant.iloc[0]
-            feature = top_feature['feature']
-            value = top_feature['value']
+            if len(cluster_dominant) > 0:
+                top_feature = cluster_dominant.iloc[0]
+                feature = top_feature['feature']
+                value = top_feature['value']
 
-            formatted_value = self._format_feature_value(feature, value)
-            if formatted_value:
-                hybrid_name += f" - {self._get_feature_display_name(feature)}: {formatted_value}"
+                formatted_value = self._format_feature_value(feature, value)
+                if formatted_value:
+                    hybrid_name += f" - {self._get_feature_display_name(feature)}: {formatted_value}"
 
         # Ensure max length
         if len(hybrid_name) > 60:
