@@ -37,6 +37,84 @@ class AlgorithmComparison:
         logger.info("✓ AlgorithmComparison initialized")
 
     # =========================================================================
+    # RUN AND COMPARE ALGORITHMS
+    # =========================================================================
+
+    def run_and_compare_algorithms(
+        self,
+        df: pd.DataFrame,
+        features: List[str],
+        original_labels: np.ndarray,
+        n_clusters: int
+    ) -> Tuple[Dict, pd.DataFrame]:
+        """
+        Run alternative clustering algorithms and compare them
+
+        Args:
+            df: DataFrame with features
+            features: List of feature names to use for clustering
+            original_labels: Original cluster labels from primary algorithm
+            n_clusters: Number of clusters to use
+
+        Returns:
+            Tuple of (comparison_results, df_with_alt_clusters)
+        """
+        from sklearn.cluster import KMeans, AgglomerativeClustering, DBSCAN
+        from sklearn.preprocessing import StandardScaler
+
+        # Prepare data
+        X = df[features].values
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+
+        # Run alternative algorithms
+        results_dict = {}
+
+        # 1. K-Means (alternative)
+        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+        kmeans_labels = kmeans.fit_predict(X_scaled)
+        results_dict['kmeans_alt'] = pd.DataFrame({
+            'gvkey': df['gvkey'].values if 'gvkey' in df.columns else range(len(df)),
+            'cluster': kmeans_labels
+        })
+
+        # 2. Hierarchical
+        hierarchical = AgglomerativeClustering(n_clusters=n_clusters, linkage='ward')
+        hierarchical_labels = hierarchical.fit_predict(X_scaled)
+        results_dict['hierarchical'] = pd.DataFrame({
+            'gvkey': df['gvkey'].values if 'gvkey' in df.columns else range(len(df)),
+            'cluster': hierarchical_labels
+        })
+
+        # 3. DBSCAN (auto determine eps)
+        from sklearn.neighbors import NearestNeighbors
+        neighbors = NearestNeighbors(n_neighbors=5)
+        neighbors.fit(X_scaled)
+        distances, _ = neighbors.kneighbors(X_scaled)
+        eps = np.median(distances[:, -1])
+
+        dbscan = DBSCAN(eps=eps, min_samples=5)
+        dbscan_labels = dbscan.fit_predict(X_scaled)
+        results_dict['dbscan'] = pd.DataFrame({
+            'gvkey': df['gvkey'].values if 'gvkey' in df.columns else range(len(df)),
+            'cluster': dbscan_labels
+        })
+
+        # Compare algorithms
+        comparison_results = self.compare_multiple_algorithms(
+            results_dict=results_dict,
+            cluster_column='cluster'
+        )
+
+        # Create DataFrame with alternative cluster assignments
+        df_alt = df[['gvkey']].copy() if 'gvkey' in df.columns else pd.DataFrame({'gvkey': range(len(df))})
+        df_alt['cluster_kmeans_alt'] = kmeans_labels
+        df_alt['cluster_hierarchical'] = hierarchical_labels
+        df_alt['cluster_dbscan'] = dbscan_labels
+
+        return comparison_results, df_alt
+
+    # =========================================================================
     # MAIN COMPARISON METHOD
     # =========================================================================
 

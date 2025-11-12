@@ -208,7 +208,8 @@ class ClusteringPipeline:
         plot_engine_insights.create_score_visualizations(
             df=df_result,
             cluster_column='cluster',
-            analysis_type='static'
+            analysis_type='static',
+            output=self.output
         )
 
         # ==================================================================
@@ -280,7 +281,8 @@ class ClusteringPipeline:
         plot_engine_insights.create_score_visualizations(
             df=df_result,
             cluster_column='cluster',
-            analysis_type='dynamic'
+            analysis_type='dynamic',
+            output=self.output
         )
 
         # ==================================================================
@@ -384,7 +386,8 @@ class ClusteringPipeline:
         plot_engine_insights.create_score_visualizations(
             df=df_result,
             cluster_column='cluster',
-            analysis_type='combined'
+            analysis_type='combined',
+            output=self.output
         )
 
         # 5. Track Score Evolution (Static → Dynamic → Combined)
@@ -584,13 +587,13 @@ class ClusteringPipeline:
 
             # Create PCA plots if enabled
             if self.pca_enabled:
-                plot_engine_insights.create_pca_plots(df, features, analysis_type)
+                plot_engine_insights.create_pca_plots(df, features, analysis_type, output=self.output)
 
             # Create algorithm congruence plots (robustness check)
-            plot_engine_insights.create_algorithm_congruence_plots(df, analysis_type)
+            plot_engine_insights.create_algorithm_congruence_plots(df, analysis_type, output=self.output)
 
             # Create company insights plots
-            plot_engine_insights.create_company_insights_plots(df, profiles, features, analysis_type)
+            plot_engine_insights.create_company_insights_plots(df, profiles, features, analysis_type, output=self.output)
 
     # =========================================================================
     # NEW INTEGRATION METHODS
