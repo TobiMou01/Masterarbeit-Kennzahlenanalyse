@@ -13,8 +13,12 @@ from typing import List, Dict, Optional
 
 # Import legacy plot engines for backward compatibility
 from src._05_visualization import plot_engine_score_distributions as plot_engine_scores  # Migrated from plot_engine_scores
-from src._05_visualization import plot_engine_validation
-from src._05_visualization import plot_engine_pca as legacy_pca
+from src._05_visualization.plot_engine_validation_wrapper import PlotEngineValidation
+from src._05_visualization.plot_engine_pca_wrapper import PlotEnginePCA
+
+# Create module-level instances for backward compatibility
+plot_engine_validation = PlotEngineValidation()
+plot_engine_pca = PlotEnginePCA()
 
 logger = logging.getLogger(__name__)
 

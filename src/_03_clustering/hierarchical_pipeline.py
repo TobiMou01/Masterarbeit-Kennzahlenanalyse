@@ -80,7 +80,7 @@ class HierarchicalPipeline:
         if self.validation_enabled:
             from src._06_validation.algorithm_comparison import AlgorithmComparison
             from src._06_validation.external_validation import ExternalValidation
-            from src._05_visualization.plot_engine_validation import PlotEngineValidation
+            from src._05_visualization.plot_engine_validation_wrapper import PlotEngineValidation  # Unified wrapper combining matrices + metrics
 
             self.algorithm_comparison = AlgorithmComparison()
             self.external_validation = ExternalValidation()
@@ -90,7 +90,7 @@ class HierarchicalPipeline:
         # Check if PCA is enabled (default: False)
         self.pca_enabled = config.get_value(config_dict, 'pca', 'enabled', default=False)
         if self.pca_enabled:
-            from src._05_visualization.plot_engine_pca import PlotEnginePCA
+            from src._05_visualization.plot_engine_pca_wrapper import PlotEnginePCA  # Unified wrapper combining variance + loadings + clusters
             self.plot_engine_pca = PlotEnginePCA()
             logger.info("  ✓ PCA visualization initialized")
 

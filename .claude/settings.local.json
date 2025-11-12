@@ -30,7 +30,10 @@
       "Bash(then echo \"=== INHALT VON pipeline_run.txt ===\")",
       "Bash(else echo \"Datei wird beim nächsten ''python main.py'' Run erstellt\")",
       "Bash(fi)",
-      "Bash(source venv_masterarbeit/bin/activate)"
+      "Bash(source venv_masterarbeit/bin/activate)",
+      "Bash(sort:*)",
+      "Bash(for file in cluster_visualizer.py comparison_visualizer.py)",
+      "Bash(do echo \"=== $file ===\" grep -r \"import.*$file%.py\\|from.*$file\" src --include=\"*.py\")"
     ],
     "deny": [],
     "ask": []

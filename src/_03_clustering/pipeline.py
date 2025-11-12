@@ -23,8 +23,8 @@ from src._06_validation import AlgorithmComparison, ExternalValidation
 from src._03_clustering.cluster_naming import ClusterNamer
 from src._01_setup.feature_selector import FeatureSelector
 from src._05_visualization.plot_engine_scores_wrapper import PlotEngineScores  # Unified wrapper combining distributions + analysis
-from src._05_visualization.plot_engine_validation import PlotEngineValidation
-from src._05_visualization.plot_engine_pca import PlotEnginePCA
+from src._05_visualization.plot_engine_validation_wrapper import PlotEngineValidation  # Unified wrapper combining matrices + metrics
+from src._05_visualization.plot_engine_pca_wrapper import PlotEnginePCA  # Unified wrapper combining variance + loadings + clusters
 
 # NEW: Refactored module imports
 from src._04_scoring.score_integrator import apply_scoring, track_score_evolution
