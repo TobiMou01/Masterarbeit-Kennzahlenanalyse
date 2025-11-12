@@ -33,8 +33,7 @@ def create_pca_plots(
         features: List of feature names used for clustering
         analysis_type: 'static', 'dynamic', or 'combined'
     """
-    if not pca_enabled or skip_plots:
-        return
+    # PCA plots are always enabled when this function is called
 
     logger.info(f"\n  🔬 Creating PCA Plots ({analysis_type})...")
 
@@ -153,8 +152,7 @@ def create_company_insights_plots(
         features: List of features used for clustering
         analysis_type: 'static', 'dynamic', or 'combined'
     """
-    if skip_plots:
-        return
+    # Company insights plots are always enabled when this function is called
 
     logger.info(f"\n  💼 Creating Company Insights Plots ({analysis_type})...")
 
@@ -400,8 +398,7 @@ def create_algorithm_congruence_plots(
         df: DataFrame with cluster assignments
         analysis_type: 'static', 'dynamic', or 'combined'
     """
-    if not validation_enabled or skip_plots:
-        return
+    # Validation plots are always enabled when this function is called
 
     logger.info(f"\n  🔄 Creating Algorithm Congruence Plots ({analysis_type})...")
 
@@ -547,8 +544,7 @@ def create_score_visualizations(
         cluster_column: Name of cluster column
         analysis_type: 'static', 'dynamic', or 'combined'
     """
-    if not scoring_enabled or skip_plots:
-        return
+    # Score visualizations are always enabled when this function is called
 
     logger.info(f"\n  📊 Creating Score Visualizations ({analysis_type})...")
 
