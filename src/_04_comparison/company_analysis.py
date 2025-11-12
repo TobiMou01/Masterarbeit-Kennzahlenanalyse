@@ -503,9 +503,118 @@ class CompanyClusterAnalyzer:
             logger.info(f"  ✓ Sheet 'Summary': {len(summary_df)} rows")
 
         logger.info(f"\n✓ Excel file created successfully: {output_path}")
+
+        # ===== ADD VISUALIZATIONS TO EXCEL =====
+        logger.info("\n→ Adding visualizations to Excel...")
+        self._add_visualizations_to_excel(output_path, algo_name, stage)
+
         logger.info(f"{'='*80}\n")
 
         return str(output_path)
+
+    def _add_visualizations_to_excel(self, excel_path: Path, algo_name: str, stage: str):
+        """
+        Add PNG visualizations to existing Excel file
+
+        Args:
+            excel_path: Path to existing Excel file
+            algo_name: Algorithm name (e.g., 'kmeans', 'hierarchical', 'dbscan')
+            stage: Stage name (e.g., 'combined', 'static', 'dynamic')
+        """
+        from openpyxl import load_workbook
+        from openpyxl.drawing.image import Image as XLImage
+        from PIL import Image
+        import io
+
+        try:
+            # Load existing workbook
+            wb = load_workbook(excel_path)
+
+            # Determine base path based on algorithm
+            if algo_name == 'kmeans':
+                base_path = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/{stage}')
+            elif algo_name in ['hierarchical', 'dbscan']:
+                # Hierarchical and DBSCAN have different structure
+                base_path = Path(f'output/{self.market}/02_algorithms/{algo_name}')
+            else:
+                logger.warning(f"  ⚠ Unknown algorithm: {algo_name}")
+                return
+
+            embedded_count = 0
+
+            # ===== OVERVIEW SHEET =====
+            if 'Overview' in wb.sheetnames:
+                ws = wb['Overview']
+                overview_plots = [
+                    ('plots/performance_dashboard.png', 'O', 3, 0.25) if algo_name == 'kmeans' else (f'master_clustering/plots/performance_dashboard.png', 'O', 3, 0.25),
+                    ('plots/cluster_distribution.png', 'O', 25, 0.25) if algo_name == 'kmeans' else (f'master_clustering/plots/performance_dashboard.png', 'O', 25, 0.25),
+                ]
+
+                for plot_rel_path, col, row, scale in overview_plots:
+                    plot_path = base_path / plot_rel_path
+                    if plot_path.exists():
+                        img = Image.open(plot_path)
+                        if scale != 1.0:
+                            new_size = (int(img.width * scale), int(img.height * scale))
+                            img = img.resize(new_size, Image.Resampling.LANCZOS)
+                        img_byte_arr = io.BytesIO()
+                        img.save(img_byte_arr, format='PNG')
+                        img_byte_arr.seek(0)
+                        xl_img = XLImage(img_byte_arr)
+                        ws.add_image(xl_img, f'{col}{row}')
+                        embedded_count += 1
+
+            # ===== SUMMARY SHEET =====
+            if 'Summary' in wb.sheetnames:
+                ws = wb['Summary']
+                summary_plots = [
+                    ('1_cluster_quality/plots/cluster_homogeneity.png', 'F', 3, 0.3) if algo_name == 'kmeans' else (f'master_clustering/plots/performance_dashboard.png', 'F', 3, 0.3),
+                    ('1_cluster_quality/plots/score_distribution_overall.png', 'F', 25, 0.3) if algo_name == 'kmeans' else (f'master_clustering/plots/performance_dashboard.png', 'F', 25, 0.3),
+                ]
+
+                for plot_rel_path, col, row, scale in summary_plots:
+                    plot_path = base_path / plot_rel_path
+                    if plot_path.exists():
+                        img = Image.open(plot_path)
+                        if scale != 1.0:
+                            new_size = (int(img.width * scale), int(img.height * scale))
+                            img = img.resize(new_size, Image.Resampling.LANCZOS)
+                        img_byte_arr = io.BytesIO()
+                        img.save(img_byte_arr, format='PNG')
+                        img_byte_arr.seek(0)
+                        xl_img = XLImage(img_byte_arr)
+                        ws.add_image(xl_img, f'{col}{row}')
+                        embedded_count += 1
+
+            # ===== SCORE_EVOLUTION SHEET (only for kmeans combined) =====
+            if 'Score_Evolution' in wb.sheetnames and algo_name == 'kmeans' and stage == 'combined':
+                ws = wb['Score_Evolution']
+                evolution_plots = [
+                    ('1_cluster_quality/scores/evolution/evolution_scatter.png', 'G', 3, 0.35),
+                ]
+
+                for plot_rel_path, col, row, scale in evolution_plots:
+                    plot_path = base_path / plot_rel_path
+                    if plot_path.exists():
+                        img = Image.open(plot_path)
+                        if scale != 1.0:
+                            new_size = (int(img.width * scale), int(img.height * scale))
+                            img = img.resize(new_size, Image.Resampling.LANCZOS)
+                        img_byte_arr = io.BytesIO()
+                        img.save(img_byte_arr, format='PNG')
+                        img_byte_arr.seek(0)
+                        xl_img = XLImage(img_byte_arr)
+                        ws.add_image(xl_img, f'{col}{row}')
+                        embedded_count += 1
+
+            # Save workbook with images
+            wb.save(excel_path)
+            logger.info(f"  ✓ Added {embedded_count} visualizations to Excel")
+
+        except Exception as e:
+            logger.error(f"  ❌ Error adding visualizations: {e}")
+            import traceback
+            traceback.print_exc()
 
 
 def create_company_cluster_excel(
