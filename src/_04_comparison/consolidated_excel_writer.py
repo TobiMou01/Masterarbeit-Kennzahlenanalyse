@@ -133,6 +133,11 @@ class ConsolidatedExcelWriter:
         self._create_scatter_sheet(wb, overview_df)
         logger.info("  ✓ Sheet 'Score_Comparisons' created")
 
+        # Step 5: Add PNG visualizations
+        logger.info("\n→ Step 5: Adding PNG visualizations...")
+        self._add_png_visualizations(wb)
+        logger.info("  ✓ PNG visualizations added")
+
         # Save workbook
         wb.save(output_path)
 
@@ -143,6 +148,119 @@ class ConsolidatedExcelWriter:
         logger.info("="*80 + "\n")
 
         return str(output_path)
+
+    def _add_png_visualizations(self, wb):
+        """
+        Add PNG visualizations from output folders to Excel sheets
+
+        Args:
+            wb: Workbook object
+        """
+        from openpyxl.drawing.image import Image as XLImage
+        from PIL import Image
+        import io
+
+        base_path_combined = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/combined')
+        base_path_comparisons = Path(f'output/{self.market}/03_comparisons')
+
+        embedded_count = 0
+
+        # ===== OVERVIEW SHEET =====
+        if 'Overview' in wb.sheetnames:
+            ws = wb['Overview']
+            plot_path = base_path_comparisons / 'algorithms/metrics_comparison_combined.png'
+            if plot_path.exists():
+                try:
+                    img = Image.open(plot_path)
+                    new_size = (int(img.width * 0.3), int(img.height * 0.3))
+                    img = img.resize(new_size, Image.Resampling.LANCZOS)
+                    img_byte_arr = io.BytesIO()
+                    img.save(img_byte_arr, format='PNG')
+                    img_byte_arr.seek(0)
+                    xl_img = XLImage(img_byte_arr)
+                    ws.add_image(xl_img, 'O3')
+                    embedded_count += 1
+                except Exception as e:
+                    logger.warning(f"  ⚠ Could not embed metrics_comparison: {e}")
+
+        # ===== SUMMARY SHEET =====
+        if 'Summary' in wb.sheetnames:
+            ws = wb['Summary']
+            plot_path = base_path_comparisons / 'algorithms/algorithm_overlap_combined.png'
+            if plot_path.exists():
+                try:
+                    img = Image.open(plot_path)
+                    new_size = (int(img.width * 0.3), int(img.height * 0.3))
+                    img = img.resize(new_size, Image.Resampling.LANCZOS)
+                    img_byte_arr = io.BytesIO()
+                    img.save(img_byte_arr, format='PNG')
+                    img_byte_arr.seek(0)
+                    xl_img = XLImage(img_byte_arr)
+                    ws.add_image(xl_img, 'F3')
+                    embedded_count += 1
+                except Exception as e:
+                    logger.warning(f"  ⚠ Could not embed algorithm_overlap: {e}")
+
+        # ===== CLUSTER_ANALYSIS SHEET =====
+        if 'Cluster_Analysis' in wb.sheetnames:
+            ws = wb['Cluster_Analysis']
+            plots_to_embed = [
+                (base_path_combined / '2_algorithm_congruence/plots/confusion_matrix.png', 'H', 3, 0.3),
+                (base_path_combined / '2_algorithm_congruence/plots/ari_heatmap_robustness.png', 'H', 25, 0.3),
+            ]
+
+            for plot_path, col, row, scale in plots_to_embed:
+                if plot_path.exists():
+                    try:
+                        img = Image.open(plot_path)
+                        new_size = (int(img.width * scale), int(img.height * scale))
+                        img = img.resize(new_size, Image.Resampling.LANCZOS)
+                        img_byte_arr = io.BytesIO()
+                        img.save(img_byte_arr, format='PNG')
+                        img_byte_arr.seek(0)
+                        xl_img = XLImage(img_byte_arr)
+                        ws.add_image(xl_img, f'{col}{row}')
+                        embedded_count += 1
+                    except Exception as e:
+                        logger.warning(f"  ⚠ Could not embed {plot_path.name}: {e}")
+
+        # ===== SCORE_DISTRIBUTIONS SHEET =====
+        if 'Score_Distributions' in wb.sheetnames:
+            ws = wb['Score_Distributions']
+            plot_path = base_path_combined / '1_cluster_quality/plots/score_distribution_overall.png'
+            if plot_path.exists():
+                try:
+                    img = Image.open(plot_path)
+                    new_size = (int(img.width * 0.35), int(img.height * 0.35))
+                    img = img.resize(new_size, Image.Resampling.LANCZOS)
+                    img_byte_arr = io.BytesIO()
+                    img.save(img_byte_arr, format='PNG')
+                    img_byte_arr.seek(0)
+                    xl_img = XLImage(img_byte_arr)
+                    ws.add_image(xl_img, 'G3')
+                    embedded_count += 1
+                except Exception as e:
+                    logger.warning(f"  ⚠ Could not embed score_distribution: {e}")
+
+        # ===== SCORE_COMPARISONS SHEET =====
+        if 'Score_Comparisons' in wb.sheetnames:
+            ws = wb['Score_Comparisons']
+            plot_path = base_path_combined / '1_cluster_quality/plots/score_correlations.png'
+            if plot_path.exists():
+                try:
+                    img = Image.open(plot_path)
+                    new_size = (int(img.width * 0.35), int(img.height * 0.35))
+                    img = img.resize(new_size, Image.Resampling.LANCZOS)
+                    img_byte_arr = io.BytesIO()
+                    img.save(img_byte_arr, format='PNG')
+                    img_byte_arr.seek(0)
+                    xl_img = XLImage(img_byte_arr)
+                    ws.add_image(xl_img, 'G3')
+                    embedded_count += 1
+                except Exception as e:
+                    logger.warning(f"  ⚠ Could not embed score_correlations: {e}")
+
+        logger.info(f"    → Embedded {embedded_count} PNG visualizations")
 
     def _create_overview_dataframe(self) -> pd.DataFrame:
         """

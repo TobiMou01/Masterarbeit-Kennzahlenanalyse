@@ -133,7 +133,36 @@ class Section1HomogeneityWriter(BaseSectionWriter):
         for col in range(1, 11):
             ws.column_dimensions[chr(64+col)].width = 15
 
-        logger.info("  ✓ Section 1a sheet created")
+        # ===== EMBED VISUALIZATIONS =====
+        row += 2
+        ws[f'A{row}'] = "CLUSTER QUALITY VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:J{row}')
+        row += 1
+
+        # Try to embed cluster quality plots from K-Means combined
+        base_path = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/combined')
+        plots_to_embed = [
+            ('1_cluster_quality/plots/cluster_homogeneity.png', 'A', 0.4),
+            ('1_cluster_quality/plots/score_distribution_overall.png', 'F', 0.4),
+            ('4_company_insights/plots/cluster_sizes.png', 'K', 0.4),
+        ]
+
+        embedded_count = 0
+        for plot_path, col_letter, scale in plots_to_embed:
+            full_path = base_path / plot_path
+            if full_path.exists():
+                self._embed_png(ws, full_path, f'{col_letter}{row}', scale=scale)
+                embedded_count += 1
+
+        if embedded_count > 0:
+            row += 30  # Space for embedded images
+        else:
+            ws[f'A{row}'] = "Cluster quality visualizations not available"
+            ws[f'A{row}'].font = Font(italic=True, size=9)
+            row += 1
+
+        logger.info(f"  ✓ Section 1a sheet created ({embedded_count} plots embedded)")
 
     def _create_section_1b_charts(self, wb: Workbook, df: pd.DataFrame):
         """Section 1b: Homogenität Charts"""
@@ -186,30 +215,33 @@ class Section1HomogeneityWriter(BaseSectionWriter):
 
         row += 20
 
-        # ===== EMBED PERFORMANCE DASHBOARD PNGs =====
-        ws[f'A{row}'] = "ALGORITHM PERFORMANCE VISUALIZATIONS"
+        # ===== EMBED PERFORMANCE DASHBOARD & VISUALIZATIONS =====
+        ws[f'A{row}'] = "PERFORMANCE & SCORE VISUALIZATIONS"
         ws[f'A{row}'].font = Font(size=12, bold=True)
         ws.merge_cells(f'A{row}:H{row}')
         row += 1
 
-        # Try to embed performance dashboard for each algorithm
+        # Embed from K-Means combined (main analysis)
+        base_path = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/combined')
+        plots_to_embed = [
+            ('plots/performance_dashboard.png', 'A', 0.35),
+            ('1_cluster_quality/plots/score_correlations.png', 'J', 0.35),
+            ('plots/cluster_distribution.png', 'S', 0.35),
+        ]
+
         embedded_count = 0
-        chart_col_offset = 0
-        for algo in df['algorithm'].unique():
-            png_path = Path(f'output/{self.market}/02_algorithms/{algo}/combined_scores/plots/performance_dashboard.png')
-            if png_path.exists():
-                # Calculate column position (stagger horizontally)
-                col_letter = chr(65 + chart_col_offset)  # A, J, S (every 9 columns)
-                self._embed_png(ws, png_path, f'{col_letter}{row}', scale=0.35)
+        for plot_path, col_letter, scale in plots_to_embed:
+            full_path = base_path / plot_path
+            if full_path.exists():
+                self._embed_png(ws, full_path, f'{col_letter}{row}', scale=scale)
                 embedded_count += 1
-                chart_col_offset += 9
 
         if embedded_count == 0:
-            ws[f'A{row}'] = "Performance dashboard plots not available"
+            ws[f'A{row}'] = "Performance visualizations not available"
             ws[f'A{row}'].font = Font(italic=True, size=9)
             row += 1
         else:
-            row += 25  # Space for embedded images
+            row += 28  # Space for embedded images
 
         # ===== SCORE DISTRIBUTION TABLE =====
         if 'overall_score' in df.columns:
@@ -316,7 +348,31 @@ class Section1HomogeneityWriter(BaseSectionWriter):
         for col in range(1, 7):
             ws.column_dimensions[chr(64+col)].width = 18
 
-        logger.info("  ✓ Section 1c sheet created")
+        # ===== EMBED CLUSTER PROFILE VISUALIZATIONS =====
+        row += 2
+        ws[f'A{row}'] = "CLUSTER PROFILE VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:F{row}')
+        row += 1
+
+        # Embed cluster characteristics and correlation heatmap
+        base_path = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/combined')
+        plots_to_embed = [
+            ('plots/cluster_characteristics.png', 'A', 0.4),
+            ('plots/correlation_heatmap.png', 'G', 0.35),
+        ]
+
+        embedded_count = 0
+        for plot_path, col_letter, scale in plots_to_embed:
+            full_path = base_path / plot_path
+            if full_path.exists():
+                self._embed_png(ws, full_path, f'{col_letter}{row}', scale=scale)
+                embedded_count += 1
+
+        if embedded_count > 0:
+            row += 30  # Space for embedded images
+
+        logger.info(f"  ✓ Section 1c sheet created ({embedded_count} plots embedded)")
 
     def _create_section_1d_outliers(self, wb: Workbook, df: pd.DataFrame):
         """Section 1d: Outlier Analysis"""
@@ -391,4 +447,28 @@ class Section1HomogeneityWriter(BaseSectionWriter):
         for col in range(2, 9):
             ws.column_dimensions[chr(64+col)].width = 15
 
-        logger.info("  ✓ Section 1d sheet created")
+        # ===== EMBED OUTLIER & PERFORMANCE VISUALIZATIONS =====
+        row += 2
+        ws[f'A{row}'] = "OUTLIER & PERFORMANCE VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Embed outliers and top/bottom performers plots
+        base_path = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/combined')
+        plots_to_embed = [
+            ('4_company_insights/plots/outliers.png', 'A', 0.4),
+            ('4_company_insights/plots/top_bottom_performers.png', 'F', 0.4),
+        ]
+
+        embedded_count = 0
+        for plot_path, col_letter, scale in plots_to_embed:
+            full_path = base_path / plot_path
+            if full_path.exists():
+                self._embed_png(ws, full_path, f'{col_letter}{row}', scale=scale)
+                embedded_count += 1
+
+        if embedded_count > 0:
+            row += 30  # Space for embedded images
+
+        logger.info(f"  ✓ Section 1d sheet created ({embedded_count} plots embedded)")

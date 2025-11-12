@@ -310,24 +310,35 @@ class Section3DriversWriter(BaseSectionWriter):
         ws.merge_cells(f'A{row}:E{row}')
         row += 1
 
-        # Try to embed correlation heatmap for each algorithm
+        # Embed PCA analysis and feature importance plots
+        base_path_combined = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/combined')
+        base_path_comparisons = Path(f'output/{self.market}/03_comparisons')
+        plots_to_embed = [
+            (base_path_combined / '5_pca_analysis/plots/scree_plot.png', 'A', 0.35),
+            (base_path_combined / '5_pca_analysis/plots/biplot_pc1_pc2.png', 'I', 0.35),
+            (base_path_combined / '5_pca_analysis/plots/component_loadings.png', 'A', 0.35),
+            (base_path_combined / '5_pca_analysis/plots/cluster_separation.png', 'I', 0.35),
+            (base_path_combined / 'plots/pca_clusters.png', 'A', 0.35),
+            (base_path_comparisons / 'features/combined_importance_combined.png', 'I', 0.35),
+        ]
+
         embedded_count = 0
-        chart_col_offset = 0
-        for algo in df['algorithm'].unique():
-            png_path = Path(f'output/{self.market}/02_algorithms/{algo}/combined_scores/plots/correlation_heatmap.png')
-            if png_path.exists():
-                col_letter = chr(65 + chart_col_offset)
-                self._embed_png(ws, png_path, f'{col_letter}{row}', scale=0.4)
+        current_row = row
+        for i, (plot_path, col_letter, scale) in enumerate(plots_to_embed):
+            if plot_path.exists():
+                self._embed_png(ws, plot_path, f'{col_letter}{current_row}', scale=scale)
                 embedded_count += 1
-                chart_col_offset += 10
+                if (i + 1) % 2 == 0:  # Every 2 plots, new row
+                    current_row += 28
 
         if embedded_count == 0:
-            ws[f'A{row}'] = "Correlation heatmap plots not available"
+            ws[f'A{row}'] = "PCA and feature importance plots not available"
             ws[f'A{row}'].font = Font(italic=True, size=9)
+            row += 1
         else:
-            row += 30  # Space for embedded images
+            row = current_row + 28  # Space for embedded images
 
-        logger.info("  ✓ Section 3b sheet created")
+        logger.info(f"  ✓ Section 3b sheet created ({embedded_count} plots embedded)")
 
     def _create_section_3c_sector(self, wb: Workbook, df: pd.DataFrame):
         """Section 3c: Sector-specific Feature Analysis"""
@@ -399,4 +410,27 @@ class Section3DriversWriter(BaseSectionWriter):
         for col in range(1, 9):
             ws.column_dimensions[chr(64+col)].width = 15
 
-        logger.info("  ✓ Section 3c sheet created")
+        # ===== EMBED CLUSTER CHARACTERISTICS & PERFORMANCE VISUALIZATIONS =====
+        row += 2
+        ws[f'A{row}'] = "CLUSTER CHARACTERISTICS & PERFORMANCE"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Embed cluster characteristics and top/bottom performers
+        base_path_combined = Path(f'output/{self.market}/02_algorithms/kmeans_comparative/combined')
+        plots_to_embed = [
+            (base_path_combined / 'plots/cluster_characteristics.png', 'A', 0.4),
+            (base_path_combined / '4_company_insights/plots/top_bottom_performers.png', 'G', 0.4),
+        ]
+
+        embedded_count = 0
+        for plot_path, col_letter, scale in plots_to_embed:
+            if plot_path.exists():
+                self._embed_png(ws, plot_path, f'{col_letter}{row}', scale=scale)
+                embedded_count += 1
+
+        if embedded_count > 0:
+            row += 30  # Space for embedded images
+
+        logger.info(f"  ✓ Section 3c sheet created ({embedded_count} plots embedded)")

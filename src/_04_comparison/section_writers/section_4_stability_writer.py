@@ -135,7 +135,36 @@ class Section4StabilityWriter(BaseSectionWriter):
         for col in range(1, 9):
             ws.column_dimensions[chr(64+col)].width = 18
 
-        logger.info("  ✓ Section 4a sheet created")
+        # ===== EMBED TEMPORAL STABILITY VISUALIZATIONS =====
+        from pathlib import Path
+        row += 2
+        ws[f'A{row}'] = "TEMPORAL STABILITY VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Embed migration heatmaps and yearly stability plots
+        base_path_comparisons = Path(f'output/{self.config.get("market", "germany")}/03_comparisons')
+        plots_to_embed = [
+            (base_path_comparisons / 'temporal/kmeans_migration_heatmap.png', 'A', 0.35),
+            (base_path_comparisons / 'temporal/kmeans_yearly_stability.png', 'I', 0.35),
+            (base_path_comparisons / 'temporal/hierarchical_migration_heatmap.png', 'A', 0.35),
+            (base_path_comparisons / 'temporal/dbscan_migration_heatmap.png', 'I', 0.35),
+        ]
+
+        embedded_count = 0
+        current_row = row
+        for i, (plot_path, col_letter, scale) in enumerate(plots_to_embed):
+            if plot_path.exists():
+                self._embed_png(ws, plot_path, f'{col_letter}{current_row}', scale=scale)
+                embedded_count += 1
+                if (i + 1) % 2 == 0:  # Every 2 plots, new row
+                    current_row += 28
+
+        if embedded_count > 0:
+            row = current_row + 28  # Space for embedded images
+
+        logger.info(f"  ✓ Section 4a sheet created ({embedded_count} plots embedded)")
 
     def _create_section_4b_charts(self, wb: Workbook, df: pd.DataFrame):
         """Section 4b: Stabilität Charts (Temporal evolution)"""
@@ -223,8 +252,33 @@ class Section4StabilityWriter(BaseSectionWriter):
 
         ws[f'A{row}'] = "Temporal charts will be added when time-series data is available"
         ws[f'A{row}'].font = Font(italic=True)
+        row += 2
 
-        logger.info("  ✓ Section 4b sheet created")
+        # ===== EMBED SCORE EVOLUTION & STABILITY COMPARISON =====
+        from pathlib import Path
+        ws[f'A{row}'] = "SCORE EVOLUTION & STABILITY COMPARISON"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Embed evolution scatter and algorithm stability comparison
+        base_path_combined = Path(f'output/{self.config.get("market", "germany")}/02_algorithms/kmeans_comparative/combined')
+        base_path_comparisons = Path(f'output/{self.config.get("market", "germany")}/03_comparisons')
+        plots_to_embed = [
+            (base_path_combined / '1_cluster_quality/scores/evolution/evolution_scatter.png', 'A', 0.4),
+            (base_path_comparisons / 'temporal/algorithm_stability_comparison.png', 'I', 0.4),
+        ]
+
+        embedded_count = 0
+        for plot_path, col_letter, scale in plots_to_embed:
+            if plot_path.exists():
+                self._embed_png(ws, plot_path, f'{col_letter}{row}', scale=scale)
+                embedded_count += 1
+
+        if embedded_count > 0:
+            row += 30  # Space for embedded images
+
+        logger.info(f"  ✓ Section 4b sheet created ({embedded_count} plots embedded)")
 
     def _create_section_4c_size_classes(self, wb: Workbook, df: pd.DataFrame):
         """Section 4c: Size-Based Analysis"""
@@ -346,4 +400,23 @@ class Section4StabilityWriter(BaseSectionWriter):
         for col in range(2, 9):
             ws.column_dimensions[chr(64+col)].width = 15
 
-        logger.info("  ✓ Section 4c sheet created")
+        # ===== EMBED SIZE CATEGORY VISUALIZATION =====
+        from pathlib import Path
+        row += 2
+        ws[f'A{row}'] = "SIZE CATEGORY VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Embed size category contingency plot
+        base_path_combined = Path(f'output/{self.config.get("market", "germany")}/02_algorithms/kmeans_comparative/combined')
+        plot_path = base_path_combined / '3_external_validation/plots/contingency_size_category.png'
+
+        if plot_path.exists():
+            self._embed_png(ws, plot_path, f'A{row}', scale=0.5)
+            row += 30  # Space for embedded image
+            embedded_count = 1
+        else:
+            embedded_count = 0
+
+        logger.info(f"  ✓ Section 4c sheet created ({embedded_count} plot embedded)")

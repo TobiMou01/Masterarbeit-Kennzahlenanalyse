@@ -227,7 +227,36 @@ class Section2CongruenceWriter(BaseSectionWriter):
         for col in range(1, 9):
             ws.column_dimensions[chr(64+col)].width = 18
 
-        logger.info("  ✓ Section 2a sheet created")
+        # ===== EMBED CONGRUENCE VISUALIZATIONS =====
+        from pathlib import Path
+        row += 2
+        ws[f'A{row}'] = "CONGRUENCE VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Embed GICS contingency and cramers_v plots
+        base_path_combined = Path(f'output/{self.config.get("market", "germany")}/02_algorithms/kmeans_comparative/combined')
+        base_path_comparisons = Path(f'output/{self.config.get("market", "germany")}/03_comparisons')
+        plots_to_embed = [
+            (base_path_combined / '3_external_validation/plots/contingency_gics_sector.png', 'A', 0.35),
+            (base_path_combined / '3_external_validation/plots/cramers_v_comparison.png', 'I', 0.35),
+            (base_path_comparisons / 'gics_tables/kmeans_vs_gsector.png', 'A', 0.35),
+        ]
+
+        embedded_count = 0
+        current_row = row
+        for plot_path, col_letter, scale in plots_to_embed:
+            if plot_path.exists():
+                self._embed_png(ws, plot_path, f'{col_letter}{current_row}', scale=scale)
+                embedded_count += 1
+                if embedded_count % 2 == 0:  # Every 2 plots, new row
+                    current_row += 28
+
+        if embedded_count > 0:
+            row = current_row + 28  # Space for embedded images
+
+        logger.info(f"  ✓ Section 2a sheet created ({embedded_count} plots embedded)")
 
     def _create_section_2b_charts(self, wb: Workbook, df: pd.DataFrame):
         """Section 2b: Kongruenz Charts (Heatmaps, Scatter plots)"""
@@ -357,7 +386,32 @@ class Section2CongruenceWriter(BaseSectionWriter):
 
                 ws.add_chart(chart, f'F{row-100}')
 
-        logger.info("  ✓ Section 2b sheet created")
+        # ===== EMBED GICS SUMMARY VISUALIZATIONS =====
+        from pathlib import Path
+        row += 2
+        ws[f'A{row}'] = "GICS SECTOR CONGRUENCE VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:H{row}')
+        row += 1
+
+        # Embed GICS summary and size category plots
+        base_path_combined = Path(f'output/{self.config.get("market", "germany")}/02_algorithms/kmeans_comparative/combined')
+        base_path_comparisons = Path(f'output/{self.config.get("market", "germany")}/03_comparisons')
+        plots_to_embed = [
+            (base_path_comparisons / 'gics/summary_gics_combined.png', 'A', 0.4),
+            (base_path_combined / '3_external_validation/plots/contingency_size_category.png', 'I', 0.4),
+        ]
+
+        embedded_count = 0
+        for plot_path, col_letter, scale in plots_to_embed:
+            if plot_path.exists():
+                self._embed_png(ws, plot_path, f'{col_letter}{row}', scale=scale)
+                embedded_count += 1
+
+        if embedded_count > 0:
+            row += 30  # Space for embedded images
+
+        logger.info(f"  ✓ Section 2b sheet created ({embedded_count} plots embedded)")
 
     def _create_section_2c_algorithms(self, wb: Workbook, df: pd.DataFrame):
         """Section 2c: Algorithm Comparison Metrics"""
@@ -440,4 +494,34 @@ class Section2CongruenceWriter(BaseSectionWriter):
         for col in range(2, 8):
             ws.column_dimensions[chr(64+col)].width = 18
 
-        logger.info("  ✓ Section 2c sheet created")
+        # ===== EMBED ALGORITHM COMPARISON VISUALIZATIONS =====
+        from pathlib import Path
+        row += 2
+        ws[f'A{row}'] = "ALGORITHM COMPARISON VISUALIZATIONS"
+        ws[f'A{row}'].font = Font(size=12, bold=True)
+        ws.merge_cells(f'A{row}:G{row}')
+        row += 1
+
+        # Embed algorithm congruence and comparison plots
+        base_path_combined = Path(f'output/{self.config.get("market", "germany")}/02_algorithms/kmeans_comparative/combined')
+        base_path_comparisons = Path(f'output/{self.config.get("market", "germany")}/03_comparisons')
+        plots_to_embed = [
+            (base_path_combined / '2_algorithm_congruence/plots/ari_heatmap_robustness.png', 'A', 0.35),
+            (base_path_combined / '2_algorithm_congruence/plots/confusion_matrix.png', 'I', 0.35),
+            (base_path_comparisons / 'algorithms/algorithm_overlap_combined.png', 'A', 0.35),
+            (base_path_comparisons / 'algorithms/metrics_comparison_combined.png', 'I', 0.35),
+        ]
+
+        embedded_count = 0
+        current_row = row
+        for i, (plot_path, col_letter, scale) in enumerate(plots_to_embed):
+            if plot_path.exists():
+                self._embed_png(ws, plot_path, f'{col_letter}{current_row}', scale=scale)
+                embedded_count += 1
+                if (i + 1) % 2 == 0:  # Every 2 plots, new row
+                    current_row += 28
+
+        if embedded_count > 0:
+            row = current_row + 28  # Space for embedded images
+
+        logger.info(f"  ✓ Section 2c sheet created ({embedded_count} plots embedded)")
