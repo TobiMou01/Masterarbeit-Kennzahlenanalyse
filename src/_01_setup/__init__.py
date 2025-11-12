@@ -2,9 +2,15 @@
 Setup Phase - Configuration and Output Management
 """
 
-from .logger import setup_logger
-from .config_loader import ConfigLoader
-from .environment import Environment
+# Core infrastructure functions
+from .logger import setup_logging
+from . import config_loader  # Module with functions: load_config, get_value, etc.
+from . import environment     # Module with functions: is_venv_active, check_environment
+
+# Feature management
+from .feature_config_loader import FeatureConfigLoader
+from .feature_selector import FeatureSelector
+from .interactive_menu import InteractiveMenu
 
 # Output Handler - NEW modular structure
 from .path_manager import PathManager
@@ -16,9 +22,12 @@ from .output_coordinator import OutputHandler  # Backward compatible name
 # from .output_handler import OutputHandler
 
 __all__ = [
-    'setup_logger',
-    'ConfigLoader',
-    'Environment',
+    'setup_logging',
+    'config_loader',
+    'environment',
+    'FeatureConfigLoader',
+    'FeatureSelector',
+    'InteractiveMenu',
     'PathManager',
     'DataFormatter',
     'FileWriter',
