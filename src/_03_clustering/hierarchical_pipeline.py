@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 from src._03_clustering.cluster_engine import ClusteringEngine
-from src._01_setup.output_handler import OutputHandler
+from src._01_setup.output_coordinator import OutputHandler  # Migrated from output_handler
 from src._05_visualization.plot_engine import create_all_plots
 from src._01_setup import config_loader as config
 
@@ -60,7 +60,7 @@ class HierarchicalPipeline:
         if self.scoring_enabled:
             from src._04_scoring.score_evolution import ScoreEvolutionTracker
             from src._04_scoring.score_analyzer import ScoreAnalyzer
-            from src._05_visualization.plot_engine_scores import PlotEngineScores
+            from src._05_visualization.plot_engine_score_distributions import PlotEngineScoreDistributions as PlotEngineScores  # Migrated from plot_engine_scores
 
             self.score_calculator = ScoreCalculator(feature_selector=self.feature_selector)
             self.score_tracker = ScoreEvolutionTracker()

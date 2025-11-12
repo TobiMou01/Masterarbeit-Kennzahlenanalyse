@@ -3,7 +3,7 @@ Visualization Phase - Comprehensive Plotting Engines
 """
 
 from . import plot_engine
-from . import plot_engine_scores  # Legacy - use specific modules below
+# from . import plot_engine_scores  # Migrated to plot_engine_score_distributions
 from . import plot_engine_validation  # Legacy
 from . import plot_engine_pca  # Legacy
 from . import plot_engine_insights  # Legacy
@@ -23,7 +23,7 @@ from . import plot_engine_algorithm_congruence
 __all__ = [
     'plot_engine',
     # Legacy (kept for backward compatibility)
-    'plot_engine_scores',
+    # 'plot_engine_scores',  # Migrated to plot_engine_score_distributions
     'plot_engine_validation',
     'plot_engine_pca',
     'plot_engine_insights',

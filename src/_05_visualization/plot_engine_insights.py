@@ -12,7 +12,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 
 # Import legacy plot engines for backward compatibility
-from src._05_visualization import plot_engine_scores
+from src._05_visualization import plot_engine_score_distributions as plot_engine_scores  # Migrated from plot_engine_scores
 from src._05_visualization import plot_engine_validation
 from src._05_visualization import plot_engine_pca as legacy_pca
 
