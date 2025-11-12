@@ -43,10 +43,10 @@ def apply_scoring(
         return df
     
     logger.info(f"\n  📊 Applying Scoring ({analysis_type})...")
-    
+
     try:
-        # Initialize score calculator
-        calculator = ScoreCalculator(config=config)
+        # Initialize score calculator (no config needed, uses FeatureSelector internally)
+        calculator = ScoreCalculator()
         
         # Calculate all scores
         df_scored = calculator.calculate_all_scores(
