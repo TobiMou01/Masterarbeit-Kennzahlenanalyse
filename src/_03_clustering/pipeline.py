@@ -173,6 +173,22 @@ class ClusteringPipeline:
 
         logger.info(f"📊 Selected {len(features)} features for static analysis")
 
+        # DEBUG: Check which features are actually in the DataFrame
+        available_features = [f for f in features if f in df_latest.columns]
+        missing_features = [f for f in features if f not in df_latest.columns]
+
+        if missing_features:
+            logger.warning(f"⚠️  Missing features in df_latest: {missing_features}")
+            logger.warning(f"⚠️  Available features: {available_features}")
+            logger.warning(f"⚠️  DataFrame columns: {list(df_latest.columns)[:20]}...")
+
+            # Try to use only available features
+            if len(available_features) > 0:
+                logger.info(f"  → Using {len(available_features)} available features instead")
+                features = available_features
+            else:
+                raise ValueError(f"No valid features found in DataFrame! Expected: {features}, Got columns: {list(df_latest.columns)}")
+
         # Run clustering
         df_result, profiles, metrics = self.engine.perform_clustering(
             df_latest, features, n_clusters, 'static'

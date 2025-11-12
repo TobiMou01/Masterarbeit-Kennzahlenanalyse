@@ -11,6 +11,11 @@ import seaborn as sns
 from pathlib import Path
 from typing import List, Dict, Optional
 
+# Import legacy plot engines for backward compatibility
+from src._05_visualization import plot_engine_scores
+from src._05_visualization import plot_engine_validation
+from src._05_visualization import plot_engine_pca as legacy_pca
+
 logger = logging.getLogger(__name__)
 
 
