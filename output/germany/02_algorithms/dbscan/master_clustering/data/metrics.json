@@ -1,13 +1,38 @@
 {
-  "n_clusters": 4,
-  "n_noise": 78,
-  "noise_percentage": 49.36708860759494,
+  "n_clusters": 2,
+  "n_noise": 31,
+  "noise_percentage": 19.375,
   "eps": 1.5,
   "min_samples": 3,
-  "silhouette": 0.027619046176891166,
-  "davies_bouldin": 1.1281663347786686,
-  "n_core_samples": 64,
-  "core_sample_percentage": 40.50632911392405,
-  "n_companies": 158,
-  "algorithm": "dbscan"
+  "silhouette": 0.3681011557907937,
+  "davies_bouldin": 0.885776745285663,
+  "n_core_samples": 120,
+  "core_sample_percentage": 75.0,
+  "n_companies": 160,
+  "algorithm": "dbscan",
+  "features_used": [
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6",
+    "PC7",
+    "PC8"
+  ],
+  "original_features": [
+    "roa",
+    "ebit_margin",
+    "gross_margin",
+    "current_ratio",
+    "working_capital_ratio",
+    "debt_to_equity",
+    "equity_ratio",
+    "asset_turnover",
+    "capital_intensity",
+    "days_sales_outstanding",
+    "fcf_margin",
+    "cash_conversion",
+    "financial_leverage"
+  ]
 }

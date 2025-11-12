@@ -124,13 +124,26 @@ class ClusteringEngine:
         df_result.loc[valid_idx, 'cluster'] = labels
 
         # 6. Cluster-Profile
-        cluster_profiles = self._compute_profiles(
-            df_result.loc[valid_idx],
-            labels,
-            features,
-            n_clusters,
-            analysis_type
-        )
+        # Wenn PCA aktiv: Profile für Original-Features berechnen (für Scoring/Naming)
+        # Clustering verwendet PCA-Features, aber Scoring braucht Original-Features
+        if pca_metadata is not None:
+            # Für PCA: Verwende Original-Features für Profile
+            cluster_profiles = self._compute_profiles(
+                df_result.loc[valid_idx],
+                labels,
+                original_features,  # ✅ Original-Features statt PCA-Features!
+                n_clusters,
+                analysis_type
+            )
+        else:
+            # Ohne PCA: Normal
+            cluster_profiles = self._compute_profiles(
+                df_result.loc[valid_idx],
+                labels,
+                features,
+                n_clusters,
+                analysis_type
+            )
 
         # 7. Namen hinzufügen
         cluster_names = self._generate_cluster_names(
@@ -221,7 +234,10 @@ class ClusteringEngine:
         # PCA-Features als DataFrame
         pca_feature_names = [f'PC{i+1}' for i in range(pca_transformer.pca.n_components_)]
 
-        df_pca = df[['gvkey']].copy()
+        # ✅ FIX: Behalte ALLE Original-Spalten + füge PCA-Features hinzu
+        # Damit kann Scoring/Naming auf Original-Features zugreifen
+        # während Clustering die PCA-Features nutzt
+        df_pca = df.copy()
         for i, col in enumerate(pca_feature_names):
             df_pca[col] = X_pca[:, i]
 

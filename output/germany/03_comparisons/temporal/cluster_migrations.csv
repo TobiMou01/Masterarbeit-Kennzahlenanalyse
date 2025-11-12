@@ -1,153 +1,153 @@
 gvkey,combined_cluster,combined_name,static_cluster,static_name,dynamic_cluster,dynamic_name,company_name,pattern,flag
-17436,0,Upper-Mid,2,Lower-Mid,1,Growing,BASF SE,Improving,⭐
-17828,0,Upper-Mid,3,Upper-Mid,2,Growing,MERCEDES BENZ GROUP AG,Improving,⭐
-19349,5,Strong Performers,3,Upper-Mid,2,Growing,SIEMENS AG,Improving,⭐
-100004,5,Strong Performers,1,Mid,1,Growing,ALTANA AG,Volatile,⚠
-100010,2,Mid,2,Lower-Mid,2,Growing,BAYWA AG,Consistent,✓
-100022,0,Upper-Mid,3,Upper-Mid,3,Growing,BAYERISCHE MOTOREN WERKE AKT,Consistent,✓
-100042,2,Mid,2,Lower-Mid,2,Growing,MAN SE,Consistent,✓
-100054,3,Lower-Mid,4,Low Performers,2,Growing,HOCHTIEF AG,Improving,⭐
-100080,5,Strong Performers,3,Upper-Mid,2,Growing,BAYER AG,Improving,⭐
-100083,5,Strong Performers,1,Mid,1,Growing,BEIERSDORF AG,Volatile,⚠
-100102,0,Upper-Mid,3,Upper-Mid,1,Growing,BILFINGER SE,Improving,⭐
-100103,2,Mid,2,Lower-Mid,2,Growing,DEUTSCHE LUFTHANSA AG,Consistent,✓
-100301,0,Upper-Mid,2,Lower-Mid,2,Growing,DEUTZ AG,Consistent,✓
-100312,4,Top Tier,3,Upper-Mid,1,Growing,RHEINMETALL AG,Improving,⭐
-100368,0,Upper-Mid,3,Upper-Mid,2,Growing,GEA GROUP AG,Improving,⭐
-100373,5,Strong Performers,0,High Performers,2,Growing,HEIDELBERG MATERIALS AG,Declining,⚠
-100431,4,Top Tier,3,Upper-Mid,0,Growing,HAPAG-LLOYD AG,Improving,⭐
-100449,2,Mid,3,Upper-Mid,2,Growing,KUKA AG,Improving,⭐
-100590,0,Upper-Mid,3,Upper-Mid,2,Growing,E.ON SE,Improving,⭐
-100609,0,Upper-Mid,3,Upper-Mid,1,Growing,CONTINENTAL AG,Improving,⭐
-100676,3,Lower-Mid,4,Low Performers,2,Growing,TUI AG,Improving,⭐
-100736,2,Mid,1,Mid,2,Growing,K&S AG,Consistent,✓
-100737,0,Upper-Mid,3,Upper-Mid,3,Growing,VOLKSWAGEN AG,Consistent,✓
-100746,3,Lower-Mid,4,Low Performers,1,Growing,CECONOMY AG,Improving,⭐
-100764,0,Upper-Mid,2,Lower-Mid,2,Growing,SUEDZUCKER AG,Consistent,✓
-100953,0,Upper-Mid,3,Upper-Mid,2,Growing,RWE AKTIENGESELLSCHAFT,Improving,⭐
-101059,0,Upper-Mid,3,Upper-Mid,2,Growing,AXEL SPRINGER SE,Improving,⭐
-101120,0,Upper-Mid,3,Upper-Mid,2,Growing,AUDI AG,Improving,⭐
-101148,2,Mid,2,Lower-Mid,1,Growing,LECHWERKE AG,Improving,⭐
-101161,2,Mid,2,Lower-Mid,1,Growing,GELSENWASSER AG,Improving,⭐
-101286,2,Mid,2,Lower-Mid,2,Growing,LEONI AG,Consistent,✓
-101390,5,Strong Performers,1,Mid,1,Growing,KSB SE & CO KGAA,Volatile,⚠
-101768,2,Mid,2,Lower-Mid,1,Growing,MCKESSON EUROPE AG,Improving,⭐
-101937,5,Strong Performers,1,Mid,2,Growing,DMG MORI AG,Volatile,⚠
-101942,5,Strong Performers,3,Upper-Mid,1,Growing,HENKEL AG & CO KGAA,Improving,⭐
-102175,0,Upper-Mid,3,Upper-Mid,1,Growing,PUMA SE,Improving,⭐
-102187,2,Mid,-1,,1,Growing,PORSCHE AUTOMOBIL HOLDING SE,Unknown,?
-102218,0,Upper-Mid,1,Mid,2,Growing,DRAEGERWERK AG,Consistent,✓
-102250,5,Strong Performers,3,Upper-Mid,1,Growing,HUGO BOSS AG,Improving,⭐
-102259,2,Mid,2,Lower-Mid,2,Growing,SALZGITTER AG,Consistent,✓
-102365,2,Mid,2,Lower-Mid,2,Growing,KOENIG & BAUER AG,Consistent,✓
-102529,5,Strong Performers,1,Mid,1,Growing,PAUL HARTMANN AG,Volatile,⚠
-102926,5,Strong Performers,1,Mid,2,Growing,KWS SAAT SE & CO KGAA,Volatile,⚠
-103176,2,Mid,2,Lower-Mid,2,Growing,THYSSENKRUPP AG,Consistent,✓
-103200,5,Strong Performers,1,Mid,1,Growing,FUCHS SE,Volatile,⚠
-103255,0,Upper-Mid,3,Upper-Mid,2,Growing,BERTELSMANN SE & CO KGAA,Improving,⭐
-103269,5,Strong Performers,3,Upper-Mid,2,Growing,KRONES AG,Improving,⭐
-103487,4,Top Tier,0,High Performers,1,Growing,SAP SE,Volatile,⚠
-103533,5,Strong Performers,1,Mid,2,Growing,SIXT SE,Volatile,⚠
-104357,4,Top Tier,0,High Performers,1,Growing,KABEL DEUTSCHLAND HOLDING AG,Volatile,⚠
-104364,1,Challenged,4,Low Performers,1,Growing,TELE COLUMBUS AG,Improving,⭐
-132740,5,Strong Performers,1,Mid,2,Growing,INFINEON TECHNOLOGIES AG,Volatile,⚠
-200759,5,Strong Performers,1,Mid,2,Growing,BIOTEST AG,Volatile,⚠
-202305,0,Upper-Mid,3,Upper-Mid,1,Growing,FRESENIUS SE & CO KGAA,Improving,⭐
-202807,0,Upper-Mid,3,Upper-Mid,2,Growing,JUNGHEINRICH AG,Improving,⭐
-203162,0,Upper-Mid,2,Lower-Mid,2,Growing,HORNBACH HOLDING AG & CO,Consistent,✓
-203586,4,Top Tier,0,High Performers,2,Growing,VTG AG,Declining,⚠
-204820,5,Strong Performers,0,High Performers,1,Growing,FIELMANN GROUP AG,Volatile,⚠
-205865,5,Strong Performers,0,High Performers,1,Growing,PROSIEBENSAT.1 MEDIA SE,Volatile,⚠
-205934,4,Top Tier,3,Upper-Mid,2,Growing,FREENET AG,Improving,⭐
-206703,0,Upper-Mid,1,Mid,1,Growing,SGL CARBON SE,Consistent,✓
-207096,0,Upper-Mid,1,Mid,2,Growing,RHOEN-KLINIKUM AG,Consistent,✓
-208821,5,Strong Performers,0,High Performers,2,Growing,SARTORIUS AG,Declining,⚠
-209440,0,Upper-Mid,3,Upper-Mid,2,Growing,VOSSLOH AG,Improving,⭐
-210326,0,Upper-Mid,2,Lower-Mid,2,Growing,BLG-BREMER LAGERHAUS-GESELLS,Consistent,✓
-210332,0,Upper-Mid,1,Mid,2,Growing,CLAAS KG,Consistent,✓
-210334,0,Upper-Mid,3,Upper-Mid,2,Growing,COMPUGROUP MEDICAL SE & CO,Improving,⭐
-210340,0,Upper-Mid,1,Mid,2,Growing,DILLINGER HUTTENWERKE,Consistent,✓
-210359,0,Upper-Mid,3,Upper-Mid,2,Growing,EWE-ENERGIEVERSORGUNG WESER,Improving,⭐
-212782,0,Upper-Mid,3,Upper-Mid,1,Growing,FRESENIUS MEDICAL CARE AG,Improving,⭐
-213034,2,Mid,2,Lower-Mid,1,Growing,GRAMMER AG,Improving,⭐
-213037,5,Strong Performers,3,Upper-Mid,2,Growing,INDUS HOLDING AG,Improving,⭐
-214700,4,Top Tier,0,High Performers,1,Growing,STADA ARZNEIMITTEL AG,Volatile,⚠
-214759,0,Upper-Mid,2,Lower-Mid,2,Growing,HEIDELBERGER DRUCKMASCHINEN,Consistent,✓
-216524,0,Upper-Mid,3,Upper-Mid,2,Growing,ENBW ENERGIE BADEN,Improving,⭐
-218000,5,Strong Performers,1,Mid,2,Growing,JENOPTIK AG,Volatile,⚠
-220295,2,Mid,2,Lower-Mid,1,Growing,ELRINGKLINGER AG,Improving,⭐
-220301,4,Top Tier,0,High Performers,2,Growing,MERCK KGAA,Declining,⚠
-220303,0,Upper-Mid,2,Lower-Mid,2,Growing,AURUBIS AG,Consistent,✓
-220307,2,Mid,2,Lower-Mid,2,Growing,PFALZWERKE AG,Consistent,✓
-221244,5,Strong Performers,3,Upper-Mid,2,Growing,ADIDAS AG,Improving,⭐
-221614,2,Mid,2,Lower-Mid,2,Growing,DEUTSCHE BAHN AG,Consistent,✓
-221616,4,Top Tier,0,High Performers,3,Growing,DEUTSCHE TELEKOM,Declining,⚠
-222247,5,Strong Performers,1,Mid,1,Growing,SOFTWARE GMBH,Volatile,⚠
-222340,2,Mid,3,Upper-Mid,1,Growing,DUERR AG,Improving,⭐
-223089,0,Upper-Mid,2,Lower-Mid,2,Growing,HORNBACH-BAUMARKT AG,Consistent,✓
-225236,0,Upper-Mid,3,Upper-Mid,1,Growing,UNITED INTERNET AG,Improving,⭐
-231016,3,Lower-Mid,4,Low Performers,1,Growing,MORPHOSYS AG,Improving,⭐
-232623,2,Mid,2,Lower-Mid,2,Growing,EVOTEC SE,Consistent,✓
-233025,0,Upper-Mid,3,Upper-Mid,1,Growing,CANCOM SE,Improving,⭐
-234919,5,Strong Performers,3,Upper-Mid,2,Growing,CTS EVENTIM AG & CO KGAA,Improving,⭐
-238136,0,Upper-Mid,3,Upper-Mid,1,Growing,BECHTLE AG,Improving,⭐
-238442,5,Strong Performers,1,Mid,2,Growing,CARL ZEISS MEDITEC AG,Volatile,⚠
-241456,0,Upper-Mid,3,Upper-Mid,2,Growing,DEUTSCHE POST AG,Improving,⭐
-241840,2,Mid,2,Lower-Mid,1,Growing,SCHULER AG,Improving,⭐
-242158,4,Top Tier,3,Upper-Mid,1,Growing,WIRECARD AG,Improving,⭐
-244394,0,Upper-Mid,2,Lower-Mid,2,Growing,MVV ENERGIE AG,Consistent,✓
-244398,2,Mid,2,Lower-Mid,1,Growing,TAKKT AG,Improving,⭐
-245628,2,Mid,2,Lower-Mid,1,Growing,NORDEX SE,Improving,⭐
-245839,0,Upper-Mid,3,Upper-Mid,2,Growing,FRAPORT AG,Improving,⭐
-248166,0,Upper-Mid,2,Lower-Mid,2,Growing,MAINOVA AG,Consistent,✓
-269104,0,Upper-Mid,2,Lower-Mid,2,Growing,BAUER AG,Consistent,✓
-269835,0,Upper-Mid,3,Upper-Mid,2,Growing,BRENNTAG SE,Improving,⭐
-270249,0,Upper-Mid,3,Upper-Mid,2,Growing,DIEBOLD NIXDORF AG,Improving,⭐
-271763,2,Mid,2,Lower-Mid,2,Growing,LANXESS AG,Consistent,✓
-273099,0,Upper-Mid,3,Upper-Mid,2,Growing,MTU AERO ENGINES AG,Improving,⭐
-276585,0,Upper-Mid,1,Mid,2,Growing,WACKER CHEMIE AG,Consistent,✓
-278310,2,Mid,2,Lower-Mid,2,Growing,KLOCKNER & CO SE,Consistent,✓
-281772,5,Strong Performers,3,Upper-Mid,1,Growing,SYMRISE AG,Improving,⭐
-284636,0,Upper-Mid,1,Mid,2,Growing,WACKER NEUSON SE,Consistent,✓
-284944,0,Upper-Mid,3,Upper-Mid,1,Growing,GERRESHEIMER GROUP,Improving,⭐
-285715,0,Upper-Mid,3,Upper-Mid,2,Growing,SAF HOLLAND SE,Improving,⭐
-287162,0,Upper-Mid,3,Upper-Mid,1,Growing,HAMBURGER HAFEN UND LOGISTIK,Improving,⭐
-289333,2,Mid,2,Lower-Mid,2,Growing,SMA SOLAR TECHNOLOGY AG,Consistent,✓
-295079,4,Top Tier,0,High Performers,1,Growing,STROEER SE & CO KGAA,Volatile,⚠
-295421,0,Upper-Mid,3,Upper-Mid,1,Growing,EVONIK INDUSTRIES AG,Improving,⭐
-297185,0,Upper-Mid,3,Upper-Mid,2,Growing,KION GROUP AG,Improving,⭐
-297222,5,Strong Performers,1,Mid,1,Growing,NORMA GROUP SE,Volatile,⚠
-313972,4,Top Tier,0,High Performers,1,Growing,TELEFONICA DEUTSCHLAND,Volatile,⚠
-315541,2,Mid,2,Lower-Mid,1,Growing,OSRAM LICHT AG,Improving,⭐
-315582,0,Upper-Mid,3,Upper-Mid,2,Growing,STABILUS SE,Improving,⭐
-317079,4,Top Tier,0,High Performers,1,Growing,SCOUT24 SE,Volatile,⚠
-318434,0,Upper-Mid,2,Lower-Mid,2,Growing,ZALANDO SE,Consistent,✓
-318452,-1,,-1,,0,Growing,ROCKET INTERNET SE,Unknown,?
-318659,0,Upper-Mid,2,Lower-Mid,2,Growing,HELLA GMBH & CO. KGAA,Consistent,✓
-319665,3,Lower-Mid,4,Low Performers,1,Growing,ALLANE SE,Improving,⭐
-319865,0,Upper-Mid,2,Lower-Mid,2,Growing,SILTRONIC AG,Consistent,✓
-320124,2,Mid,3,Upper-Mid,1,Growing,SCHAEFFLER AG,Improving,⭐
-320448,2,Mid,2,Lower-Mid,2,Growing,COVESTRO AG,Consistent,✓
-321632,2,Mid,2,Lower-Mid,2,Growing,UNIPER SE,Consistent,✓
-322597,2,Mid,2,Lower-Mid,1,Growing,INNOGY SE,Improving,⭐
-324859,2,Mid,2,Lower-Mid,1,Growing,DELIVERY HERO SE,Improving,⭐
-324977,2,Mid,2,Lower-Mid,1,Growing,METRO AG,Improving,⭐
-325735,2,Mid,3,Upper-Mid,0,Growing,HELLOFRESH SE,Improving,⭐
-326410,5,Strong Performers,1,Mid,2,Growing,1&1 AG,Volatile,⚠
-326577,5,Strong Performers,0,High Performers,2,Growing,DERMAPHARM HOLDING,Declining,⚠
-326765,5,Strong Performers,3,Upper-Mid,1,Growing,SIEMENS HEALTHINEE,Improving,⭐
-327148,4,Top Tier,0,High Performers,4,Declining (Volatile),SPRINGER NATURE AG,Declining,⚠
-328745,5,Strong Performers,3,Upper-Mid,1,Growing,KNORR-BREMSE AKTIE,Improving,⭐
-329260,5,Strong Performers,0,High Performers,2,Growing,ENCAVIS AG,Declining,⚠
-332311,0,Upper-Mid,3,Upper-Mid,2,Growing,TRATON SE,Improving,⭐
-333885,4,Top Tier,0,High Performers,0,Growing,TEAMVIEWER SE,Volatile,⚠
-340115,0,Upper-Mid,3,Upper-Mid,1,Growing,HENSOLDT AG,Improving,⭐
-340153,2,Mid,3,Upper-Mid,2,Growing,SIEMENS ENERGY AG,Improving,⭐
-346413,0,Upper-Mid,2,Lower-Mid,0,Growing,AUTO1 GROUP SE,Improving,⭐
-347562,5,Strong Performers,3,Upper-Mid,2,Growing,SYNLAB AG,Improving,⭐
-350278,0,Upper-Mid,2,Lower-Mid,1,Growing,VITESCO TECHNOLOGIES GROUP,Improving,⭐
-351590,0,Upper-Mid,3,Upper-Mid,2,Growing,DAIMLER TRUCK HOLDING AG,Improving,⭐
-354519,0,Upper-Mid,3,Upper-Mid,2,Growing,DR ING  H C F PORSCHE AG,Improving,⭐
-355804,4,Top Tier,0,High Performers,0,Growing,IONOS GROUP SE,Volatile,⚠
-358679,5,Strong Performers,3,Upper-Mid,1,Growing,SCHOTT PHARMA AG & CO KGAA,Improving,⭐
-360887,4,Top Tier,0,High Performers,0,Growing,DOUGLAS AG,Volatile,⚠
+17436,0,Mid,0,Lower-Mid,1,Growing,BASF SE,Consistent,✓
+17828,0,Mid,0,Lower-Mid,4,Growing,MERCEDES BENZ GROUP AG,Declining,⚠
+19349,3,Upper-Mid,0,Lower-Mid,1,Growing,SIEMENS AG,Consistent,✓
+100004,3,Upper-Mid,1,Mid,0,Growing,ALTANA AG,Improving,⭐
+100010,0,Mid,0,Lower-Mid,2,Growing,BAYWA AG,Declining,⚠
+100022,0,Mid,0,Lower-Mid,4,Growing,BAYERISCHE MOTOREN WERKE AKT,Declining,⚠
+100042,0,Mid,0,Lower-Mid,2,Growing,MAN SE,Declining,⚠
+100054,1,Strong Performers,2,Upper-Mid,2,Growing,HOCHTIEF AG,Consistent,✓
+100080,3,Upper-Mid,0,Lower-Mid,1,Growing,BAYER AG,Consistent,✓
+100083,3,Upper-Mid,1,Mid,0,Growing,BEIERSDORF AG,Improving,⭐
+100102,0,Mid,1,Mid,1,Growing,BILFINGER SE,Consistent,✓
+100103,0,Mid,0,Lower-Mid,1,Growing,DEUTSCHE LUFTHANSA AG,Consistent,✓
+100301,0,Mid,0,Lower-Mid,2,Growing,DEUTZ AG,Declining,⚠
+100312,3,Upper-Mid,2,Upper-Mid,0,Growing,RHEINMETALL AG,Improving,⭐
+100368,3,Upper-Mid,2,Upper-Mid,2,Growing,GEA GROUP AG,Consistent,✓
+100373,3,Upper-Mid,1,Mid,2,Growing,HEIDELBERG MATERIALS AG,Consistent,✓
+100431,2,Top Tier,1,Mid,1,Growing,HAPAG-LLOYD AG,Consistent,✓
+100449,0,Mid,0,Lower-Mid,2,Growing,KUKA AG,Declining,⚠
+100590,0,Mid,2,Upper-Mid,1,Growing,E.ON SE,Improving,⭐
+100609,0,Mid,0,Lower-Mid,1,Growing,CONTINENTAL AG,Consistent,✓
+100676,1,Strong Performers,2,Upper-Mid,1,Growing,TUI AG,Consistent,✓
+100736,0,Mid,0,Lower-Mid,1,Growing,K&S AG,Consistent,✓
+100737,0,Mid,0,Lower-Mid,0,Growing,VOLKSWAGEN AG,Consistent,✓
+100746,1,Strong Performers,2,Upper-Mid,1,Growing,CECONOMY AG,Consistent,✓
+100764,0,Mid,0,Lower-Mid,2,Growing,SUEDZUCKER AG,Declining,⚠
+100953,3,Upper-Mid,4,High Performers,1,Growing,RWE AKTIENGESELLSCHAFT,Improving,⭐
+101059,0,Mid,0,Lower-Mid,1,Growing,AXEL SPRINGER SE,Consistent,✓
+101120,0,Mid,1,Mid,1,Growing,AUDI AG,Consistent,✓
+101148,0,Mid,2,Upper-Mid,1,Growing,LECHWERKE AG,Improving,⭐
+101161,0,Mid,0,Lower-Mid,1,Growing,GELSENWASSER AG,Consistent,✓
+101286,1,Strong Performers,2,Upper-Mid,1,Growing,LEONI AG,Consistent,✓
+101390,3,Upper-Mid,1,Mid,0,Growing,KSB SE & CO KGAA,Improving,⭐
+101768,0,Mid,1,Mid,0,Growing,MCKESSON EUROPE AG,Consistent,✓
+101937,3,Upper-Mid,1,Mid,1,Growing,DMG MORI AG,Consistent,✓
+101942,3,Upper-Mid,1,Mid,0,Growing,HENKEL AG & CO KGAA,Improving,⭐
+102175,3,Upper-Mid,1,Mid,2,Growing,PUMA SE,Consistent,✓
+102187,-1,,0,Lower-Mid,2,Growing,PORSCHE AUTOMOBIL HOLDING SE,Unknown,?
+102218,3,Upper-Mid,1,Mid,2,Growing,DRAEGERWERK AG,Consistent,✓
+102250,3,Upper-Mid,1,Mid,0,Growing,HUGO BOSS AG,Improving,⭐
+102259,0,Mid,0,Lower-Mid,1,Growing,SALZGITTER AG,Consistent,✓
+102365,0,Mid,0,Lower-Mid,1,Growing,KOENIG & BAUER AG,Consistent,✓
+102529,3,Upper-Mid,1,Mid,0,Growing,PAUL HARTMANN AG,Improving,⭐
+102926,3,Upper-Mid,1,Mid,2,Growing,KWS SAAT SE & CO KGAA,Consistent,✓
+103176,0,Mid,0,Lower-Mid,1,Growing,THYSSENKRUPP AG,Consistent,✓
+103200,3,Upper-Mid,1,Mid,0,Growing,FUCHS SE,Improving,⭐
+103255,0,Mid,0,Lower-Mid,2,Growing,BERTELSMANN SE & CO KGAA,Declining,⚠
+103269,3,Upper-Mid,1,Mid,2,Growing,KRONES AG,Consistent,✓
+103487,3,Upper-Mid,2,Upper-Mid,2,Growing,SAP SE,Consistent,✓
+103533,3,Upper-Mid,1,Mid,2,Growing,SIXT SE,Consistent,✓
+104357,3,Upper-Mid,2,Upper-Mid,2,Growing,KABEL DEUTSCHLAND HOLDING AG,Consistent,✓
+104364,5,Challenged,3,Low Performers,0,Growing,TELE COLUMBUS AG,Improving,⭐
+132740,3,Upper-Mid,1,Mid,2,Growing,INFINEON TECHNOLOGIES AG,Consistent,✓
+200759,2,Top Tier,1,Mid,1,Growing,BIOTEST AG,Consistent,✓
+202305,0,Mid,0,Lower-Mid,1,Growing,FRESENIUS SE & CO KGAA,Consistent,✓
+202807,0,Mid,0,Lower-Mid,2,Growing,JUNGHEINRICH AG,Declining,⚠
+203162,0,Mid,1,Mid,2,Growing,HORNBACH HOLDING AG & CO,Consistent,✓
+203586,3,Upper-Mid,4,High Performers,2,Growing,VTG AG,Improving,⭐
+204820,3,Upper-Mid,2,Upper-Mid,0,Growing,FIELMANN GROUP AG,Improving,⭐
+205865,3,Upper-Mid,2,Upper-Mid,0,Growing,PROSIEBENSAT.1 MEDIA SE,Improving,⭐
+205934,3,Upper-Mid,2,Upper-Mid,2,Growing,FREENET AG,Consistent,✓
+206703,3,Upper-Mid,1,Mid,1,Growing,SGL CARBON SE,Consistent,✓
+207096,0,Mid,0,Lower-Mid,1,Growing,RHOEN-KLINIKUM AG,Consistent,✓
+208821,3,Upper-Mid,0,Lower-Mid,2,Growing,SARTORIUS AG,Declining,⚠
+209440,0,Mid,0,Lower-Mid,1,Growing,VOSSLOH AG,Consistent,✓
+210326,1,Strong Performers,3,Low Performers,2,Growing,BLG-BREMER LAGERHAUS-GESELLS,Improving,⭐
+210332,3,Upper-Mid,1,Mid,2,Growing,CLAAS KG,Consistent,✓
+210334,0,Mid,0,Lower-Mid,2,Growing,COMPUGROUP MEDICAL SE & CO,Declining,⚠
+210340,3,Upper-Mid,1,Mid,1,Growing,DILLINGER HUTTENWERKE,Consistent,✓
+210359,3,Upper-Mid,2,Upper-Mid,1,Growing,EWE-ENERGIEVERSORGUNG WESER,Improving,⭐
+212782,0,Mid,0,Lower-Mid,0,Growing,FRESENIUS MEDICAL CARE AG,Consistent,✓
+213034,0,Mid,0,Lower-Mid,0,Growing,GRAMMER AG,Consistent,✓
+213037,3,Upper-Mid,1,Mid,2,Growing,INDUS HOLDING AG,Consistent,✓
+214700,3,Upper-Mid,2,Upper-Mid,2,Growing,STADA ARZNEIMITTEL AG,Consistent,✓
+214759,0,Mid,0,Lower-Mid,1,Growing,HEIDELBERGER DRUCKMASCHINEN,Consistent,✓
+216524,3,Upper-Mid,2,Upper-Mid,2,Growing,ENBW ENERGIE BADEN,Consistent,✓
+218000,3,Upper-Mid,1,Mid,2,Growing,JENOPTIK AG,Consistent,✓
+220295,0,Mid,0,Lower-Mid,0,Growing,ELRINGKLINGER AG,Consistent,✓
+220301,3,Upper-Mid,1,Mid,2,Growing,MERCK KGAA,Consistent,✓
+220303,0,Mid,1,Mid,2,Growing,AURUBIS AG,Consistent,✓
+220307,0,Mid,0,Lower-Mid,1,Growing,PFALZWERKE AG,Consistent,✓
+221244,3,Upper-Mid,1,Mid,2,Growing,ADIDAS AG,Consistent,✓
+221614,0,Mid,0,Lower-Mid,1,Growing,DEUTSCHE BAHN AG,Consistent,✓
+221616,3,Upper-Mid,2,Upper-Mid,4,Growing,DEUTSCHE TELEKOM,Declining,⚠
+222247,3,Upper-Mid,1,Mid,0,Growing,SOFTWARE GMBH,Improving,⭐
+222340,0,Mid,0,Lower-Mid,0,Growing,DUERR AG,Consistent,✓
+223089,0,Mid,1,Mid,2,Growing,HORNBACH-BAUMARKT AG,Consistent,✓
+225236,0,Mid,0,Lower-Mid,0,Growing,UNITED INTERNET AG,Consistent,✓
+231016,3,Upper-Mid,3,Low Performers,2,Growing,MORPHOSYS AG,Improving,⭐
+232623,0,Mid,0,Lower-Mid,2,Growing,EVOTEC SE,Declining,⚠
+233025,0,Mid,0,Lower-Mid,0,Growing,CANCOM SE,Consistent,✓
+234919,3,Upper-Mid,2,Upper-Mid,2,Growing,CTS EVENTIM AG & CO KGAA,Consistent,✓
+238136,0,Mid,1,Mid,2,Growing,BECHTLE AG,Consistent,✓
+238442,3,Upper-Mid,1,Mid,2,Growing,CARL ZEISS MEDITEC AG,Consistent,✓
+241456,0,Mid,0,Lower-Mid,2,Growing,DEUTSCHE POST AG,Declining,⚠
+241840,1,Strong Performers,0,Lower-Mid,0,Growing,SCHULER AG,Consistent,✓
+242158,3,Upper-Mid,1,Mid,2,Growing,WIRECARD AG,Consistent,✓
+244394,0,Mid,0,Lower-Mid,2,Growing,MVV ENERGIE AG,Declining,⚠
+244398,0,Mid,0,Lower-Mid,0,Growing,TAKKT AG,Consistent,✓
+245628,0,Mid,0,Lower-Mid,0,Growing,NORDEX SE,Consistent,✓
+245839,0,Mid,4,High Performers,1,Growing,FRAPORT AG,Improving,⭐
+248166,0,Mid,0,Lower-Mid,2,Growing,MAINOVA AG,Declining,⚠
+269104,0,Mid,0,Lower-Mid,2,Growing,BAUER AG,Declining,⚠
+269835,0,Mid,1,Mid,2,Growing,BRENNTAG SE,Consistent,✓
+270249,0,Mid,2,Upper-Mid,1,Growing,DIEBOLD NIXDORF AG,Improving,⭐
+271763,0,Mid,0,Lower-Mid,1,Growing,LANXESS AG,Consistent,✓
+273099,0,Mid,0,Lower-Mid,1,Growing,MTU AERO ENGINES AG,Consistent,✓
+276585,0,Mid,0,Lower-Mid,1,Growing,WACKER CHEMIE AG,Consistent,✓
+278310,0,Mid,1,Mid,1,Growing,KLOCKNER & CO SE,Consistent,✓
+281772,3,Upper-Mid,1,Mid,2,Growing,SYMRISE AG,Consistent,✓
+284636,0,Mid,1,Mid,2,Growing,WACKER NEUSON SE,Consistent,✓
+284944,0,Mid,0,Lower-Mid,2,Growing,GERRESHEIMER GROUP,Declining,⚠
+285715,3,Upper-Mid,1,Mid,2,Growing,SAF HOLLAND SE,Consistent,✓
+287162,0,Mid,0,Lower-Mid,2,Growing,HAMBURGER HAFEN UND LOGISTIK,Declining,⚠
+289333,0,Mid,0,Lower-Mid,2,Growing,SMA SOLAR TECHNOLOGY AG,Declining,⚠
+295079,3,Upper-Mid,2,Upper-Mid,2,Growing,STROEER SE & CO KGAA,Consistent,✓
+295421,0,Mid,0,Lower-Mid,0,Growing,EVONIK INDUSTRIES AG,Consistent,✓
+297185,0,Mid,0,Lower-Mid,2,Growing,KION GROUP AG,Declining,⚠
+297222,3,Upper-Mid,1,Mid,0,Growing,NORMA GROUP SE,Improving,⭐
+313972,0,Mid,2,Upper-Mid,0,Growing,TELEFONICA DEUTSCHLAND,Improving,⭐
+315541,0,Mid,2,Upper-Mid,1,Growing,OSRAM LICHT AG,Improving,⭐
+315582,3,Upper-Mid,0,Lower-Mid,2,Growing,STABILUS SE,Declining,⚠
+317079,3,Upper-Mid,2,Upper-Mid,1,Growing,SCOUT24 SE,Improving,⭐
+318434,0,Mid,1,Mid,2,Growing,ZALANDO SE,Consistent,✓
+318452,2,Top Tier,4,High Performers,1,Growing,ROCKET INTERNET SE,Improving,⭐
+318659,0,Mid,0,Lower-Mid,1,Growing,HELLA GMBH & CO. KGAA,Consistent,✓
+319665,4,Lower-Mid,0,Lower-Mid,0,Growing,ALLANE SE,Volatile,⚠
+319865,0,Mid,4,High Performers,2,Growing,SILTRONIC AG,Improving,⭐
+320124,0,Mid,0,Lower-Mid,0,Growing,SCHAEFFLER AG,Consistent,✓
+320448,0,Mid,0,Lower-Mid,1,Growing,COVESTRO AG,Consistent,✓
+321632,0,Mid,1,Mid,4,Growing,UNIPER SE,Declining,⚠
+322597,1,Strong Performers,0,Lower-Mid,2,Growing,INNOGY SE,Declining,⚠
+324859,0,Mid,0,Lower-Mid,2,Growing,DELIVERY HERO SE,Declining,⚠
+324977,0,Mid,2,Upper-Mid,0,Growing,METRO AG,Improving,⭐
+325735,2,Top Tier,4,High Performers,1,Growing,HELLOFRESH SE,Improving,⭐
+326410,3,Upper-Mid,1,Mid,2,Growing,1&1 AG,Consistent,✓
+326577,3,Upper-Mid,2,Upper-Mid,2,Growing,DERMAPHARM HOLDING,Consistent,✓
+326765,3,Upper-Mid,0,Lower-Mid,0,Growing,SIEMENS HEALTHINEE,Consistent,✓
+327148,3,Upper-Mid,2,Upper-Mid,3,Declining (Volatile),SPRINGER NATURE AG,Consistent,✓
+328745,3,Upper-Mid,1,Mid,0,Growing,KNORR-BREMSE AKTIE,Improving,⭐
+329260,3,Upper-Mid,4,High Performers,2,Growing,ENCAVIS AG,Improving,⭐
+332311,0,Mid,2,Upper-Mid,2,Growing,TRATON SE,Consistent,✓
+333885,2,Top Tier,2,Upper-Mid,2,Growing,TEAMVIEWER SE,Consistent,✓
+340115,0,Mid,0,Lower-Mid,2,Growing,HENSOLDT AG,Declining,⚠
+340153,0,Mid,0,Lower-Mid,1,Growing,SIEMENS ENERGY AG,Consistent,✓
+346413,2,Top Tier,1,Mid,2,Growing,AUTO1 GROUP SE,Consistent,✓
+347562,3,Upper-Mid,0,Lower-Mid,2,Growing,SYNLAB AG,Declining,⚠
+350278,0,Mid,0,Lower-Mid,1,Growing,VITESCO TECHNOLOGIES GROUP,Consistent,✓
+351590,0,Mid,0,Lower-Mid,2,Growing,DAIMLER TRUCK HOLDING AG,Declining,⚠
+354519,3,Upper-Mid,1,Mid,2,Growing,DR ING  H C F PORSCHE AG,Consistent,✓
+355804,2,Top Tier,2,Upper-Mid,1,Growing,IONOS GROUP SE,Improving,⭐
+358679,3,Upper-Mid,1,Mid,0,Growing,SCHOTT PHARMA AG & CO KGAA,Improving,⭐
+360887,2,Top Tier,2,Upper-Mid,2,Growing,DOUGLAS AG,Consistent,✓

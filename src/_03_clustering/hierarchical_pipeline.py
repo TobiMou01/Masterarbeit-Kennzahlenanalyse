@@ -52,10 +52,47 @@ class HierarchicalPipeline:
         self.engine = ClusteringEngine(config_dict=config_dict)
         self.output = OutputHandler(market=market, algorithm=self.algorithm)
 
-        # Initialize scoring modules
+        # Initialize new modules with config-driven feature toggling
         self.feature_selector = FeatureSelector()
-        self.score_calculator = ScoreCalculator(feature_selector=self.feature_selector)
-        logger.info("  ✓ Scoring modules initialized")
+
+        # Check if scoring is enabled (default: True for backwards compatibility)
+        self.scoring_enabled = config.get_value(config_dict, 'scoring', 'enabled', default=True)
+        if self.scoring_enabled:
+            from src._04_scoring.score_evolution import ScoreEvolutionTracker
+            from src._04_scoring.score_analyzer import ScoreAnalyzer
+            from src._05_visualization.plot_engine_scores import PlotEngineScores
+
+            self.score_calculator = ScoreCalculator(feature_selector=self.feature_selector)
+            self.score_tracker = ScoreEvolutionTracker()
+            self.score_analyzer = ScoreAnalyzer()
+            self.plot_engine_scores = PlotEngineScores()
+            logger.info("  ✓ Scoring modules initialized")
+
+        # Check if naming is enabled (default: True)
+        self.naming_enabled = config.get_value(config_dict, 'naming', 'enabled', default=True)
+        if self.naming_enabled:
+            from src._03_clustering.cluster_naming import ClusterNamer
+            self.cluster_namer = ClusterNamer(feature_selector=self.feature_selector)
+            logger.info("  ✓ Cluster naming initialized")
+
+        # Check if validation is enabled (default: True)
+        self.validation_enabled = config.get_value(config_dict, 'validation', 'enabled', default=True)
+        if self.validation_enabled:
+            from src._06_validation.algorithm_comparison import AlgorithmComparison
+            from src._06_validation.external_validation import ExternalValidation
+            from src._05_visualization.plot_engine_validation import PlotEngineValidation
+
+            self.algorithm_comparison = AlgorithmComparison()
+            self.external_validation = ExternalValidation()
+            self.plot_engine_validation = PlotEngineValidation()
+            logger.info("  ✓ Validation modules initialized")
+
+        # Check if PCA is enabled (default: False)
+        self.pca_enabled = config.get_value(config_dict, 'pca', 'enabled', default=False)
+        if self.pca_enabled:
+            from src._05_visualization.plot_engine_pca import PlotEnginePCA
+            self.plot_engine_pca = PlotEnginePCA()
+            logger.info("  ✓ PCA visualization initialized")
 
         # Results storage
         self.results = {}
@@ -322,15 +359,17 @@ class HierarchicalPipeline:
         # Save results
         self._save_analysis_results(df_result, profiles, metrics, all_features, 'combined', sort_by='combined_score')
 
-        # Cross-analysis (score evolution)
-        df_migration = self._analyze_score_evolution(df_static, df_dynamic, df_result)
+        # Cross-analysis (score evolution) - DISABLED for now to avoid complexity
+        # df_migration = self._analyze_score_evolution(df_static, df_dynamic, df_result)
+        df_migration = None  # TODO: Implement if needed
 
-        # Save score evolution data to comparisons/temporal
-        self.output.save_comparison_data(
-            comp_type='temporal',
-            data=df_migration,
-            filename='score_evolution.csv'
-        )
+        # Save score evolution data to comparisons/temporal (only if available)
+        if df_migration is not None:
+            self.output.save_comparison_data(
+                comp_type='temporal',
+                data=df_migration,
+                filename='score_evolution.csv'
+            )
 
         # Store
         self.results['combined'] = {
@@ -343,7 +382,39 @@ class HierarchicalPipeline:
         }
 
         # Print score statistics
-        self._print_score_statistics(df_result)
+        if 'overall_score' in df_result.columns:
+            logger.info(f"\n  Score Statistics:")
+            logger.info(f"     Mean: {df_result['overall_score'].mean():.2f}")
+            logger.info(f"     Median: {df_result['overall_score'].median():.2f}")
+            logger.info(f"     Std: {df_result['overall_score'].std():.2f}")
+
+    def _enhance_cluster_names_with_scores(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add score information to cluster names (for combined analysis)"""
+        if 'overall_score' not in df.columns:
+            return df
+
+        # Calculate average score per cluster
+        cluster_scores = df.groupby('cluster')['overall_score'].mean()
+
+        # Enhance names based on score
+        enhanced_names = {}
+        for cluster_id in df['cluster'].unique():
+            if cluster_id == -1:
+                enhanced_names[cluster_id] = "Noise"
+                continue
+
+            base_name = df[df['cluster'] == cluster_id]['cluster_name'].iloc[0]
+            avg_score = cluster_scores[cluster_id]
+
+            if avg_score >= 70:
+                enhanced_names[cluster_id] = f"{base_name} (High Score: {avg_score:.0f})"
+            elif avg_score >= 50:
+                enhanced_names[cluster_id] = f"{base_name} (Mid Score: {avg_score:.0f})"
+            else:
+                enhanced_names[cluster_id] = f"{base_name} (Low Score: {avg_score:.0f})"
+
+        df['cluster_name_enriched'] = df['cluster'].map(enhanced_names)
+        return df
 
     def _enrich_cluster_names_with_trends(self, df: pd.DataFrame, features: list) -> pd.DataFrame:
         """Add trend information to cluster names"""

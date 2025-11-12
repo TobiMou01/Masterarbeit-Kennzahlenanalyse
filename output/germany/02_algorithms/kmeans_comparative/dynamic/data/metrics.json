@@ -1,9 +1,42 @@
 {
-  "silhouette": 0.17725509349350055,
-  "davies_bouldin": 1.4506123866516574,
-  "inertia": 1779.9662381246412,
-  "n_iter": 9,
+  "silhouette": 0.15720147730304787,
+  "davies_bouldin": 1.3656243825420924,
+  "inertia": 964.995684390251,
+  "n_iter": 7,
   "n_clusters": 5,
   "n_companies": 152,
-  "algorithm": "kmeans"
+  "algorithm": "kmeans",
+  "features_used": [
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6",
+    "PC7",
+    "PC8",
+    "PC9",
+    "PC10"
+  ],
+  "original_features": [
+    "roa_trend",
+    "roa_trend_r2",
+    "roa_volatility",
+    "roe_trend",
+    "roe_trend_r2",
+    "roe_volatility",
+    "ebit_margin_trend",
+    "ebit_margin_trend_r2",
+    "ebit_margin_volatility",
+    "revt_trend",
+    "revt_trend_r2",
+    "revt_volatility",
+    "revt_cagr",
+    "debt_to_equity_trend",
+    "debt_to_equity_trend_r2",
+    "debt_to_equity_volatility",
+    "fcf_trend",
+    "fcf_trend_r2",
+    "fcf_volatility"
+  ]
 }

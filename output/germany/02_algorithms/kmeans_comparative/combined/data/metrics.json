@@ -1,9 +1,29 @@
 {
-  "silhouette": 0.1476700627051026,
-  "davies_bouldin": 1.3503172718294743,
-  "inertia": 649.6055301340964,
-  "n_iter": 10,
+  "silhouette": 0.21226522102114326,
+  "davies_bouldin": 1.059456729562829,
+  "inertia": 537.4307083116694,
+  "n_iter": 30,
   "n_clusters": 6,
   "n_companies": 151,
-  "algorithm": "kmeans"
+  "algorithm": "kmeans",
+  "features_used": [
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6",
+    "PC7"
+  ],
+  "original_features": [
+    "roa",
+    "roe",
+    "ebit_margin",
+    "gross_margin",
+    "fcf_margin",
+    "current_ratio",
+    "debt_to_equity",
+    "financial_leverage",
+    "roa_trend"
+  ]
 }

@@ -29,7 +29,8 @@
       "Bash(if [ -f pipeline_run.txt ])",
       "Bash(then echo \"=== INHALT VON pipeline_run.txt ===\")",
       "Bash(else echo \"Datei wird beim nächsten ''python main.py'' Run erstellt\")",
-      "Bash(fi)"
+      "Bash(fi)",
+      "Bash(source venv_masterarbeit/bin/activate)"
     ],
     "deny": [],
     "ask": []

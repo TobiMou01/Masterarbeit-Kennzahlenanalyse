@@ -537,7 +537,9 @@ def create_score_visualizations(
     df: pd.DataFrame,
     cluster_column: str,
     analysis_type: str,
-    output
+    output,
+    score_analyzer,
+    plot_engine_scores_module
 ):
     """
     Create score visualizations
@@ -552,6 +554,9 @@ def create_score_visualizations(
         df: DataFrame with scores
         cluster_column: Name of cluster column
         analysis_type: 'static', 'dynamic', or 'combined'
+        output: OutputHandler instance
+        score_analyzer: ScoreAnalyzer instance
+        plot_engine_scores_module: PlotEngineScores instance
     """
     # Score visualizations are always enabled when this function is called
 
@@ -567,7 +572,7 @@ def create_score_visualizations(
 
     # 1. Score distributions
     if 'overall_score' in df.columns:
-        plot_engine_scores.plot_score_distribution(
+        plot_engine_scores_module.plot_score_distribution(
             df=df,
             score_column='overall_score',
             cluster_column=cluster_column,
@@ -576,7 +581,7 @@ def create_score_visualizations(
 
     # 2. Dimensional heatmap
     if len(dimensional_scores) > 0:
-        plot_engine_scores.plot_dimensional_heatmap(
+        plot_engine_scores_module.plot_dimensional_heatmap(
             df=df,
             dimensional_score_columns=dimensional_scores,
             cluster_column=cluster_column,
@@ -585,7 +590,7 @@ def create_score_visualizations(
 
     # 3. Score correlation matrix
     if len(score_columns) >= 2:
-        plot_engine_scores.plot_score_correlation_matrix(
+        plot_engine_scores_module.plot_score_correlation_matrix(
             df=df,
             score_columns=score_columns,
             output_path=viz_dir / 'score_correlations.png'
@@ -601,7 +606,7 @@ def create_score_visualizations(
         )
 
         # Then plot it
-        plot_engine_scores.plot_homogeneity_comparison(
+        plot_engine_scores_module.plot_homogeneity_comparison(
             homogeneity_df=homogeneity_df,
             output_path=viz_dir / 'cluster_homogeneity.png'
         )

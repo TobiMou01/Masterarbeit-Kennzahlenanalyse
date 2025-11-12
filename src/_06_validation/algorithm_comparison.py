@@ -63,7 +63,22 @@ class AlgorithmComparison:
         from sklearn.preprocessing import StandardScaler
 
         # Prepare data
-        X = df[features].values
+        import numpy as np
+
+        # Check if features exist in df
+        available_features = [f for f in features if f in df.columns]
+        if len(available_features) == 0:
+            raise ValueError(f"None of the features {features} found in DataFrame columns: {list(df.columns)[:10]}")
+
+        # Use only available features
+        if len(available_features) < len(features):
+            logger.warning(f"  ⚠️  Only {len(available_features)}/{len(features)} features available")
+
+        X = df[available_features].values
+
+        # Handle NaN and inf values
+        X = np.nan_to_num(X, nan=0.0, posinf=0.0, neginf=0.0)
+
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(X)
 

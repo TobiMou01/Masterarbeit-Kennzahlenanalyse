@@ -1,6 +1,6 @@
 {
   "n_companies": 152,
-  "n_clusters": 6,
+  "n_clusters": 5,
   "silhouette_score": null,
   "davies_bouldin_score": null
 }

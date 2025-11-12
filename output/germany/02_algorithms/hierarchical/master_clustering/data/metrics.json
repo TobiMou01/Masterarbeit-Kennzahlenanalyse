@@ -1,11 +1,36 @@
 {
-  "silhouette": 0.1530172086834212,
-  "davies_bouldin": 1.4374159534948576,
+  "silhouette": 0.16726986280538442,
+  "davies_bouldin": 1.331959586251947,
   "n_clusters": 5,
   "linkage": "ward",
   "distance_metric": "euclidean",
-  "n_leaves": 158,
+  "n_leaves": 160,
   "n_connected_components": 1,
-  "n_companies": 158,
-  "algorithm": "hierarchical"
+  "n_companies": 160,
+  "algorithm": "hierarchical",
+  "features_used": [
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6",
+    "PC7",
+    "PC8"
+  ],
+  "original_features": [
+    "roa",
+    "ebit_margin",
+    "gross_margin",
+    "current_ratio",
+    "working_capital_ratio",
+    "debt_to_equity",
+    "equity_ratio",
+    "asset_turnover",
+    "capital_intensity",
+    "days_sales_outstanding",
+    "fcf_margin",
+    "cash_conversion",
+    "financial_leverage"
+  ]
 }

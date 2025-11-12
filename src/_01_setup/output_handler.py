@@ -335,8 +335,28 @@ class OutputHandler:
 
         # 3. Metrics
         if metrics:
-            metrics_clean = {k: v for k, v in metrics.items()
-                           if k not in ['scaler', 'model']}
+            import numpy as np
+
+            # Filter out non-serializable objects
+            metrics_clean = {}
+            for k, v in metrics.items():
+                if k not in ['scaler', 'model', 'pca_metadata', 'transformer']:
+                    # Convert numpy types to Python native types
+                    if isinstance(v, (np.integer, np.int64, np.int32)):
+                        metrics_clean[k] = int(v)
+                    elif isinstance(v, (np.floating, np.float64, np.float32)):
+                        metrics_clean[k] = float(v)
+                    elif isinstance(v, np.ndarray):
+                        metrics_clean[k] = v.tolist()
+                    elif isinstance(v, list):
+                        # Convert list elements
+                        metrics_clean[k] = [
+                            str(item) if isinstance(item, (np.integer, np.floating))
+                            else item for item in v
+                        ]
+                    else:
+                        metrics_clean[k] = v
+
             metrics_path = data_dir / 'metrics.json'
             with open(metrics_path, 'w') as f:
                 json.dump(metrics_clean, f, indent=2)

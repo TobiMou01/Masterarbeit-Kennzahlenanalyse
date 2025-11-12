@@ -225,7 +225,9 @@ class ClusteringPipeline:
             df=df_result,
             cluster_column='cluster',
             analysis_type='static',
-            output=self.output
+            output=self.output,
+            score_analyzer=self.score_analyzer,
+            plot_engine_scores_module=self.plot_engine_scores
         )
 
         # ==================================================================
@@ -298,7 +300,9 @@ class ClusteringPipeline:
             df=df_result,
             cluster_column='cluster',
             analysis_type='dynamic',
-            output=self.output
+            output=self.output,
+            score_analyzer=self.score_analyzer,
+            plot_engine_scores_module=self.plot_engine_scores
         )
 
         # ==================================================================
@@ -390,7 +394,7 @@ class ClusteringPipeline:
         # 3. Perform External Validation
         perform_validation(
             df=df_result,
-            features=features,
+            features=features_combined,  # ✅ Fix: war 'features', sollte 'features_combined' sein
             analysis_type='combined',
             config=self.config,
             validation_enabled=self.validation_enabled,
@@ -403,7 +407,9 @@ class ClusteringPipeline:
             df=df_result,
             cluster_column='cluster',
             analysis_type='combined',
-            output=self.output
+            output=self.output,
+            score_analyzer=self.score_analyzer,
+            plot_engine_scores_module=self.plot_engine_scores
         )
 
         # 5. Track Score Evolution (Static → Dynamic → Combined)
@@ -411,7 +417,8 @@ class ClusteringPipeline:
             track_score_evolution(
                 df_static=self.results['static']['df'],
                 df_dynamic=self.results['dynamic']['df'],
-                df_combined=df_result
+                df_combined=df_result,
+                config=self.config  # ✅ Fix: fehlender config Parameter
             )
 
         # ==================================================================

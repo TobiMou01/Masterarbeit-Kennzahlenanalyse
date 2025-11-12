@@ -94,15 +94,24 @@ class ScoreCalculator:
         # Prepare data
         df_clean = df.copy()
 
-        # Handle missing values
+        # Handle missing values and infinities
         for feature in features:
+            # Replace inf with NaN first
+            df_clean[feature] = df_clean[feature].replace([np.inf, -np.inf], np.nan)
+
+            # Fill NaN with median
             if df_clean[feature].isna().any():
                 median_val = df_clean[feature].median()
+                if np.isnan(median_val):  # If median is also NaN, use 0
+                    median_val = 0
                 df_clean[feature] = df_clean[feature].fillna(median_val)
 
         # Standardize features
         scaler = StandardScaler()
         X_scaled = scaler.fit_transform(df_clean[features])
+
+        # Final check for NaN/inf in scaled data
+        X_scaled = np.nan_to_num(X_scaled, nan=0.0, posinf=0.0, neginf=0.0)
 
         # Compute cluster centers if not provided
         if profiles is None:

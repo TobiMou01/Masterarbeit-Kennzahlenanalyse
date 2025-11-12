@@ -93,10 +93,10 @@ def track_score_evolution(
     logger.info(f"\n  📈 Tracking Score Evolution...")
     
     try:
-        from src._04_scoring.score_evolution import ScoreEvolution
-        
+        from src._04_scoring.score_evolution import ScoreEvolutionTracker
+
         # Initialize evolution tracker
-        tracker = ScoreEvolution()
+        tracker = ScoreEvolutionTracker()
         
         # Prepare data
         stage_dfs = {}
