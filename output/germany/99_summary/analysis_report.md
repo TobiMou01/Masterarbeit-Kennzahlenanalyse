@@ -2,7 +2,7 @@
 
 **Market:** germany
 **Algorithm:** kmeans
-**Generated:** 2025-11-13 15:17:22
+**Generated:** 2025-11-13 17:35:24
 
 ---
 
@@ -34,10 +34,12 @@
 ### Static Analysis Profiles
 
 ```
-              roa  ebit_margin  gross_margin  current_ratio  working_capital_ratio  debt_to_equity  equity_ratio  asset_turnover  capital_intensity  days_sales_outstanding  fcf_margin  cash_conversion  financial_leverage cluster_name
-cluster                                                                                                                                                                                                                                  
-0        7.193581    12.757447     43.748516       1.647198              10.207753        0.755749     40.538206        0.656546          57.176425              228.882460   27.661123       142.875844            2.953989       Tier 1
-1        1.180305    -1.064861     20.934763       1.316391               8.744270        1.457793     27.912900        1.182765          29.109911               62.999921   -0.782576       571.475401            6.690880       Tier 2
+              roa         roe  ebit_margin  net_profit_margin  current_ratio  quick_ratio  debt_to_equity  equity_ratio  asset_turnover  revenue_per_employee     cluster_name
+cluster                                                                                                                                                                       
+0        6.284933    6.780541     9.193421           5.482506       1.738951     1.174915        0.338953     49.523062        0.844991            410.741863        Upper-Mid
+1        4.648844    3.428186     8.047534           2.668569       1.183871     0.917403        1.068857     26.067930        0.639157            555.064750        Lower-Mid
+2        1.795009   42.566366     1.204411          -0.767157       2.212493     1.803597        0.677167     25.334460        1.832553           1230.156906  High Performers
+3       -0.589630 -144.874819    -7.143895         -23.597034       0.999847     0.928391       25.059635      2.494306        0.539283            212.243147   Low Performers
 ```
 
 

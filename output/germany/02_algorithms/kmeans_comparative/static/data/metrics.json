@@ -1,39 +1,146 @@
 {
-  "silhouette": 0.16492141399465057,
-  "davies_bouldin": 2.1379465300730054,
-  "inertia": 1812.0784848087771,
-  "n_iter": 11,
-  "n_clusters": 2,
+  "silhouette": 0.16437111273559357,
+  "davies_bouldin": 1.50829342291345,
+  "inertia": 644.242408508002,
+  "n_iter": 6,
+  "n_clusters": 4,
   "n_companies": 160,
   "algorithm": "kmeans",
   "features_used": [
-    "roa",
-    "ebit_margin",
-    "gross_margin",
-    "current_ratio",
-    "working_capital_ratio",
-    "debt_to_equity",
-    "equity_ratio",
-    "asset_turnover",
-    "capital_intensity",
-    "days_sales_outstanding",
-    "fcf_margin",
-    "cash_conversion",
-    "financial_leverage"
+    "PC1",
+    "PC2",
+    "PC3",
+    "PC4",
+    "PC5",
+    "PC6"
   ],
   "original_features": [
     "roa",
+    "roe",
     "ebit_margin",
-    "gross_margin",
+    "net_profit_margin",
     "current_ratio",
-    "working_capital_ratio",
+    "quick_ratio",
     "debt_to_equity",
     "equity_ratio",
     "asset_turnover",
-    "capital_intensity",
-    "days_sales_outstanding",
-    "fcf_margin",
-    "cash_conversion",
-    "financial_leverage"
-  ]
+    "revenue_per_employee"
+  ],
+  "pca_metadata": {
+    "n_components": 6,
+    "variance_explained": 0.9138006426099985,
+    "variance_summary": {
+      "Component": {
+        "0": "PC1",
+        "1": "PC2",
+        "2": "PC3",
+        "3": "PC4",
+        "4": "PC5",
+        "5": "PC6"
+      },
+      "Explained_Variance_Ratio": {
+        "0": 29.69283332010803,
+        "1": 22.855130633681426,
+        "2": 13.752885520669683,
+        "3": 10.096228271793608,
+        "4": 8.075594919745386,
+        "5": 6.9073915950017275
+      },
+      "Cumulative_Variance": {
+        "0": 29.69283332010803,
+        "1": 52.547963953789456,
+        "2": 66.30084947445913,
+        "3": 76.39707774625273,
+        "4": 84.47267266599813,
+        "5": 91.38006426099984
+      }
+    },
+    "component_loadings": {
+      "PC1": {
+        "roa": 0.4502318607571433,
+        "roe": 0.3258362724858451,
+        "ebit_margin": 0.5315364304281411,
+        "net_profit_margin": 0.5328391454050342,
+        "current_ratio": -0.09457473724175934,
+        "quick_ratio": -0.09314338157569459,
+        "debt_to_equity": -0.22453094631657547,
+        "equity_ratio": 0.20743115951940672,
+        "asset_turnover": -0.05742466445078742,
+        "revenue_per_employee": 0.10155771269116212
+      },
+      "PC2": {
+        "roa": 0.008378890229851754,
+        "roe": -0.1676855473881459,
+        "ebit_margin": 0.04983430791503755,
+        "net_profit_margin": 0.06670120651187439,
+        "current_ratio": 0.6078753773793008,
+        "quick_ratio": 0.6028283567968152,
+        "debt_to_equity": -0.044995580293933184,
+        "equity_ratio": 0.4057952958969523,
+        "asset_turnover": -0.2483978091124034,
+        "revenue_per_employee": -0.05973645476458874
+      },
+      "PC3": {
+        "roa": 0.24106388623227684,
+        "roe": -0.4539047392973024,
+        "ebit_margin": 0.18332186886785248,
+        "net_profit_margin": 0.0549506364281915,
+        "current_ratio": -0.18670907603693274,
+        "quick_ratio": -0.13141029020447823,
+        "debt_to_equity": 0.5660945973993742,
+        "equity_ratio": -0.04507602318177669,
+        "asset_turnover": -0.5558122295997643,
+        "revenue_per_employee": -0.12522416403984798
+      },
+      "PC4": {
+        "roa": -0.003978947520882789,
+        "roe": -0.21686882746727257,
+        "ebit_margin": 0.026765718532209087,
+        "net_profit_margin": 0.06248343115588554,
+        "current_ratio": 0.0407828062779447,
+        "quick_ratio": 0.0733850481426265,
+        "debt_to_equity": 0.21004376825385726,
+        "equity_ratio": -0.01214986969813575,
+        "asset_turnover": 0.1640945105040953,
+        "revenue_per_employee": 0.9327860858308825
+      },
+      "PC5": {
+        "roa": -0.16436740306037087,
+        "roe": -0.34179594955759696,
+        "ebit_margin": -0.1617080868069154,
+        "net_profit_margin": -0.07592943909928926,
+        "current_ratio": -0.26368578273035204,
+        "quick_ratio": -0.31732937790678245,
+        "debt_to_equity": -0.5001973467867217,
+        "equity_ratio": 0.5572966627033272,
+        "asset_turnover": -0.27428115912354056,
+        "revenue_per_employee": 0.1341971097930427
+      },
+      "PC6": {
+        "roa": 0.24699204761699806,
+        "roe": -0.30429206536485287,
+        "ebit_margin": -0.04640768637410655,
+        "net_profit_margin": 0.062396230879632204,
+        "current_ratio": 0.0007353694803989126,
+        "quick_ratio": -0.1243669053004201,
+        "debt_to_equity": 0.287007934301738,
+        "equity_ratio": 0.4636861626326247,
+        "asset_turnover": 0.6848463757104394,
+        "revenue_per_employee": -0.24185463897195128
+      }
+    },
+    "original_features": [
+      "roa",
+      "roe",
+      "ebit_margin",
+      "net_profit_margin",
+      "current_ratio",
+      "quick_ratio",
+      "debt_to_equity",
+      "equity_ratio",
+      "asset_turnover",
+      "revenue_per_employee"
+    ],
+    "transformer": "<PCATransformer>"
+  }
 }

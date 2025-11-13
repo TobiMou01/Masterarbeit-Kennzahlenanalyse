@@ -1,6 +1,6 @@
 {
   "n_companies": 152,
-  "n_clusters": 2,
+  "n_clusters": 3,
   "weights": {
     "static": 0.4,
     "dynamic": 0.6

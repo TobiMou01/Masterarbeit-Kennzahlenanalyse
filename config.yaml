@@ -72,7 +72,7 @@ classification:
 # ========================================
 cluster_selection:
   mode: 'auto'  # 'auto' oder 'manual' - CHANGED: Auto-select optimal k
-  k_range: [2, 10]  # Range für automatische Bestimmung
+  k_range: [4, 8]  # OPTIMIERT: Mindestens 4 Cluster für sinnvolle Vergleiche
   methods: ['elbow', 'silhouette', 'gap']  # Methoden für auto-Modus
 
 # ========================================
@@ -91,17 +91,17 @@ cluster_quality:
   min_ari_threshold: 0.8  # Minimum mean ARI for "stable" clustering
 
 static_analysis:
-  n_clusters: 5  # Wird verwendet wenn mode='manual'
+  n_clusters: 5  # Fallback wenn mode='manual' (sonst auto k=4-8)
 
 dynamic_analysis:
-  n_clusters: 5
+  n_clusters: 5  # Fallback wenn mode='manual' (sonst auto k=4-8)
   min_years_required: 5  # Minimum Jahre pro Unternehmen
 
 combined_analysis:
-  n_clusters: 6
+  n_clusters: 6  # Fallback wenn mode='manual' (sonst auto k=4-8)
   weights:
-    static: 0.4   # 40% Gewicht auf aktuellen Status
-    dynamic: 0.6  # 60% Gewicht auf Entwicklung
+    static: 0.5   # 50% Gewicht auf aktuellen Status (ausbalanciert)
+    dynamic: 0.5  # 50% Gewicht auf Entwicklung
 
 # ========================================
 # FEATURES
@@ -112,7 +112,7 @@ combined_analysis:
 
 feature_selection:
   mode: 'preset'  # 'preset' oder 'manual'
-  preset: 'pca_optimized'  # Wenn mode=preset: minimal, standard, comprehensive, pca_optimized
+  preset: 'standard'  # OPTIMIERT: Weniger Features (10 statt 21) = bessere Clustering-Qualität
 
 # ========================================
 # MANUAL MODE FEATURES (wenn mode='manual')
@@ -245,10 +245,10 @@ validation:
 # PCA INTEGRATION
 # ========================================
 pca:
-  enabled: false  # Enable PCA preprocessing (dimensionality reduction)
+  enabled: true  # AKTIVIERT: PCA für Dimensionsreduktion (wichtig bei vielen Features!)
   run_before_clustering: true  # Apply PCA BEFORE clustering (recommended)
-  n_components: 0.90  # Preserve 90% variance (or int for exact number)
-  compare_spaces: false  # Compare clustering in original vs PCA space (for validation)
+  n_components: 0.85  # Preserve 85% variance (Balance: Compression vs Information)
+  compare_spaces: true  # AKTIVIERT: Vergleich Original vs PCA Space für Validierung
 
 # ========================================
 # VISUALIZATION (NEU: Granulare Kontrolle)

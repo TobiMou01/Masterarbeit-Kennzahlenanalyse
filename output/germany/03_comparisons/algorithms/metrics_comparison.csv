@@ -1,4 +1,4 @@
 ,algorithm,n_clusters,n_samples,silhouette,davies_bouldin,calinski_harabasz,n_noise,noise_pct
-0,kmeans,2,0,0.6792809743078937,0.9107451992152561,,0,0.0
+0,kmeans,4,0,0.24296072847641176,1.1535538433748993,,0,0.0
 1,hierarchical,5,0,,,,0,0.0
-2,dbscan,2,0,,,,0,0.0
+2,dbscan,3,0,,,,0,0.0

@@ -1,3 +1,5 @@
 cluster_id,cluster_name
-0,Mid-Tier (Turnaround Candidates) - Margin Consistency: 0.3
-1,Mid-Tier (Balanced) - capex_trend_outlier: 0.2
+0,Mid-Tier (Turnaround Candidates)
+1,Mid-Tier (Balanced) - asset_growth_outlier: +0.1%
+2,Mid-Tier (Balanced) - cashflow_volatility_outlier: 0.2
+3,Mid-Tier (Balanced) - Leverage Trend: -28.0
