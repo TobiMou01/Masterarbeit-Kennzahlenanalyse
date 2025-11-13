@@ -142,8 +142,10 @@ class BaseClusterer(ABC):
                 if col in df_subset.columns:
                     # Count outliers before winsorization
                     q_low = df_subset[col].quantile(winsorize_limits[0])
-                    q_high = df_subset[col].quantile(1 - winsorize_limits[1])
-                    n_outliers = ((df_subset[col] < q_low) | (df_subset[col] > q_high)).sum()
+                    q_high = df_subset[col].quantile(1.0 - winsorize_limits[1])  # Force float
+                    mask_low = df_subset[col] < q_low
+                    mask_high = df_subset[col] > q_high
+                    n_outliers = int((mask_low | mask_high).sum())
                     n_outliers_total += n_outliers
 
                     # Apply winsorization (cap values)

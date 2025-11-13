@@ -1,6 +1,3 @@
 cluster_id,cluster_name
-0,Mid-Tier (Balanced) - Gross Margin: 26.0%
-1,Mid-Tier (Mature Stable) - Working Capital Ratio: 23.2
-2,Mid-Tier (Balanced) - Days Sales Outstanding: 556.7
-3,Mid-Tier (Distressed) - Debt/Equity: 18.42x
-4,Mid-Tier (Balanced) - Capital Intensity: 285.9
+0,Mid-Tier (Balanced) - Working Capital Ratio: 10.2
+1,Mid-Tier (Balanced) - Current Ratio: 1.32x

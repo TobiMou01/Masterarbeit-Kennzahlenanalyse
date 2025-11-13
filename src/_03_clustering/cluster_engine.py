@@ -137,30 +137,33 @@ class ClusteringEngine:
         # 3. Clustering durchführen
         labels = clusterer.fit_predict(X_scaled)
 
-        # 3.5 CRITICAL: Enforce minimum cluster size constraint
-        min_cluster_size = config.get_value(self.config, 'cluster_quality', 'min_cluster_size', default=10)
-        min_cluster_percentage = config.get_value(self.config, 'cluster_quality', 'min_cluster_percentage', default=0.06)
+        # 3.5 OPTIONAL: Enforce minimum cluster size constraint
+        enable_merging = config.get_value(self.config, 'cluster_quality', 'enable_merging', default=False)
 
-        # Calculate minimum based on both absolute and percentage
-        min_size_abs = max(min_cluster_size, int(min_cluster_percentage * len(valid_idx)))
+        if enable_merging:
+            min_cluster_size = config.get_value(self.config, 'cluster_quality', 'min_cluster_size', default=10)
+            min_cluster_percentage = config.get_value(self.config, 'cluster_quality', 'min_cluster_percentage', default=0.06)
 
-        if min_size_abs > 1:
-            logger.info(f"\n🔍 Enforcing minimum cluster size: {min_size_abs} companies ({min_cluster_percentage*100:.0f}%)")
+            # Calculate minimum based on both absolute and percentage
+            min_size_abs = max(min_cluster_size, int(min_cluster_percentage * len(valid_idx)))
 
-            labels, merge_info = enforce_min_cluster_size(
-                X=X_scaled,
-                labels=labels,
-                min_size=min_size_abs,
-                merge_strategy='nearest'
-            )
+            if min_size_abs > 1:
+                logger.info(f"\n🔍 Enforcing minimum cluster size: {min_size_abs} companies ({min_cluster_percentage*100:.0f}%)")
 
-            if merge_info['n_merges'] > 0:
-                logger.info(f"  ⚠️  Merged {merge_info['n_merges']} small clusters:")
-                for merge_entry in merge_info['merged_clusters']:
-                    logger.info(f"    Cluster {merge_entry['from_cluster']} ({merge_entry['size']} samples) → "
-                              f"Cluster {merge_entry['to_cluster']}")
-            else:
-                logger.info(f"  ✓ All clusters meet minimum size constraint")
+                labels, merge_info = enforce_min_cluster_size(
+                    X=X_scaled,
+                    labels=labels,
+                    min_size=min_size_abs,
+                    merge_strategy='nearest'
+                )
+
+                if merge_info['n_merges'] > 0:
+                    logger.info(f"  ⚠️  Merged {merge_info['n_merges']} small clusters:")
+                    for merge_entry in merge_info['merged_clusters']:
+                        logger.info(f"    Cluster {merge_entry['from_cluster']} ({merge_entry['size']} samples) → "
+                                  f"Cluster {merge_entry['to_cluster']}")
+                else:
+                    logger.info(f"  ✓ All clusters meet minimum size constraint")
 
         # 3.6 OPTIONAL: Robustness test for K-Means
         if self.algorithm == 'kmeans' and config.get_value(self.config, 'cluster_quality', 'test_robustness', default=False):

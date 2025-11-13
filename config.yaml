@@ -79,7 +79,8 @@ cluster_selection:
 # CLUSTER QUALITY CONSTRAINTS (NEW)
 # ========================================
 cluster_quality:
-  # Minimum cluster size to prevent statistical unreliability
+  # Minimum cluster size enforcement (merge small clusters)
+  enable_merging: false  # OPTIONAL: Merge clusters smaller than threshold
   min_cluster_size: 10  # Absolute minimum (companies)
   min_cluster_percentage: 0.06  # Percentage-based minimum (6% of data)
   # Final minimum is max(min_cluster_size, min_cluster_percentage * n_samples)
