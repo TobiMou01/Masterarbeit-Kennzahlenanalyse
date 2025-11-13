@@ -140,18 +140,31 @@ class BaseClusterer(ABC):
             n_outliers_total = 0
             for col in features:
                 if col in df_subset.columns:
-                    # Count outliers before winsorization
-                    q_low = df_subset[col].quantile(winsorize_limits[0])
-                    q_high = df_subset[col].quantile(1.0 - winsorize_limits[1])  # Force float
-                    mask_low = df_subset[col] < q_low
-                    mask_high = df_subset[col] > q_high
-                    n_outliers = int((mask_low | mask_high).sum())
-                    n_outliers_total += n_outliers
+                    # Only winsorize numeric columns
+                    if not pd.api.types.is_numeric_dtype(df_subset[col]):
+                        logger.warning(f"  ⚠️  Skipping non-numeric column: {col}")
+                        continue
 
-                    # Apply winsorization (cap values)
-                    df_subset[col] = winsorize(df_subset[col].values,
-                                              limits=winsorize_limits,
-                                              nan_policy='omit')
+                    # Skip boolean columns
+                    if df_subset[col].dtype == bool:
+                        logger.warning(f"  ⚠️  Skipping boolean column: {col}")
+                        continue
+
+                    # Count outliers before winsorization
+                    try:
+                        q_low = float(df_subset[col].quantile(winsorize_limits[0]))
+                        q_high = float(df_subset[col].quantile(1.0 - winsorize_limits[1]))
+                        mask_low = df_subset[col] < q_low
+                        mask_high = df_subset[col] > q_high
+                        n_outliers = int((mask_low | mask_high).sum())
+                        n_outliers_total += n_outliers
+
+                        # Apply winsorization (cap values)
+                        df_subset[col] = winsorize(df_subset[col].values,
+                                                  limits=winsorize_limits,
+                                                  nan_policy='omit')
+                    except (TypeError, ValueError) as e:
+                        logger.warning(f"  ⚠️  Could not winsorize {col}: {e}")
 
             if n_outliers_total > 0:
                 logger.info(f"  Winsorized {n_outliers_total} outlier values across {len(features)} features "

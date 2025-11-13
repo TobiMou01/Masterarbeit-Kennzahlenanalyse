@@ -1,6 +1,3 @@
 cluster_id,cluster_name
-0,Mid-Tier (Balanced) - roe_trend_r2: 0.5%
-1,Mid-Tier (Balanced) - revt_trend_r2: 0.2
-2,Mid-Tier (Balanced) - ebit_margin_trend: 13.8%
-3,Mid-Tier (Balanced) - debt_to_equity_volatility: 302.59x
-4,Mid-Tier (Balanced) - Fcf Trend: 1438.2
+0,Mid-Tier (Turnaround Candidates) - Margin Consistency: 0.3
+1,Mid-Tier (Balanced) - capex_trend_outlier: 0.2

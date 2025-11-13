@@ -1,19 +1,26 @@
 {
-  "silhouette": 0.21226522102114326,
-  "davies_bouldin": 1.059456729562829,
-  "inertia": 537.4307083116694,
-  "n_iter": 30,
-  "n_clusters": 6,
-  "n_companies": 151,
+  "silhouette": 0.6792809743078937,
+  "davies_bouldin": 0.9107451992152561,
+  "inertia": 1783.7109453795047,
+  "n_iter": 2,
+  "n_clusters": 2,
+  "n_companies": 152,
   "algorithm": "kmeans",
   "features_used": [
-    "PC1",
-    "PC2",
-    "PC3",
-    "PC4",
-    "PC5",
-    "PC6",
-    "PC7"
+    "roa",
+    "roe",
+    "ebit_margin",
+    "gross_margin",
+    "fcf_margin",
+    "current_ratio",
+    "debt_to_equity",
+    "financial_leverage",
+    "margin_trend",
+    "leverage_trend",
+    "revenue_growth",
+    "fcf_growth",
+    "margin_volatility",
+    "growth_quality"
   ],
   "original_features": [
     "roa",
@@ -24,130 +31,11 @@
     "current_ratio",
     "debt_to_equity",
     "financial_leverage",
-    "roa_trend"
-  ],
-  "pca_metadata": {
-    "n_components": 7,
-    "variance_explained": 0.9625290706645525,
-    "variance_summary": {
-      "Component": {
-        "0": "PC1",
-        "1": "PC2",
-        "2": "PC3",
-        "3": "PC4",
-        "4": "PC5",
-        "5": "PC6",
-        "6": "PC7"
-      },
-      "Explained_Variance_Ratio": {
-        "0": 29.240039446923788,
-        "1": 16.833737659686967,
-        "2": 12.994905512316246,
-        "3": 11.5831549104942,
-        "4": 10.256433705794713,
-        "5": 8.689659413790984,
-        "6": 6.654976417448356
-      },
-      "Cumulative_Variance": {
-        "0": 29.240039446923788,
-        "1": 46.073777106610756,
-        "2": 59.068682618927006,
-        "3": 70.6518375294212,
-        "4": 80.9082712352159,
-        "5": 89.5979306490069,
-        "6": 96.25290706645525
-      }
-    },
-    "component_loadings": {
-      "PC1": {
-        "roa": 0.4116811091807527,
-        "roe": 0.39576612649357507,
-        "ebit_margin": 0.48256852139358525,
-        "gross_margin": 0.06365100430481864,
-        "fcf_margin": 0.0004342880218614751,
-        "current_ratio": -0.05553328460614382,
-        "debt_to_equity": -0.4242407286878942,
-        "financial_leverage": -0.4763456439694519,
-        "roa_trend": 0.16430005040606196
-      },
-      "PC2": {
-        "roa": 0.4291737100866604,
-        "roe": -0.030815411493967312,
-        "ebit_margin": 0.362554366702416,
-        "gross_margin": 0.00023397353920679147,
-        "fcf_margin": -0.15786803129135168,
-        "current_ratio": -0.2567657931163595,
-        "debt_to_equity": 0.5137780073096789,
-        "financial_leverage": 0.4195653866693218,
-        "roa_trend": 0.3905901574819041
-      },
-      "PC3": {
-        "roa": 0.14409209717460497,
-        "roe": -0.34830271523080936,
-        "ebit_margin": -0.033987270334373876,
-        "gross_margin": 0.6168257099038589,
-        "fcf_margin": -0.49823943819372923,
-        "current_ratio": 0.45321060690753895,
-        "debt_to_equity": -0.0808614740408156,
-        "financial_leverage": -0.05945113871003426,
-        "roa_trend": 0.11215251797624788
-      },
-      "PC4": {
-        "roa": 0.1619944392450499,
-        "roe": -0.005847728089641295,
-        "ebit_margin": -0.10446809763086369,
-        "gross_margin": 0.6331014718825052,
-        "fcf_margin": 0.2135245839384173,
-        "current_ratio": -0.5837037582778064,
-        "debt_to_equity": -0.01465723558280121,
-        "financial_leverage": 0.051832595003821945,
-        "roa_trend": -0.41567808551088575
-      },
-      "PC5": {
-        "roa": 0.16341246819403502,
-        "roe": -0.2895392025922531,
-        "ebit_margin": 0.04468191528507923,
-        "gross_margin": 0.1728394913364465,
-        "fcf_margin": 0.8190779171043088,
-        "current_ratio": 0.33570179760561014,
-        "debt_to_equity": 0.06203516592887289,
-        "financial_leverage": -0.03400419374648598,
-        "roa_trend": 0.2626870264673316
-      },
-      "PC6": {
-        "roa": -0.32730504041432723,
-        "roe": -0.026891234801407662,
-        "ebit_margin": -0.30008371421150737,
-        "gross_margin": 0.15573870484187663,
-        "fcf_margin": -0.01934235689135648,
-        "current_ratio": -0.40755426096203634,
-        "debt_to_equity": -0.22162640961754074,
-        "financial_leverage": -0.08663003886629461,
-        "roa_trend": 0.7448126347055815
-      },
-      "PC7": {
-        "roa": -0.1781010819043614,
-        "roe": 0.7784478431516884,
-        "ebit_margin": -0.10095704338229666,
-        "gross_margin": 0.3400122976535216,
-        "fcf_margin": 0.08712069711177761,
-        "current_ratio": 0.32195798347920984,
-        "debt_to_equity": 0.1252577863822549,
-        "financial_leverage": 0.31830432093476935,
-        "roa_trend": 0.09079735781667367
-      }
-    },
-    "original_features": [
-      "roa",
-      "roe",
-      "ebit_margin",
-      "gross_margin",
-      "fcf_margin",
-      "current_ratio",
-      "debt_to_equity",
-      "financial_leverage",
-      "roa_trend"
-    ],
-    "transformer": "<PCATransformer>"
-  }
+    "margin_trend",
+    "leverage_trend",
+    "revenue_growth",
+    "fcf_growth",
+    "margin_volatility",
+    "growth_quality"
+  ]
 }
