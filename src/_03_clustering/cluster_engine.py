@@ -16,6 +16,8 @@ from src._03_clustering.algorithms.factory import ClustererFactory
 from src._03_clustering.algorithms.base import BaseClusterer
 from src._02_preprocessing.pca_transformer import PCATransformer
 from src._03_clustering.k_selector import KSelector
+from src._03_clustering.cluster_postprocessing import enforce_min_cluster_size
+from src._03_clustering.robustness_tester import RobustnessTester
 
 logger = logging.getLogger(__name__)
 
@@ -106,8 +108,77 @@ class ClusteringEngine:
         # 2. Daten vorbereiten und skalieren
         X_scaled, valid_idx = clusterer.preprocess_data(df, features)
 
+        # 2.5 DBSCAN Parameter Optimization (if needed)
+        if self.algorithm == 'dbscan':
+            logger.info(f"\n🔍 DBSCAN Parameter Optimization...")
+            logger.info(f"  Current params: eps={clusterer.eps}, min_samples={clusterer.min_samples}")
+
+            # Import grid search function
+            from src._03_clustering.algorithms.dbscan import find_optimal_dbscan_params
+
+            # Run grid search
+            best_params, grid_results = find_optimal_dbscan_params(
+                X=X_scaled,
+                eps_range=[0.3, 0.5, 0.8, 1.0, 1.5, 2.0, 2.5],
+                min_samples_range=[2, 3, 5, 7, 10]
+            )
+
+            # Apply best parameters
+            clusterer.eps, clusterer.min_samples = best_params
+            logger.info(f"  ✓ Optimized params: eps={best_params[0]}, min_samples={best_params[1]}")
+
+            # Show top 3 results
+            logger.info(f"\n  Top 3 parameter combinations:")
+            for i, result in enumerate(grid_results[:3], 1):
+                logger.info(f"    {i}. eps={result['eps']}, min_samples={result['min_samples']}: "
+                          f"{result['n_clusters']} clusters, {result['noise_pct']:.1f}% noise, "
+                          f"silhouette={result['silhouette']:.3f}")
+
         # 3. Clustering durchführen
         labels = clusterer.fit_predict(X_scaled)
+
+        # 3.5 CRITICAL: Enforce minimum cluster size constraint
+        min_cluster_size = config.get_value(self.config, 'cluster_quality', 'min_cluster_size', default=10)
+        min_cluster_percentage = config.get_value(self.config, 'cluster_quality', 'min_cluster_percentage', default=0.06)
+
+        # Calculate minimum based on both absolute and percentage
+        min_size_abs = max(min_cluster_size, int(min_cluster_percentage * len(valid_idx)))
+
+        if min_size_abs > 1:
+            logger.info(f"\n🔍 Enforcing minimum cluster size: {min_size_abs} companies ({min_cluster_percentage*100:.0f}%)")
+
+            labels, merge_info = enforce_min_cluster_size(
+                X=X_scaled,
+                labels=labels,
+                min_size=min_size_abs,
+                merge_strategy='nearest'
+            )
+
+            if merge_info['n_merges'] > 0:
+                logger.info(f"  ⚠️  Merged {merge_info['n_merges']} small clusters:")
+                for merge_entry in merge_info['merged_clusters']:
+                    logger.info(f"    Cluster {merge_entry['from_cluster']} ({merge_entry['size']} samples) → "
+                              f"Cluster {merge_entry['to_cluster']}")
+            else:
+                logger.info(f"  ✓ All clusters meet minimum size constraint")
+
+        # 3.6 OPTIONAL: Robustness test for K-Means
+        if self.algorithm == 'kmeans' and config.get_value(self.config, 'cluster_quality', 'test_robustness', default=False):
+            logger.info(f"\n🔬 Testing K-Means Stability...")
+
+            tester = RobustnessTester(n_runs=10)
+            rob_results = tester.test_kmeans_stability(
+                X=X_scaled,
+                n_clusters=n_clusters,
+                base_seed=self.random_state
+            )
+
+            logger.info(f"  Mean ARI across 10 runs: {rob_results['mean_ari']:.3f} ± {rob_results['std_ari']:.3f}")
+            logger.info(f"  Min/Max ARI: {rob_results['min_ari']:.3f} / {rob_results['max_ari']:.3f}")
+            logger.info(f"  → Stability Assessment: {rob_results['stability_assessment']}")
+
+            if rob_results['mean_ari'] < 0.8:
+                logger.warning(f"  ⚠️  Low stability! Consider different k or feature selection.")
 
         # 4. Metriken berechnen
         metrics = clusterer.get_metrics(X_scaled, labels)
@@ -574,6 +645,141 @@ class ClusteringEngine:
             return 'Critical'
         else:
             return 'Consistent'
+
+    def compare_pca_vs_original(
+        self,
+        df: pd.DataFrame,
+        features: List[str],
+        n_clusters: int,
+        analysis_type: str
+    ) -> Dict:
+        """
+        Compare clustering quality in PCA space vs. Original space
+
+        Args:
+            df: DataFrame with features
+            features: List of features to use
+            n_clusters: Number of clusters
+            analysis_type: 'static', 'dynamic', or 'combined'
+
+        Returns:
+            Dict with comparison results
+        """
+        logger.info(f"\n{'='*80}")
+        logger.info(f"PCA VS. ORIGINAL SPACE COMPARISON ({analysis_type.upper()})")
+        logger.info(f"{'='*80}\n")
+
+        # 1. Clustering in Original Space
+        logger.info("  🔷 Clustering in ORIGINAL space...")
+        df_original, profiles_orig, metrics_orig = self.perform_clustering(
+            df, features, n_clusters, analysis_type
+        )
+
+        silhouette_orig = metrics_orig.get('silhouette_score', -999)
+        davies_bouldin_orig = metrics_orig.get('davies_bouldin_score', -999)
+
+        logger.info(f"     Original Space: {len(features)} features")
+        logger.info(f"       Silhouette: {silhouette_orig:.3f}")
+        logger.info(f"       Davies-Bouldin: {davies_bouldin_orig:.3f}")
+
+        # 2. Clustering in PCA Space
+        logger.info("\n  🔶 Clustering in PCA space...")
+
+        # Get PCA config
+        n_components = config.get_value(self.config, 'pca', 'n_components', default=0.90)
+
+        # Initialize PCA transformer
+        pca_transformer = PCATransformer(n_components=n_components, random_state=self.random_state)
+
+        # Transform to PCA space
+        X_pca, pca_metadata = pca_transformer.fit_transform(df, features)
+
+        # Create PCA feature names
+        pca_features = [f'PC{i+1}' for i in range(X_pca.shape[1])]
+
+        # Create temporary DataFrame with PCA features
+        df_pca = df[['gvkey']].copy() if 'gvkey' in df.columns else pd.DataFrame()
+        for i, feat in enumerate(pca_features):
+            df_pca[feat] = X_pca[:, i]
+
+        # Copy metadata columns
+        metadata_cols = ['company_name', 'conm', 'revt', 'at', 'gsector']
+        for col in metadata_cols:
+            if col in df.columns:
+                df_pca[col] = df[col].values
+
+        # Perform clustering in PCA space
+        df_pca_result, profiles_pca, metrics_pca = self.perform_clustering(
+            df_pca, pca_features, n_clusters, analysis_type
+        )
+
+        silhouette_pca = metrics_pca.get('silhouette_score', -999)
+        davies_bouldin_pca = metrics_pca.get('davies_bouldin_score', -999)
+
+        variance_explained = pca_metadata['cumulative_variance'].iloc[-1] if 'cumulative_variance' in pca_metadata else 0
+
+        logger.info(f"     PCA Space: {len(pca_features)} components ({variance_explained:.1%} variance)")
+        logger.info(f"       Silhouette: {silhouette_pca:.3f}")
+        logger.info(f"       Davies-Bouldin: {davies_bouldin_pca:.3f}")
+
+        # 3. Comparison
+        logger.info(f"\n{'='*80}")
+        logger.info("COMPARISON RESULT")
+        logger.info(f"{'='*80}")
+
+        # Silhouette: higher is better
+        sil_diff = silhouette_pca - silhouette_orig
+        sil_winner = "PCA" if sil_diff > 0 else "Original"
+
+        # Davies-Bouldin: lower is better
+        db_diff = davies_bouldin_orig - davies_bouldin_pca  # Reversed!
+        db_winner = "PCA" if db_diff > 0 else "Original"
+
+        logger.info(f"\n  Silhouette Score:")
+        logger.info(f"    Original: {silhouette_orig:.3f}")
+        logger.info(f"    PCA:      {silhouette_pca:.3f}")
+        logger.info(f"    Δ:        {sil_diff:+.3f} → {sil_winner} wins")
+
+        logger.info(f"\n  Davies-Bouldin Index:")
+        logger.info(f"    Original: {davies_bouldin_orig:.3f}")
+        logger.info(f"    PCA:      {davies_bouldin_pca:.3f}")
+        logger.info(f"    Δ:        {-db_diff:+.3f} → {db_winner} wins")
+
+        # Overall recommendation
+        if sil_winner == db_winner:
+            recommendation = f"→ {sil_winner} space provides better separation"
+        else:
+            recommendation = "→ Mixed results - consider using both for validation"
+
+        logger.info(f"\n  {recommendation}")
+        logger.info(f"{'='*80}\n")
+
+        # Return comparison results
+        return {
+            'original': {
+                'n_features': len(features),
+                'silhouette': silhouette_orig,
+                'davies_bouldin': davies_bouldin_orig,
+                'df': df_original,
+                'profiles': profiles_orig
+            },
+            'pca': {
+                'n_components': len(pca_features),
+                'variance_explained': variance_explained,
+                'silhouette': silhouette_pca,
+                'davies_bouldin': davies_bouldin_pca,
+                'df': df_pca_result,
+                'profiles': profiles_pca,
+                'metadata': pca_metadata
+            },
+            'comparison': {
+                'silhouette_diff': sil_diff,
+                'davies_bouldin_diff': db_diff,
+                'silhouette_winner': sil_winner,
+                'davies_bouldin_winner': db_winner,
+                'recommendation': recommendation
+            }
+        }
 
 
 if __name__ == "__main__":

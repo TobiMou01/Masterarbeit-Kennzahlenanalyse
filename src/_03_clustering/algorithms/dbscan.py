@@ -4,7 +4,8 @@ Implementierung des Density-Based Spatial Clustering (DBSCAN)
 """
 
 import numpy as np
-from typing import Dict
+from typing import Dict, Tuple, List
+from itertools import product
 from sklearn.cluster import DBSCAN
 from sklearn.metrics import silhouette_score, davies_bouldin_score
 import logging
@@ -12,6 +13,90 @@ import logging
 from src._03_clustering.algorithms.base import BaseClusterer
 
 logger = logging.getLogger(__name__)
+
+
+def find_optimal_dbscan_params(
+    X: np.ndarray,
+    eps_range: List[float] = None,
+    min_samples_range: List[int] = None
+) -> Tuple[Tuple[float, int], List[Dict]]:
+    """
+    Grid search for optimal DBSCAN parameters.
+
+    Args:
+        X: Scaled feature matrix
+        eps_range: List of eps values to test
+        min_samples_range: List of min_samples values to test
+
+    Returns:
+        Tuple of (best_params, all_results)
+        best_params: (eps, min_samples)
+        all_results: List of dicts with all tested combinations
+    """
+    if eps_range is None:
+        eps_range = [0.3, 0.5, 0.8, 1.0, 1.5, 2.0, 2.5]
+
+    if min_samples_range is None:
+        min_samples_range = [2, 3, 5, 7, 10]
+
+    logger.info(f"\n🔍 DBSCAN Grid Search")
+    logger.info(f"  Eps range: {eps_range}")
+    logger.info(f"  Min_samples range: {min_samples_range}")
+    logger.info(f"  Total combinations: {len(eps_range) * len(min_samples_range)}\n")
+
+    best_score = -1
+    best_params = None
+    results = []
+
+    for eps, min_samples in product(eps_range, min_samples_range):
+        dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+        labels = dbscan.fit_predict(X)
+
+        n_clusters = len(set(labels)) - (1 if -1 in labels else 0)
+        n_noise = list(labels).count(-1)
+        noise_pct = n_noise / len(X) * 100
+
+        # Only evaluate valid clusterings
+        # Requirements: ≥2 clusters, <50% noise
+        if n_clusters >= 2 and n_noise < 0.5 * len(X):
+            try:
+                # Calculate silhouette for non-noise samples
+                non_noise_mask = labels != -1
+                if non_noise_mask.sum() > n_clusters:
+                    score = silhouette_score(X[non_noise_mask], labels[non_noise_mask])
+
+                    result = {
+                        'eps': eps,
+                        'min_samples': min_samples,
+                        'n_clusters': n_clusters,
+                        'n_noise': n_noise,
+                        'noise_pct': noise_pct,
+                        'silhouette': score
+                    }
+                    results.append(result)
+
+                    logger.info(f"  eps={eps:.2f}, min_samples={min_samples}: "
+                              f"{n_clusters} clusters, {noise_pct:.1f}% noise, "
+                              f"silhouette={score:.3f}")
+
+                    if score > best_score:
+                        best_score = score
+                        best_params = (eps, min_samples)
+            except Exception as e:
+                logger.debug(f"  eps={eps:.2f}, min_samples={min_samples}: Failed ({e})")
+        else:
+            logger.debug(f"  eps={eps:.2f}, min_samples={min_samples}: "
+                       f"Invalid ({n_clusters} clusters, {noise_pct:.1f}% noise)")
+
+    if best_params is None:
+        logger.warning("  ⚠️  No valid parameter combination found!")
+        logger.warning("  Falling back to default: eps=1.5, min_samples=5")
+        best_params = (1.5, 5)
+    else:
+        logger.info(f"\n  ✓ Optimal: eps={best_params[0]}, min_samples={best_params[1]} "
+                  f"(silhouette={best_score:.3f})")
+
+    return best_params, results
 
 
 class DBSCANClusterer(BaseClusterer):

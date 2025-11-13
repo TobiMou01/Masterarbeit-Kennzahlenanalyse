@@ -71,9 +71,23 @@ classification:
 # CLUSTER-ANZAHL (K-SELECTION)
 # ========================================
 cluster_selection:
-  mode: 'manual'  # 'auto' oder 'manual'
+  mode: 'auto'  # 'auto' oder 'manual' - CHANGED: Auto-select optimal k
   k_range: [2, 10]  # Range für automatische Bestimmung
   methods: ['elbow', 'silhouette', 'gap']  # Methoden für auto-Modus
+
+# ========================================
+# CLUSTER QUALITY CONSTRAINTS (NEW)
+# ========================================
+cluster_quality:
+  # Minimum cluster size to prevent statistical unreliability
+  min_cluster_size: 10  # Absolute minimum (companies)
+  min_cluster_percentage: 0.06  # Percentage-based minimum (6% of data)
+  # Final minimum is max(min_cluster_size, min_cluster_percentage * n_samples)
+
+  # Robustness testing (K-Means stability across random seeds)
+  test_robustness: true  # Test stability with multiple random initializations
+  robustness_runs: 10  # Number of runs for stability test
+  min_ari_threshold: 0.8  # Minimum mean ARI for "stable" clustering
 
 static_analysis:
   n_clusters: 5  # Wird verwendet wenn mode='manual'
