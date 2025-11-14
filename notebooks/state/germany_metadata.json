@@ -1,0 +1,90 @@
+{
+  "df_features": {
+    "timestamp": "2025-11-14T17:07:58.068978",
+    "type": "DataFrame"
+  },
+  "df_all": {
+    "timestamp": "2025-11-14T17:07:58.155509",
+    "type": "DataFrame"
+  },
+  "df_latest": {
+    "timestamp": "2025-11-14T17:07:58.161742",
+    "type": "DataFrame"
+  },
+  "feature_cols": {
+    "timestamp": "2025-11-14T17:07:58.173732",
+    "type": "list"
+  },
+  "static_features": {
+    "timestamp": "2025-11-14T17:07:58.180643",
+    "type": "list"
+  },
+  "dynamic_features": {
+    "timestamp": "2025-11-14T17:07:58.186484",
+    "type": "list"
+  },
+  "selected_features": {
+    "timestamp": "2025-11-14T17:07:58.489162",
+    "type": "list"
+  },
+  "feature_set_type": {
+    "timestamp": "2025-11-14T17:07:58.497105",
+    "type": "str"
+  },
+  "pca_model": {
+    "timestamp": "2025-11-14T17:07:59.025581",
+    "type": "PCA"
+  },
+  "pca_scaler": {
+    "timestamp": "2025-11-14T17:07:59.031806",
+    "type": "StandardScaler"
+  },
+  "pca_components": {
+    "timestamp": "2025-11-14T17:07:59.037096",
+    "type": "DataFrame"
+  },
+  "scaler": {
+    "timestamp": "2025-11-14T17:07:59.052412",
+    "type": "StandardScaler"
+  },
+  "X_scaled": {
+    "timestamp": "2025-11-14T17:07:59.058504",
+    "type": "ndarray"
+  },
+  "clustering_features": {
+    "timestamp": "2025-11-14T17:07:59.064840",
+    "type": "list"
+  },
+  "kmeans_model": {
+    "timestamp": "2025-11-14T17:07:59.524145",
+    "type": "KMeans"
+  },
+  "kmeans_labels": {
+    "timestamp": "2025-11-14T17:07:59.531391",
+    "type": "ndarray"
+  },
+  "df_kmeans": {
+    "timestamp": "2025-11-14T17:07:59.537111",
+    "type": "DataFrame"
+  },
+  "kmeans_profiles": {
+    "timestamp": "2025-11-14T17:07:59.693906",
+    "type": "DataFrame"
+  },
+  "hier_labels": {
+    "timestamp": "2025-11-14T17:08:00.177931",
+    "type": "ndarray"
+  },
+  "df_hier": {
+    "timestamp": "2025-11-14T17:08:00.184582",
+    "type": "DataFrame"
+  },
+  "dbscan_labels": {
+    "timestamp": "2025-11-14T17:08:00.422714",
+    "type": "ndarray"
+  },
+  "df_dbscan": {
+    "timestamp": "2025-11-14T17:08:00.429721",
+    "type": "DataFrame"
+  }
+}

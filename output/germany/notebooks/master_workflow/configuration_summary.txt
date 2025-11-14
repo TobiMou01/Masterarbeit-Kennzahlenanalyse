@@ -1,0 +1,15 @@
+MASTER WORKFLOW CONFIGURATION SUMMARY
+================================================================================
+
+Feature Set                   : combined
+Number of Features            : 87
+PCA Enabled                   : True
+PCA Components                : 19
+Scaler Type                   : standard
+K-Means K                     : 3
+Hierarchical Linkage          : ward
+Hierarchical K                : 3
+DBSCAN eps                    : 4.0
+DBSCAN min_samples            : 5
+DBSCAN clusters               : 1
+DBSCAN outliers               : 25

@@ -2,7 +2,7 @@
 
 **Market:** germany
 **Algorithm:** kmeans
-**Generated:** 2025-11-14 10:29:37
+**Generated:** 2025-11-14 13:25:42
 
 ---
 

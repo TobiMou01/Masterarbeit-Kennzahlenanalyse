@@ -116,7 +116,7 @@ def setup_notebook(title: str, market: str = 'germany') -> Tuple[Any, NotebookSt
     """
     # Load config
     from src._01_setup import config_loader
-    cfg = config_loader.load_config('config.yaml')
+    cfg = config_loader.load_config(PROJECT_ROOT / 'config.yaml')
 
     # Create state manager
     state = NotebookState(market)
