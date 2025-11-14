@@ -117,14 +117,6 @@ def plot_cluster_characteristics(cluster_means, output_dir='output/plots'):
     logger.info(f"✓ Gespeichert: {save_path}")
 
 
-# Additional functions would be added here (plot_scatter_matrix, plot_correlation_heatmap, plot_pca_clusters, create_performance_dashboard)
-# For brevity, I'll add placeholders
-
-def plot_scatter_matrix(df, output_dir='output/plots'):
-    """Scatter matrix plot - TODO: Copy implementation from plot_engine.py"""
-    pass
-
-
 def plot_correlation_heatmap(df, output_dir='output/plots'):
     """
     Erstellt Korrelations-Heatmap der Features.

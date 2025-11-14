@@ -22,9 +22,6 @@ from .output_coordinator import OutputHandler  # Backward compatible name
 from . import config_exporter
 from . import checkpoint_manager
 
-# Legacy (kept for compatibility)
-# from .output_handler import OutputHandler
-
 __all__ = [
     'setup_logging',
     'config_loader',
