@@ -6,7 +6,8 @@ Handles data loading, cleaning, and feature engineering
 import pandas as pd
 import logging
 from pathlib import Path
-from src._02_preprocessing import data_loader, feature_engineer
+from src._02_preprocessing import data_loader
+from src._02_preprocessing.calculators import feature_coordinator
 
 logger = logging.getLogger(__name__)
 
@@ -58,7 +59,7 @@ def run_preprocessing(
     df_final = data_loader.filter_relevant_columns(df_cleaned)
 
     # 3. Feature engineering (inkl. optionale CAGR-Glättung)
-    df_features = feature_engineer.create_all_features(
+    df_features = feature_coordinator.create_all_features(
         df_final,
         smooth_static=smooth_static,
         cagr_years=cagr_years

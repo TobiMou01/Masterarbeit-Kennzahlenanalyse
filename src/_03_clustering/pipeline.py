@@ -194,6 +194,38 @@ class ClusteringPipeline:
             df_latest, features, n_clusters, 'static'
         )
 
+        # ========== PCA COMPARISON (if enabled) ==========
+        if config.get_value(self.config, 'pca', 'compare_spaces', default=False):
+            logger.info("\n🔬 Running PCA vs. Original Space comparison...")
+            pca_comparison = self.engine.compare_pca_vs_original(
+                df=df_latest,
+                features=features,
+                n_clusters=n_clusters,
+                analysis_type='static'
+            )
+
+            # Save comparison results
+            pca_dir = self.output.get_pca_analysis_dir('static') / 'comparison'
+            pca_dir.mkdir(parents=True, exist_ok=True)
+
+            # Save comparison summary
+            comparison_summary = pd.DataFrame([{
+                'metric': 'Silhouette Score',
+                'original': pca_comparison['original']['silhouette'],
+                'pca': pca_comparison['pca']['silhouette'],
+                'difference': pca_comparison['comparison']['silhouette_diff'],
+                'winner': pca_comparison['comparison']['silhouette_winner']
+            }, {
+                'metric': 'Davies-Bouldin Index',
+                'original': pca_comparison['original']['davies_bouldin'],
+                'pca': pca_comparison['pca']['davies_bouldin'],
+                'difference': pca_comparison['comparison']['davies_bouldin_diff'],
+                'winner': pca_comparison['comparison']['davies_bouldin_winner']
+            }])
+
+            comparison_summary.to_csv(pca_dir / 'comparison_summary.csv', index=False)
+            logger.info(f"  ✓ PCA comparison saved to: {pca_dir}/")
+
         # ========== NEW INTEGRATION: Scoring, Naming, Validation ==========
 
         # 1. Apply Scoring (adds score columns to df_result)
@@ -257,12 +289,35 @@ class ClusteringPipeline:
         min_years = config.get_value(self.config, 'dynamic_analysis', 'min_years_required', default=5)
         n_clusters = config.get_value(self.config, 'dynamic_analysis', 'n_clusters', default=5)
 
-        # Compute timeseries features
-        df_timeseries = self.engine.compute_timeseries_features(df_all, min_years=min_years)
+        # Filter companies with sufficient years
+        company_years = df_all.groupby('gvkey')['fyear'].count()
+        valid_companies = company_years[company_years >= min_years].index
+        df_filtered = df_all[df_all['gvkey'].isin(valid_companies)].copy()
 
-        # Auto-detect dynamic features
+        logger.info(f"  Companies with >={min_years} years: {len(valid_companies)}")
+
+        # Get latest year for each company (for clustering)
+        df_timeseries = df_filtered[df_filtered['latest_year'] == True].copy()
+
+        # Auto-detect ALL dynamic features from feature_engineer.py
+        # These were already created during preprocessing
         features = [col for col in df_timeseries.columns
-                    if '_trend' in col or '_volatility' in col or '_cagr' in col]
+                    if '_trend' in col or '_volatility' in col or '_cagr' in col or '_growth' in col]
+
+        # Also include composite features without standard suffixes
+        composite_features = ['margin_consistency', 'growth_quality', 'cashflow_volatility',
+                            'margin_trend', 'leverage_trend', 'capex_trend', 'fcf_trend',
+                            'revenue_growth', 'asset_growth', 'employee_growth', 'fcf_growth', 'capex_growth']
+        for feat in composite_features:
+            if feat in df_timeseries.columns and feat not in features:
+                features.append(feat)
+
+        logger.info(f"  📊 Auto-detected {len(features)} dynamic features")
+        if len(features) > 0:
+            logger.info(f"  Sample features: {features[:5]}")
+        else:
+            logger.warning("  ⚠️  No dynamic features detected! Check feature_engineer.py output.")
+            logger.warning(f"  Available columns: {list(df_timeseries.columns)[:20]}...")
 
         # Run clustering
         df_result, profiles, metrics = self.engine.perform_clustering(

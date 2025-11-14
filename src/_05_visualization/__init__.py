@@ -3,10 +3,7 @@ Visualization Phase - Comprehensive Plotting Engines
 """
 
 from . import plot_engine
-# from . import plot_engine_scores  # Migrated to plot_engine_score_distributions
-# from . import plot_engine_validation  # Migrated to plot_engine_validation_wrapper
-# from . import plot_engine_pca  # Migrated to plot_engine_pca_wrapper
-from . import plot_engine_insights  # Legacy
+from . import plot_engine_insights
 
 # NEW: Modular plot engines
 from . import plot_engine_score_distributions
@@ -22,12 +19,7 @@ from . import plot_engine_algorithm_congruence
 
 __all__ = [
     'plot_engine',
-    # Legacy (kept for backward compatibility)
-    # 'plot_engine_scores',  # Migrated to plot_engine_score_distributions
-    # 'plot_engine_validation',  # Migrated to plot_engine_validation_wrapper
-    # 'plot_engine_pca',  # Migrated to plot_engine_pca_wrapper
     'plot_engine_insights',
-    # New modular engines
     'plot_engine_score_distributions',
     'plot_engine_score_evolution',
     'plot_engine_score_analysis',

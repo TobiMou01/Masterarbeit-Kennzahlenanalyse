@@ -1,4 +1,4 @@
 ,algorithm,total_migrations,consistency_rate,avg_cluster_stability,most_stable_cluster,most_stable_rate
 0,kmeans,1424,1.0,1.0,0.0,1.0
 1,hierarchical,1424,1.0,1.0,0.0,1.0
-2,dbscan,1173,1.0,1.0,0.0,1.0
+2,dbscan,1221,1.0,1.0,0.0,1.0

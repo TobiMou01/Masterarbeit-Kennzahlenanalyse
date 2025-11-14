@@ -1,7 +1,5 @@
 cluster_id,cluster_name
-0,Mid-Tier (Balanced) - FCF Margin: 26.4%
-1,Mid-Tier (Distressed) - FCF Margin: 3.9%
-2,Mid-Tier (Balanced) - roa_trend: 2.9%
-3,Mid-Tier (Balanced) - ROA: 7.9%
-4,Mid-Tier (Distressed) - Gross Margin: -227.7%
-5,Challenged (Distressed) - ROE: -304.9%
+0,Mid-Tier (Turnaround Candidates) - FCF Margin: 41.3%
+1,Mid-Tier (Balanced) - Growth Quality: 0.3
+2,Mid-Tier (Balanced) - Leverage Trend: -28.0
+3,Challenged (Distressed) - Financial Leverage: 43.6

@@ -9,7 +9,6 @@ from pathlib import Path
 from typing import List, Optional
 
 from src._05_visualization import cluster_visualizer
-from src._05_visualization import comparison_visualizer
 
 logger = logging.getLogger(__name__)
 
@@ -79,31 +78,15 @@ def create_comparison_plots(results_dict, output_dir='output/germany/comparisons
     output_path = Path(output_dir)
     output_path.mkdir(parents=True, exist_ok=True)
 
-    plots_created = 0
+    # TODO: Implement comparison visualizations
+    # - GICS sector comparison
+    # - Algorithm performance comparison
+    # - Feature importance plots
+    # - Temporal stability analysis
 
-    try:
-        if 'gics' in results_dict:
-            comparison_visualizer.plot_gics_comparison(results_dict['gics'], output_dir)
-            plots_created += 1
-
-        if 'algorithms' in results_dict:
-            comparison_visualizer.plot_algorithm_comparison(results_dict['algorithms'], output_dir)
-            plots_created += 1
-
-        if 'features' in results_dict:
-            comparison_visualizer.plot_feature_importance(results_dict['features'], output_dir)
-            plots_created += 1
-
-        if 'temporal' in results_dict:
-            comparison_visualizer.plot_temporal_stability(results_dict['temporal'], output_dir)
-            plots_created += 1
-
-        logger.info(f"✓ Created {plots_created} comparison plots")
-
-    except Exception as e:
-        logger.error(f"Error creating comparison plots: {e}", exc_info=True)
+    logger.warning("Comparison plots not yet implemented")
 
     return {
-        'plots_created': plots_created,
+        'plots_created': 0,
         'output_dir': str(output_path)
     }
