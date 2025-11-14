@@ -1,7 +1,7 @@
 {
   "silhouette": 0.3708233370205702,
   "davies_bouldin": 1.6164979047393082,
-  "inertia": 1460.6458257014203,
+  "inertia": 1460.6458257014206,
   "n_iter": 4,
   "n_clusters": 4,
   "n_companies": 152,
