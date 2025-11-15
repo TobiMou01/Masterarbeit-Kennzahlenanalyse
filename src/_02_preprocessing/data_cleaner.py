@@ -19,19 +19,24 @@ def run_preprocessing(
     impute_method='median',
     impute_threshold=0.5,
     smooth_static=False,
-    cagr_years=3
+    cagr_years=3,
+    file_selection=None,
+    filter_country=None
 ) -> pd.DataFrame:
     """
     Complete preprocessing: Load → Clean → Impute → Engineer Features → (Optional: CAGR Smoothing)
 
     Args:
         input_dir: Input directory (e.g., 'data/raw')
-        market: Market name (e.g., 'germany')
+        market: Market name (e.g., 'germany', 'france', 'international')
         impute: Führe Imputation durch (default: True)
         impute_method: Imputation-Methode ('median', 'mean')
         impute_threshold: Max. Anteil fehlender Werte für Imputation (0-1)
         smooth_static: Führe CAGR-Glättung für statische Daten durch (default: False)
         cagr_years: Anzahl Jahre für CAGR-Glättung (default: 3)
+        file_selection: Optional - Liste spezifischer Dateien zum Laden
+                       Beispiel: ['dax40_proxy.csv', 'mdax_proxy.csv']
+        filter_country: Optional - Filtert nach country-Spalte (für internationale Daten)
 
     Returns:
         DataFrame with all features
@@ -40,12 +45,13 @@ def run_preprocessing(
     logger.info("PREPROCESSING")
     logger.info("=" * 80 + "\n")
 
-    # 1. Load data
-    input_path = Path(input_dir) / market
-    if input_path.is_dir():
-        df = data_loader.load_all_csv_from_directory(str(input_path))
-    else:
-        df = data_loader.load_data(str(input_path))
+    # 1. Load data mit neuer flexibler load_market_data Funktion
+    df = data_loader.load_market_data(
+        market=market,
+        data_dir=input_dir,
+        file_selection=file_selection,
+        filter_country=filter_country
+    )
 
     logger.info(f"  Loaded: {len(df)} rows")
 
