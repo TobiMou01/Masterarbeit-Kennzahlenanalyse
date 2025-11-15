@@ -24,6 +24,17 @@ preprocessing:
       - ebitda
       - oancf
 
+  # Outlier Detection (für Notebook Sektion 4)
+  outlier_detection:
+    enabled: true
+    method: 'iqr'           # 'iqr' oder 'zscore'
+    iqr_multiplier: 1.5     # IQR-Multiplikator (Standard: 1.5)
+    zscore_threshold: 3.0   # Z-Score Threshold (wenn method='zscore')
+
+  # Data Scaling (für Notebook Sektion 7)
+  scaling:
+    method: 'standard'      # 'standard', 'robust', 'minmax'
+
 # ========================================
 # ANALYSIS MODE (NEU: Exposé-Anforderung)
 # ========================================
@@ -72,7 +83,7 @@ classification:
 # ========================================
 cluster_selection:
   mode: 'auto'  # 'auto' oder 'manual' - CHANGED: Auto-select optimal k
-  k_range: [4, 8]  # OPTIMIERT: Mindestens 4 Cluster für sinnvolle Vergleiche
+  k_range: [2, 11]  # Range für K-Means Optimal K Suche (Notebook verwendet 2-11)
   methods: ['elbow', 'silhouette', 'gap']  # Methoden für auto-Modus
 
 # ========================================
@@ -113,6 +124,9 @@ combined_analysis:
 feature_selection:
   mode: 'preset'  # 'preset' oder 'manual'
   preset: 'standard'  # OPTIMIERT: Weniger Features (10 statt 21) = bessere Clustering-Qualität
+
+  # Correlation filtering (für Notebook Sektion 5)
+  correlation_threshold: 0.8  # Entfernt Features mit Korrelation > threshold
 
 # ========================================
 # MANUAL MODE FEATURES (wenn mode='manual')
@@ -187,9 +201,42 @@ unified_analysis:
 # DATA & MARKET SETTINGS
 # ========================================
 data:
-  market: 'germany'  # oder 'auto' für automatische Erkennung
+  market: 'germany'  # Optionen: 'germany', 'france', 'italy', 'spain', 'uk', 'international'
   input_dir: 'data/raw'
   output_dir: 'output'
+
+  # Selektive Dateiauswahl pro Market (optional)
+  # Falls nicht angegeben: Alle CSVs aus market/ werden geladen
+  file_selection:
+    germany:
+      # Alle 3 Hauptindizes (default: alle werden geladen)
+      - 'dax40_proxy.csv'
+      - 'mdax_proxy.csv'
+      - 'sdax_proxy.csv'
+      # - 'tecdax_proxy.csv'  # Optional: 4. Datei wenn verfügbar
+
+      # Beispiele für selektive Auswahl:
+      # Nur DAX: ['dax40_proxy.csv']
+      # Nur DAX+MDAX: ['dax40_proxy.csv', 'mdax_proxy.csv']
+
+    # france:
+    #   - 'cac40.csv'
+    #   - 'cac_mid60.csv'
+
+    # italy:
+    #   - 'ftse_mib.csv'
+
+    # spain:
+    #   - 'ibex35.csv'
+
+    # uk:
+    #   - 'ftse100.csv'
+    #   - 'ftse250.csv'
+
+    # international:
+    #   # Einzelne große CSV mit allen internationalen Daten
+    #   # Wird automatisch nach 'country' Spalte gefiltert
+    #   # Keine file_selection nötig
 
 # ========================================
 # GLOBAL SETTINGS

@@ -426,6 +426,113 @@ def save_cleaned_data(df, report, output_dir='data/processed'):
     logger.info(f"✓ Report gespeichert: {report_path}")
 
 
+def load_market_data(
+    market: str,
+    data_dir: str = 'data/raw',
+    file_selection: list = None,
+    filter_country: str = None
+) -> pd.DataFrame:
+    """
+    Lädt Marktdaten mit flexibler Dateiauswahl.
+
+    Unterstützt drei Modi:
+    1. Verzeichnis-Modus: Lädt alle CSVs aus data_dir/market/
+    2. Selektions-Modus: Lädt nur spezifische Dateien (via file_selection)
+    3. Filter-Modus: Lädt und filtert nach country-Spalte
+
+    Args:
+        market: Marktname (z.B. 'germany', 'france', 'international')
+        data_dir: Basis-Verzeichnis für Daten (default: 'data/raw')
+        file_selection: Optional - Liste spezifischer Dateien zum Laden
+                       Beispiel: ['dax40_proxy.csv', 'mdax_proxy.csv']
+        filter_country: Optional - Filtert nach country-Spalte
+                       Nur relevant wenn eine große internationale CSV existiert
+
+    Returns:
+        DataFrame mit geladenen Daten
+
+    Examples:
+        # Alle Dateien aus germany/ laden
+        df = load_market_data('germany')
+
+        # Nur DAX und MDAX laden
+        df = load_market_data('germany', file_selection=['dax40_proxy.csv', 'mdax_proxy.csv'])
+
+        # International laden und nach France filtern
+        df = load_market_data('international', filter_country='France')
+    """
+    logger.info(f"\n{'='*80}")
+    logger.info(f"LADE MARKTDATEN: {market}")
+    logger.info(f"{'='*80}")
+
+    market_dir = Path(data_dir) / market
+
+    # Modus 1: Verzeichnis existiert → Lade CSVs aus Verzeichnis
+    if market_dir.is_dir():
+        if file_selection:
+            # Selektions-Modus: Nur bestimmte Dateien laden
+            logger.info(f"📂 Modus: Selektive Dateiauswahl ({len(file_selection)} Dateien)")
+            dataframes = []
+
+            for filename in file_selection:
+                filepath = market_dir / filename
+                if not filepath.exists():
+                    logger.warning(f"⚠️ Datei nicht gefunden: {filename} (überspringe)")
+                    continue
+
+                logger.info(f"  ✓ Lade: {filename}")
+                df = load_data(filepath)
+                dataframes.append(df)
+
+            if not dataframes:
+                raise FileNotFoundError(f"Keine der angegebenen Dateien gefunden: {file_selection}")
+
+            df = pd.concat(dataframes, ignore_index=True)
+            logger.info(f"✅ {len(dataframes)} Dateien kombiniert: {len(df)} Zeilen")
+
+        else:
+            # Verzeichnis-Modus: Alle CSVs laden
+            logger.info(f"📂 Modus: Alle CSVs aus Verzeichnis laden")
+            df = load_all_csv_from_directory(str(market_dir))
+
+    # Modus 2: Einzelne Datei (z.B. international.csv)
+    else:
+        # Suche nach market.csv oder international.csv
+        possible_files = [
+            Path(data_dir) / f"{market}.csv",
+            Path(data_dir) / "international.csv"
+        ]
+
+        csv_file = None
+        for f in possible_files:
+            if f.exists():
+                csv_file = f
+                break
+
+        if csv_file is None:
+            raise FileNotFoundError(
+                f"Weder Verzeichnis '{market_dir}' noch Datei '{market}.csv' gefunden"
+            )
+
+        logger.info(f"📄 Modus: Einzelne CSV-Datei: {csv_file.name}")
+        df = load_data(csv_file)
+
+        # Filter nach country wenn angegeben
+        if filter_country:
+            if 'country' in df.columns:
+                logger.info(f"🔍 Filtere nach country='{filter_country}'")
+                df = df[df['country'] == filter_country].copy()
+                logger.info(f"  ✓ {len(df)} Zeilen nach Filterung")
+            else:
+                logger.warning(f"⚠️ Keine 'country' Spalte gefunden - filter_country ignoriert")
+
+    logger.info(f"\n{'='*80}")
+    logger.info(f"✅ Marktdaten geladen: {len(df)} Zeilen, {len(df.columns)} Spalten")
+    logger.info(f"{'='*80}\n")
+
+    return df
+
+
 def main():
     """Beispiel-Verwendung des Moduls."""
 
