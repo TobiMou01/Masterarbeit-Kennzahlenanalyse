@@ -24,6 +24,17 @@ preprocessing:
       - ebitda
       - oancf
 
+  # Outlier Detection (für Notebook Sektion 4)
+  outlier_detection:
+    enabled: true
+    method: 'iqr'           # 'iqr' oder 'zscore'
+    iqr_multiplier: 1.5     # IQR-Multiplikator (Standard: 1.5)
+    zscore_threshold: 3.0   # Z-Score Threshold (wenn method='zscore')
+
+  # Data Scaling (für Notebook Sektion 7)
+  scaling:
+    method: 'standard'      # 'standard', 'robust', 'minmax'
+
 # ========================================
 # ANALYSIS MODE (NEU: Exposé-Anforderung)
 # ========================================
@@ -72,7 +83,7 @@ classification:
 # ========================================
 cluster_selection:
   mode: 'auto'  # 'auto' oder 'manual' - CHANGED: Auto-select optimal k
-  k_range: [4, 8]  # OPTIMIERT: Mindestens 4 Cluster für sinnvolle Vergleiche
+  k_range: [2, 11]  # Range für K-Means Optimal K Suche (Notebook verwendet 2-11)
   methods: ['elbow', 'silhouette', 'gap']  # Methoden für auto-Modus
 
 # ========================================
@@ -113,6 +124,9 @@ combined_analysis:
 feature_selection:
   mode: 'preset'  # 'preset' oder 'manual'
   preset: 'standard'  # OPTIMIERT: Weniger Features (10 statt 21) = bessere Clustering-Qualität
+
+  # Correlation filtering (für Notebook Sektion 5)
+  correlation_threshold: 0.8  # Entfernt Features mit Korrelation > threshold
 
 # ========================================
 # MANUAL MODE FEATURES (wenn mode='manual')
