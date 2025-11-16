@@ -101,19 +101,6 @@ cluster_quality:
   robustness_runs: 10  # Number of runs for stability test
   min_ari_threshold: 0.8  # Minimum mean ARI for "stable" clustering
 
-static_analysis:
-  n_clusters: 5  # Fallback wenn mode='manual' (sonst auto k=4-8)
-
-dynamic_analysis:
-  n_clusters: 5  # Fallback wenn mode='manual' (sonst auto k=4-8)
-  min_years_required: 5  # Minimum Jahre pro Unternehmen
-
-combined_analysis:
-  n_clusters: 6  # Fallback wenn mode='manual' (sonst auto k=4-8)
-  weights:
-    static: 0.5   # 50% Gewicht auf aktuellen Status (ausbalanciert)
-    dynamic: 0.5  # 50% Gewicht auf Entwicklung
-
 # ========================================
 # FEATURES
 # ========================================
@@ -132,6 +119,7 @@ feature_selection:
 # MANUAL MODE FEATURES (wenn mode='manual')
 # ========================================
 static_analysis:
+  n_clusters: 5  # Fallback wenn mode='manual' (sonst auto k=4-8)
   features:
     # Profitability (erweitert)
     - roa
@@ -161,6 +149,8 @@ static_analysis:
     - financial_leverage
 
 dynamic_analysis:
+  n_clusters: 5  # Fallback wenn mode='manual' (sonst auto k=4-8)
+  min_years_required: 5  # Minimum Jahre pro Unternehmen
   features:  # Automatisch ergänzt mit _trend, _volatility, etc.
     - roa
     - roe
@@ -171,6 +161,10 @@ dynamic_analysis:
     - capex  # NEU: Capital Expenditures
 
 combined_analysis:
+  n_clusters: 6  # Fallback wenn mode='manual' (sonst auto k=4-8)
+  weights:
+    static: 0.5   # 50% Gewicht auf aktuellen Status (ausbalanciert)
+    dynamic: 0.5  # 50% Gewicht auf Entwicklung
   features_static:
     - roa
     - roe
