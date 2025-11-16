@@ -847,3 +847,443 @@ def compare_clusters_interactive(
     )
 
     return fig
+
+
+# ============================================================================
+# NEW ADVANCED INTERACTIVE VISUALIZATIONS
+# ============================================================================
+
+def create_sankey_cluster_flow(
+    df: pd.DataFrame,
+    cluster_cols: List[str] = ['cluster_kmeans', 'cluster_hierarchical', 'cluster_dbscan'],
+    algorithm_names: List[str] = ['K-Means', 'Hierarchical', 'DBSCAN'],
+    title: str = "Cluster Flow Between Algorithms",
+    width: int = 1200,
+    height: int = 800
+) -> go.Figure:
+    """
+    Create Sankey diagram showing how companies flow between clusters across algorithms.
+
+    Args:
+        df: DataFrame with cluster assignments from multiple algorithms
+        cluster_cols: List of column names containing cluster labels
+        algorithm_names: Display names for algorithms
+        title: Plot title
+        width: Figure width
+        height: Figure height
+
+    Returns:
+        Plotly Figure object
+    """
+    nodes = []
+    node_map = {}
+    links_source = []
+    links_target = []
+    links_value = []
+    links_label = []
+
+    node_idx = 0
+
+    # Create nodes for each algorithm's clusters
+    for alg_idx, (col, alg_name) in enumerate(zip(cluster_cols, algorithm_names)):
+        clusters = sorted(df[col].unique())
+        for cluster in clusters:
+            node_name = f"{alg_name} C{cluster}"
+            nodes.append(node_name)
+            node_map[(alg_idx, cluster)] = node_idx
+            node_idx += 1
+
+    # Create links between consecutive algorithms
+    for i in range(len(cluster_cols) - 1):
+        col1, col2 = cluster_cols[i], cluster_cols[i + 1]
+
+        transition_counts = df.groupby([col1, col2]).size().reset_index(name='count')
+
+        for _, row in transition_counts.iterrows():
+            source_idx = node_map[(i, row[col1])]
+            target_idx = node_map[(i + 1, row[col2])]
+
+            links_source.append(source_idx)
+            links_target.append(target_idx)
+            links_value.append(row['count'])
+
+            mask = (df[col1] == row[col1]) & (df[col2] == row[col2])
+            companies = df[mask]['conm'].tolist()[:5]
+            if len(df[mask]) > 5:
+                companies.append(f"... +{len(df[mask]) - 5} more")
+            links_label.append("<br>".join(companies))
+
+    colors = px.colors.qualitative.Set3
+    node_colors = [colors[i % len(colors)] for i in range(len(nodes))]
+
+    fig = go.Figure(data=[go.Sankey(
+        node=dict(
+            pad=15, thickness=20,
+            line=dict(color="black", width=0.5),
+            label=nodes, color=node_colors,
+            hovertemplate='%{label}<br>%{value} companies<extra></extra>'
+        ),
+        link=dict(
+            source=links_source, target=links_target, value=links_value,
+            customdata=links_label,
+            hovertemplate='%{source.label} → %{target.label}<br>%{value} companies<br><br><b>Companies:</b><br>%{customdata}<extra></extra>'
+        )
+    )])
+
+    fig.update_layout(title_text=title, font_size=12, width=width, height=height)
+    return fig
+
+
+def create_pca_biplot(
+    X_pca: np.ndarray,
+    pca_model,
+    feature_names: List[str],
+    cluster_labels: np.ndarray,
+    company_names: List[str] = None,
+    title: str = "PCA Biplot with Feature Loadings",
+    arrow_scale: float = 3.0,
+    width: int = 1200,
+    height: int = 900
+) -> go.Figure:
+    """Create PCA biplot showing data points and feature loading arrows."""
+    fig = go.Figure()
+
+    loadings = pca_model.components_.T
+    var1 = pca_model.explained_variance_ratio_[0] * 100
+    var2 = pca_model.explained_variance_ratio_[1] * 100
+
+    for cluster in sorted(np.unique(cluster_labels)):
+        mask = cluster_labels == cluster
+        hover_text = [f"{company_names[i]}" for i in np.where(mask)[0]] if company_names else None
+
+        fig.add_trace(go.Scatter(
+            x=X_pca[mask, 0], y=X_pca[mask, 1],
+            mode='markers', name=f'Cluster {cluster}',
+            marker=dict(size=10, opacity=0.7),
+            text=hover_text,
+            hovertemplate='<b>%{text}</b><br>PC1: %{x:.3f}<br>PC2: %{y:.3f}<extra></extra>'
+        ))
+
+    for i, feature in enumerate(feature_names):
+        arrow_x = loadings[i, 0] * arrow_scale
+        arrow_y = loadings[i, 1] * arrow_scale
+
+        fig.add_annotation(x=arrow_x, y=arrow_y, ax=0, ay=0, xref="x", yref="y",
+                          axref="x", ayref="y", showarrow=True, arrowhead=2,
+                          arrowsize=1.5, arrowwidth=2, arrowcolor='red', opacity=0.8)
+        fig.add_annotation(x=arrow_x * 1.1, y=arrow_y * 1.1, text=feature,
+                          showarrow=False, font=dict(size=10, color='red'), opacity=0.9)
+
+    fig.add_hline(y=0, line_dash="dash", line_color="gray", opacity=0.5)
+    fig.add_vline(x=0, line_dash="dash", line_color="gray", opacity=0.5)
+
+    fig.update_layout(
+        title=title, xaxis_title=f'PC1 ({var1:.1f}% variance)',
+        yaxis_title=f'PC2 ({var2:.1f}% variance)',
+        width=width, height=height, hovermode='closest', showlegend=True
+    )
+    return fig
+
+
+def create_company_radar_chart(
+    df: pd.DataFrame,
+    features: List[str],
+    company_col: str = 'conm',
+    cluster_col: str = 'cluster',
+    selected_company: str = None,
+    title: str = "Company Profile vs Cluster Average",
+    width: int = 800,
+    height: int = 700
+) -> go.Figure:
+    """Create radar/spider chart comparing company features to cluster average."""
+    from sklearn.preprocessing import MinMaxScaler
+
+    fig = go.Figure()
+    scaler = MinMaxScaler()
+    df_normalized = df.copy()
+    df_normalized[features] = scaler.fit_transform(df[features])
+
+    cluster_means = df_normalized.groupby(cluster_col)[features].mean()
+    colors = px.colors.qualitative.Bold
+
+    for cluster in sorted(cluster_means.index):
+        values = cluster_means.loc[cluster].tolist()
+        values.append(values[0])
+
+        fig.add_trace(go.Scatterpolar(
+            r=values, theta=features + [features[0]], fill='toself',
+            name=f'Cluster {cluster} Avg', opacity=0.3,
+            line=dict(color=colors[cluster % len(colors)], width=2)
+        ))
+
+    if selected_company and selected_company in df[company_col].values:
+        company_data = df_normalized[df_normalized[company_col] == selected_company][features].iloc[0]
+        company_cluster = df[df[company_col] == selected_company][cluster_col].iloc[0]
+        values = company_data.tolist()
+        values.append(values[0])
+
+        fig.add_trace(go.Scatterpolar(
+            r=values, theta=features + [features[0]], fill='none',
+            name=f'{selected_company} (C{company_cluster})',
+            line=dict(color='black', width=3), marker=dict(size=10, symbol='diamond')
+        ))
+        title = f"{selected_company} vs Cluster {company_cluster} Average"
+
+    fig.update_layout(
+        polar=dict(radialaxis=dict(visible=True, range=[0, 1])),
+        showlegend=True, title=title, width=width, height=height
+    )
+    return fig
+
+
+def create_feature_importance_bubble(
+    df: pd.DataFrame,
+    features: List[str],
+    cluster_col: str = 'cluster',
+    title: str = "Feature Importance by Cluster",
+    width: int = 1400,
+    height: int = 800
+) -> go.Figure:
+    """Create bubble chart showing feature deviations per cluster."""
+    global_means = df[features].mean()
+    cluster_means = df.groupby(cluster_col)[features].mean()
+    global_stds = df[features].std()
+
+    data = []
+    for cluster in sorted(cluster_means.index):
+        for feature in features:
+            cluster_mean = cluster_means.loc[cluster, feature]
+            z_score = (cluster_mean - global_means[feature]) / global_stds[feature]
+            data.append({
+                'Cluster': f'Cluster {cluster}', 'Feature': feature,
+                'Z-Score': z_score, 'Abs_Z': abs(z_score),
+                'Value': cluster_mean, 'Global_Mean': global_means[feature]
+            })
+
+    df_bubble = pd.DataFrame(data)
+
+    fig = px.scatter(
+        df_bubble, x='Feature', y='Cluster', size='Abs_Z', color='Z-Score',
+        color_continuous_scale='RdBu_r', color_continuous_midpoint=0, size_max=50,
+        hover_data={'Value': ':.3f', 'Global_Mean': ':.3f', 'Z-Score': ':.2f', 'Abs_Z': False},
+        title=title
+    )
+
+    fig.update_layout(width=width, height=height, xaxis_tickangle=-45,
+                     coloraxis_colorbar_title='Deviation<br>(Z-Score)')
+    fig.update_traces(
+        hovertemplate='<b>%{y}</b><br>Feature: %{x}<br>Cluster Mean: %{customdata[0]:.3f}<br>Global Mean: %{customdata[1]:.3f}<br>Z-Score: %{customdata[2]:.2f}<extra></extra>'
+    )
+    return fig
+
+
+def create_company_similarity_network(
+    df: pd.DataFrame,
+    features: List[str],
+    cluster_col: str = 'cluster',
+    company_col: str = 'conm',
+    n_neighbors: int = 3,
+    title: str = "Company Similarity Network",
+    width: int = 1200,
+    height: int = 900
+) -> go.Figure:
+    """Create network graph showing company similarities."""
+    from sklearn.neighbors import NearestNeighbors
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.manifold import MDS
+
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(df[features])
+
+    nn = NearestNeighbors(n_neighbors=n_neighbors + 1)
+    nn.fit(X_scaled)
+    distances, indices = nn.kneighbors(X_scaled)
+
+    mds = MDS(n_components=2, random_state=42, dissimilarity='euclidean')
+    positions = mds.fit_transform(X_scaled)
+
+    fig = go.Figure()
+
+    edge_x, edge_y = [], []
+    for i in range(len(df)):
+        for j in indices[i][1:]:
+            edge_x.extend([positions[i, 0], positions[j, 0], None])
+            edge_y.extend([positions[i, 1], positions[j, 1], None])
+
+    fig.add_trace(go.Scatter(
+        x=edge_x, y=edge_y, line=dict(width=0.5, color='#888'),
+        hoverinfo='none', mode='lines', name='Connections'
+    ))
+
+    clusters = sorted(df[cluster_col].unique())
+    colors = px.colors.qualitative.Bold
+
+    for cluster in clusters:
+        mask = df[cluster_col] == cluster
+        cluster_indices = np.where(mask)[0]
+
+        fig.add_trace(go.Scatter(
+            x=positions[cluster_indices, 0], y=positions[cluster_indices, 1],
+            mode='markers+text', name=f'Cluster {cluster}',
+            marker=dict(size=15, color=colors[cluster % len(colors)], line=dict(width=2, color='white')),
+            text=df[company_col].iloc[cluster_indices].values,
+            textposition='top center', textfont=dict(size=8),
+            hovertemplate=f'<b>%{{text}}</b><br>Cluster {cluster}<br>Position: (%{{x:.2f}}, %{{y:.2f}})<extra></extra>'
+        ))
+
+    fig.update_layout(
+        title=title, showlegend=True, hovermode='closest', width=width, height=height,
+        xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+        yaxis=dict(showgrid=False, zeroline=False, showticklabels=False)
+    )
+    return fig
+
+
+def create_cluster_comparison_bars(
+    df: pd.DataFrame,
+    features: List[str],
+    cluster_col: str = 'cluster',
+    cluster_a: int = 0,
+    cluster_b: int = 1,
+    title: str = "Cluster Feature Comparison",
+    width: int = 1200,
+    height: int = 600
+) -> go.Figure:
+    """Create side-by-side bar chart comparing two clusters."""
+    cluster_means = df.groupby(cluster_col)[features].mean()
+
+    means_a = cluster_means.loc[cluster_a] if cluster_a in cluster_means.index else pd.Series(0, index=features)
+    means_b = cluster_means.loc[cluster_b] if cluster_b in cluster_means.index else pd.Series(0, index=features)
+    pct_diff = ((means_b - means_a) / means_a * 100).replace([np.inf, -np.inf], np.nan).fillna(0)
+
+    fig = make_subplots(rows=1, cols=2, subplot_titles=('Feature Values', 'Percentage Difference'),
+                       column_widths=[0.6, 0.4])
+
+    fig.add_trace(go.Bar(name=f'Cluster {cluster_a}', x=features, y=means_a.values,
+                        marker_color='steelblue', hovertemplate='%{x}<br>Mean: %{y:.3f}<extra></extra>'), row=1, col=1)
+    fig.add_trace(go.Bar(name=f'Cluster {cluster_b}', x=features, y=means_b.values,
+                        marker_color='indianred', hovertemplate='%{x}<br>Mean: %{y:.3f}<extra></extra>'), row=1, col=1)
+
+    colors = ['green' if x > 0 else 'red' for x in pct_diff.values]
+    fig.add_trace(go.Bar(name='% Difference', x=features, y=pct_diff.values, marker_color=colors,
+                        hovertemplate='%{x}<br>Difference: %{y:.1f}%<extra></extra>', showlegend=False), row=1, col=2)
+
+    fig.update_layout(title=title, barmode='group', width=width, height=height)
+    fig.update_xaxes(tickangle=-45, row=1, col=1)
+    fig.update_xaxes(tickangle=-45, row=1, col=2)
+    fig.update_yaxes(title_text='Feature Value', row=1, col=1)
+    fig.update_yaxes(title_text='% Difference (B vs A)', row=1, col=2)
+    return fig
+
+
+def create_sunburst_gics_clusters(
+    df: pd.DataFrame,
+    gics_col: str = 'gics_industry',
+    cluster_col: str = 'cluster',
+    company_col: str = 'conm',
+    title: str = "GICS Industry → Cluster → Companies",
+    width: int = 1000,
+    height: int = 1000
+) -> go.Figure:
+    """Create sunburst chart showing GICS → Cluster → Company hierarchy."""
+    ids, labels, parents, values = [], [], [], []
+
+    ids.append("Total")
+    labels.append("All Companies")
+    parents.append("")
+    values.append(len(df))
+
+    for gics in df[gics_col].unique():
+        gics_str = str(gics) if not pd.isna(gics) else "Unknown"
+        gics_id = f"GICS_{gics_str}"
+        ids.append(gics_id)
+        labels.append(gics_str[:20])
+        parents.append("Total")
+
+        gics_df = df[df[gics_col] == gics] if not pd.isna(gics) else df[df[gics_col].isna()]
+        values.append(len(gics_df))
+
+        for cluster in sorted(gics_df[cluster_col].unique()):
+            cluster_id = f"{gics_id}_C{cluster}"
+            n_companies = len(gics_df[gics_df[cluster_col] == cluster])
+
+            ids.append(cluster_id)
+            labels.append(f"C{cluster}")
+            parents.append(gics_id)
+            values.append(n_companies)
+
+            if n_companies <= 10:
+                companies = gics_df[gics_df[cluster_col] == cluster][company_col].values
+                for company in companies:
+                    ids.append(f"{cluster_id}_{company}")
+                    labels.append(str(company)[:15])
+                    parents.append(cluster_id)
+                    values.append(1)
+
+    fig = go.Figure(go.Sunburst(
+        ids=ids, labels=labels, parents=parents, values=values, branchvalues="total",
+        hovertemplate='<b>%{label}</b><br>Count: %{value}<extra></extra>', maxdepth=3
+    ))
+    fig.update_layout(title=title, width=width, height=height)
+    return fig
+
+
+def create_outlier_analysis_scatter(
+    df: pd.DataFrame,
+    X_scaled: np.ndarray,
+    cluster_labels: np.ndarray,
+    company_col: str = 'conm',
+    threshold_percentile: float = 90,
+    title: str = "Outlier Analysis: Distance to Cluster Center",
+    width: int = 1200,
+    height: int = 700
+) -> go.Figure:
+    """Create scatter plot highlighting outliers based on distance to cluster center."""
+    from sklearn.decomposition import PCA
+
+    distances = []
+    cluster_centers = {}
+
+    for cluster in np.unique(cluster_labels):
+        mask = cluster_labels == cluster
+        cluster_centers[cluster] = X_scaled[mask].mean(axis=0)
+
+    for i in range(len(X_scaled)):
+        cluster = cluster_labels[i]
+        distances.append(np.linalg.norm(X_scaled[i] - cluster_centers[cluster]))
+
+    distances = np.array(distances)
+
+    pca = PCA(n_components=2)
+    X_2d = pca.fit_transform(X_scaled)
+
+    threshold = np.percentile(distances, threshold_percentile)
+    is_outlier = distances >= threshold
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=X_2d[~is_outlier, 0], y=X_2d[~is_outlier, 1], mode='markers', name='Normal',
+        marker=dict(size=8, color=distances[~is_outlier], colorscale='Blues',
+                   showscale=True, colorbar=dict(title='Distance<br>to Center'), opacity=0.7),
+        text=df[company_col].iloc[~is_outlier].values,
+        customdata=np.column_stack([cluster_labels[~is_outlier], distances[~is_outlier]]),
+        hovertemplate='<b>%{text}</b><br>Cluster: %{customdata[0]}<br>Distance: %{customdata[1]:.3f}<br>PC1: %{x:.3f}<br>PC2: %{y:.3f}<extra></extra>'
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=X_2d[is_outlier, 0], y=X_2d[is_outlier, 1], mode='markers+text',
+        name=f'Outliers (>{threshold_percentile}th percentile)',
+        marker=dict(size=15, color='red', symbol='star', line=dict(width=2, color='darkred')),
+        text=df[company_col].iloc[is_outlier].values, textposition='top center',
+        customdata=np.column_stack([cluster_labels[is_outlier], distances[is_outlier]]),
+        hovertemplate='<b>⚠️ OUTLIER: %{text}</b><br>Cluster: %{customdata[0]}<br>Distance: %{customdata[1]:.3f}<br>PC1: %{x:.3f}<br>PC2: %{y:.3f}<extra></extra>'
+    ))
+
+    fig.update_layout(
+        title=title + f'<br><sub>Threshold: {threshold:.3f} (Top {100-threshold_percentile:.0f}% most distant)</sub>',
+        xaxis_title=f'PC1 ({pca.explained_variance_ratio_[0]*100:.1f}% variance)',
+        yaxis_title=f'PC2 ({pca.explained_variance_ratio_[1]*100:.1f}% variance)',
+        width=width, height=height, hovermode='closest', showlegend=True
+    )
+    return fig
