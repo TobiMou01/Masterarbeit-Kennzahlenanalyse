@@ -1287,3 +1287,174 @@ def create_outlier_analysis_scatter(
         width=width, height=height, hovermode='closest', showlegend=True
     )
     return fig
+
+
+def create_feature_importance_plot(
+    df: pd.DataFrame,
+    features: List[str],
+    cluster_col: str = 'cluster_kmeans',
+    title: str = "Feature Importance for Clustering",
+    width: int = 1200,
+    height: int = 600,
+    method: str = 'anova'
+) -> go.Figure:
+    """
+    Create interactive feature importance plot showing which features best separate clusters.
+
+    Uses F-statistic (ANOVA) to measure how well each feature discriminates between clusters.
+    Higher F-score = better cluster separation for that feature.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame with features and cluster assignments
+    features : List[str]
+        List of feature column names
+    cluster_col : str
+        Column name for cluster labels
+    title : str
+        Plot title
+    width, height : int
+        Figure dimensions
+    method : str
+        Method to calculate importance ('anova' or 'variance_ratio')
+        - 'anova': F-statistic from one-way ANOVA (better for clustering)
+        - 'variance_ratio': Between-cluster variance / Total variance
+
+    Returns
+    -------
+    go.Figure
+        Interactive Plotly bar chart
+
+    Example
+    -------
+    >>> fig = create_feature_importance_plot(
+    ...     df=df_kmeans,
+    ...     features=['roa', 'ebit_margin', 'debt_to_equity'],
+    ...     cluster_col='cluster_kmeans'
+    ... )
+    >>> fig.show()
+    """
+    from scipy import stats
+
+    # Filter available features
+    available_features = [f for f in features if f in df.columns]
+
+    if not available_features:
+        print(f"⚠️ No features available from list: {features}")
+        return go.Figure()
+
+    if cluster_col not in df.columns:
+        print(f"⚠️ Cluster column '{cluster_col}' not found in DataFrame")
+        return go.Figure()
+
+    # Calculate importance scores
+    importance_scores = []
+    p_values = []
+
+    for feature in available_features:
+        # Get feature values per cluster
+        groups = [group[feature].dropna().values for name, group in df.groupby(cluster_col)]
+
+        if method == 'anova':
+            # F-statistic from one-way ANOVA
+            # Tests if means differ significantly between clusters
+            if len(groups) > 1 and all(len(g) > 0 for g in groups):
+                f_stat, p_val = stats.f_oneway(*groups)
+                importance_scores.append(f_stat)
+                p_values.append(p_val)
+            else:
+                importance_scores.append(0)
+                p_values.append(1.0)
+
+        elif method == 'variance_ratio':
+            # Between-cluster variance / Total variance
+            all_values = df[feature].dropna()
+            if len(all_values) > 0:
+                total_var = all_values.var()
+                if total_var > 0:
+                    cluster_means = df.groupby(cluster_col)[feature].mean()
+                    between_var = ((cluster_means - all_values.mean())**2).sum()
+                    ratio = between_var / total_var
+                    importance_scores.append(ratio * 100)  # As percentage
+                    p_values.append(0)  # Not applicable
+                else:
+                    importance_scores.append(0)
+                    p_values.append(1.0)
+            else:
+                importance_scores.append(0)
+                p_values.append(1.0)
+
+    # Create DataFrame for sorting
+    importance_df = pd.DataFrame({
+        'Feature': available_features,
+        'Importance': importance_scores,
+        'P_Value': p_values
+    }).sort_values('Importance', ascending=True)  # Ascending for horizontal bar
+
+    # Color based on significance
+    colors = ['#2ecc71' if p < 0.001 else '#f39c12' if p < 0.05 else '#e74c3c'
+              for p in importance_df['P_Value']]
+
+    # Create horizontal bar chart
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        y=importance_df['Feature'],
+        x=importance_df['Importance'],
+        orientation='h',
+        marker=dict(
+            color=colors,
+            line=dict(color='rgba(0,0,0,0.3)', width=1)
+        ),
+        text=importance_df['Importance'].round(2),
+        textposition='auto',
+        hovertemplate='<b>%{y}</b><br>' +
+                      f'{"F-statistic" if method == "anova" else "Variance Ratio"}: %{{x:.3f}}<br>' +
+                      'P-value: %{customdata:.4f}<br>' +
+                      '<extra></extra>',
+        customdata=importance_df['P_Value']
+    ))
+
+    # Add annotations explaining colors
+    n_clusters = df[cluster_col].nunique()
+
+    metric_name = 'F-Statistic (ANOVA)' if method == 'anova' else 'Between-Cluster Variance Ratio (%)'
+
+    fig.update_layout(
+        title=dict(
+            text=f'{title}<br><sub>{metric_name} | {n_clusters} Clusters | ' +
+                 '<span style="color:#2ecc71">●</span> p<0.001 ' +
+                 '<span style="color:#f39c12">●</span> p<0.05 ' +
+                 '<span style="color:#e74c3c">●</span> p≥0.05</sub>',
+            x=0.5,
+            xanchor='center'
+        ),
+        xaxis_title=metric_name,
+        yaxis_title='',
+        width=width,
+        height=height,
+        hovermode='closest',
+        showlegend=False,
+        plot_bgcolor='white',
+        yaxis=dict(
+            tickfont=dict(size=11),
+            gridcolor='rgba(0,0,0,0.1)'
+        ),
+        xaxis=dict(
+            gridcolor='rgba(0,0,0,0.1)'
+        )
+    )
+
+    # Add vertical line at median
+    median_importance = importance_df['Importance'].median()
+    fig.add_vline(
+        x=median_importance,
+        line_dash="dash",
+        line_color="gray",
+        opacity=0.5,
+        annotation_text=f"Median: {median_importance:.2f}",
+        annotation_position="top"
+    )
+
+    return fig
