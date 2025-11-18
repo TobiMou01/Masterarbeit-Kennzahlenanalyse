@@ -1,0 +1,98 @@
+# ========================================
+# MINIMAL QUICK CONFIG
+# ========================================
+# Schnelle Analyse mit wenigen Features für beste Cluster-Qualität
+# Empfohlen für: Ersten Test, DAX/MDAX/SDAX Analyse
+
+preprocessing:
+  imputation:
+    enabled: true
+    method: 'median'
+    threshold: 0.5
+  cagr_smoothing:
+    enabled: false
+  outlier_detection:
+    enabled: true
+    method: 'iqr'
+    iqr_multiplier: 1.5  # Standard-Strenge
+  scaling:
+    method: 'standard'
+
+analysis:
+  mode: 'sequential'  # Static → Dynamic → Combined
+
+classification:
+  algorithm: 'kmeans'
+  kmeans:
+    n_init: 50  # Mehr für Stabilität
+    max_iter: 300
+
+cluster_selection:
+  mode: 'auto'
+  k_range: [4, 7]  # Optimal für ~160 Unternehmen
+  methods: ['silhouette', 'elbow']
+
+feature_selection:
+  mode: 'preset'
+  preset: 'minimal'  # NUR die wichtigsten 6-8 Features!
+  correlation_threshold: 0.75
+
+static_analysis:
+  features:
+    # Profitability (3)
+    - roa
+    - ebit_margin
+    - roe
+    # Leverage (2)
+    - debt_to_equity
+    - equity_ratio
+    # Liquidity (1)
+    - current_ratio
+    # Cashflow (1)
+    - fcf_margin
+
+dynamic_analysis:
+  min_years_required: 4
+  features:
+    - roa
+    - ebit_margin
+    - revenue
+    - debt_to_equity
+
+combined_analysis:
+  weights:
+    static: 0.6  # Etwas mehr Gewicht auf Status
+    dynamic: 0.4
+
+# PCA: Deaktiviert (wenige Features)
+pca:
+  enabled: false
+
+data:
+  market: 'germany'
+  input_dir: 'data/raw'
+  output_dir: 'output'
+  file_selection:
+    germany:
+      - 'dax40_proxy.csv'
+      - 'mdax_proxy.csv'
+      - 'sdax_proxy.csv'
+
+global:
+  random_state: 42
+
+validation:
+  enabled: true
+  external_labels:
+    - gics_sector
+
+visualization:
+  plots:
+    cluster_distribution: true
+    cluster_characteristics: true
+    pca_clusters: false  # Nicht nötig ohne PCA
+
+output:
+  create_plots: true
+  create_company_lists: true
+  create_summary_report: true
