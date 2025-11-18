@@ -1,6 +1,54 @@
 """
 Modul 1: Data Loader
 Lädt WRDS-Export CSV und bereinigt die Daten
+
+Multi-Market Support:
+====================
+Dieses Modul unterstützt zwei Lade-Modi:
+
+1. LEGACY MODE: Einzelner Markt aus separaten CSV-Dateien
+   - Nutzt load_market_data() Funktion
+   - Lädt aus data/raw/{market}/ Ordner
+
+2. MULTI-MARKET MODE: Flexible Länderauswahl aus großer CSV
+   - Nutzt load_multi_market_data() Funktion
+   - Lädt aus großer internationaler CSV (z.B. WRDS Global)
+   - Filtert nach 'fic' (Foreign Incorporation Code) Spalte
+   - Unterstützt Index-Proxies (Top N Unternehmen pro Land)
+   - Sektor-Ausschluss (z.B. Financials)
+
+PRESET CONFIGURATIONS:
+----------------------
+Vordefinierte Markt-Kombinationen für häufige Use-Cases:
+- 'germany_dax_family': Top 160 deutsche Unternehmen
+- 'europe_large_cap': Top 50 aus 5 EU-Ländern
+- 'germany_vs_france': Vergleich DEU vs FRA
+- 'all_europe': Alle EU-Unternehmen
+- 'usa_large_cap': S&P 500 Proxy
+- 'global_giants': Globale Top-Unternehmen
+
+USAGE EXAMPLE:
+--------------
+# Mit Preset:
+config = get_preset_config('germany_dax_family')
+df = load_multi_market_data('international_data.csv', config)
+
+# Manuell:
+config = {
+    'mode': 'multi',
+    'countries': ['DEU', 'FRA'],
+    'use_index_proxy': True,
+    'index_proxies': {
+        'DEU': {'type': 'top_n', 'n': 40},
+        'FRA': {'type': 'top_n', 'n': 40}
+    },
+    'exclude_sectors': [40]  # Financials
+}
+df = load_multi_market_data('international_data.csv', config)
+
+# Verfügbare Länder entdecken:
+countries_df = discover_available_countries('international_data.csv')
+print(countries_df)
 """
 
 import pandas as pd
@@ -555,6 +603,358 @@ def main():
     logger.info(f"Finale Daten: {len(df_final)} Zeilen, {len(df_final.columns)} Spalten")
 
     return df_final
+
+
+# ============================================================================
+# MULTI-MARKET LOADING FUNCTIONS (NEW)
+# ============================================================================
+
+def discover_available_countries(csv_path: str, fic_column: str = 'fic') -> pd.DataFrame:
+    """
+    Analysiert CSV und zeigt verfügbare Länder mit Statistiken.
+
+    Args:
+        csv_path: Pfad zur großen internationalen CSV
+        fic_column: Name der Spalte mit Ländercodes (default: 'fic')
+
+    Returns:
+        DataFrame mit Länderstatistiken (Country Code, Count, % of Total)
+    """
+    logger.info(f"🔍 Analysiere verfügbare Länder in: {csv_path}")
+
+    # Lade nur fic Spalte für schnelle Analyse
+    df = pd.read_csv(csv_path, usecols=[fic_column] if fic_column else None, low_memory=False)
+
+    # Count pro Land
+    country_counts = df[fic_column].value_counts().reset_index()
+    country_counts.columns = ['country_code', 'n_rows']
+    country_counts['percentage'] = (country_counts['n_rows'] / len(df) * 100).round(2)
+
+    # Sortiere nach Anzahl
+    country_counts = country_counts.sort_values('n_rows', ascending=False)
+
+    logger.info(f"✅ Gefunden: {len(country_counts)} verschiedene Länder")
+    logger.info(f"   Total Zeilen: {len(df):,}")
+
+    return country_counts
+
+
+def create_index_proxy(
+    df: pd.DataFrame,
+    country_code: str,
+    proxy_config: dict,
+    size_column: str = 'mkvalt',
+    fallback_column: str = 'at'
+) -> pd.DataFrame:
+    """
+    Erstellt Index-Proxy durch Auswahl der größten Unternehmen.
+
+    Args:
+        df: DataFrame mit Unternehmen eines Landes
+        country_code: Ländercode (für Logging)
+        proxy_config: Config dict mit:
+            - type: 'top_n', 'range', 'all', 'percentile'
+            - n: Anzahl Unternehmen (für top_n)
+            - start, end: Range (für range)
+            - percentile: Top X% (für percentile)
+        size_column: Spalte für Größenmessung (default: 'mkvalt' = Market Value)
+        fallback_column: Fallback wenn size_column fehlt (default: 'at' = Total Assets)
+
+    Returns:
+        Gefilterter DataFrame mit Index-Proxy Unternehmen
+    """
+    if proxy_config.get('type') == 'all':
+        logger.info(f"  {country_code}: Alle {len(df)} Unternehmen ausgewählt")
+        return df
+
+    # Bestimme Größen-Spalte
+    size_col = size_column if size_column in df.columns else fallback_column
+
+    if size_col not in df.columns:
+        logger.warning(f"  {country_code}: Keine Größen-Spalte gefunden - nutze alle Unternehmen")
+        return df
+
+    # Sortiere nach Größe (absteigend)
+    df_sorted = df.sort_values(size_col, ascending=False, na_position='last')
+
+    proxy_type = proxy_config.get('type', 'top_n')
+
+    if proxy_type == 'top_n':
+        n = proxy_config.get('n', 50)
+        df_selected = df_sorted.head(n)
+        logger.info(f"  {country_code}: Top {n} Unternehmen ausgewählt (nach {size_col})")
+
+    elif proxy_type == 'range':
+        start = proxy_config.get('start', 1) - 1  # 0-indexed
+        end = proxy_config.get('end', 100)
+        df_selected = df_sorted.iloc[start:end]
+        logger.info(f"  {country_code}: Rang {start+1}-{end} ausgewählt ({len(df_selected)} Unternehmen)")
+
+    elif proxy_type == 'percentile':
+        percentile = proxy_config.get('percentile', 90)
+        threshold = df_sorted[size_col].quantile(percentile / 100)
+        df_selected = df_sorted[df_sorted[size_col] >= threshold]
+        logger.info(f"  {country_code}: Top {100-percentile}% ausgewählt ({len(df_selected)} Unternehmen)")
+
+    else:
+        logger.warning(f"  {country_code}: Unbekannter proxy_type '{proxy_type}' - nutze top_n")
+        df_selected = df_sorted.head(50)
+
+    return df_selected
+
+
+def load_multi_market_data(
+    csv_path: str,
+    market_config: dict,
+    fic_column: str = 'fic',
+    data_dir: str = 'data/raw'
+) -> pd.DataFrame:
+    """
+    Lädt Daten aus großer internationaler CSV mit flexibler Länderauswahl.
+
+    Args:
+        csv_path: Pfad zur CSV (absolute oder relativ zu data_dir)
+        market_config: Konfiguration mit:
+            {
+                'mode': 'single' oder 'multi',
+                'countries': ['DEU', 'FRA'] oder 'ALL',
+                'use_index_proxy': True/False,
+                'index_proxies': {
+                    'DEU': {'type': 'top_n', 'n': 160},
+                    'FRA': {'type': 'top_n', 'n': 40}
+                },
+                'exclude_sectors': [40, 60],  # Optional
+                'min_company_size': None  # Optional
+            }
+        fic_column: Spaltenname für Ländercode
+        data_dir: Basis-Verzeichnis (falls csv_path relativ)
+
+    Returns:
+        DataFrame mit geladenen und gefilterten Daten + 'source_country' Spalte
+    """
+    logger.info(f"\n{'='*80}")
+    logger.info("MULTI-MARKET DATA LOADING")
+    logger.info(f"{'='*80}")
+
+    # Pfad vorbereiten
+    csv_file = Path(csv_path)
+    if not csv_file.is_absolute():
+        csv_file = Path(data_dir) / csv_path
+
+    if not csv_file.exists():
+        raise FileNotFoundError(f"CSV-Datei nicht gefunden: {csv_file}")
+
+    logger.info(f"📂 Lade Daten aus: {csv_file.name}")
+
+    # Gesamte CSV laden
+    df_full = load_data(csv_file)
+    logger.info(f"   Total Zeilen: {len(df_full):,}")
+
+    # Prüfe ob fic Spalte existiert
+    if fic_column not in df_full.columns:
+        raise ValueError(f"Spalte '{fic_column}' nicht gefunden in CSV. Verfügbare: {df_full.columns.tolist()[:10]}")
+
+    # Länderauswahl
+    countries = market_config.get('countries', 'ALL')
+
+    if countries == 'ALL':
+        logger.info("🌍 Modus: Alle Länder")
+        df_selected = df_full.copy()
+    else:
+        logger.info(f"🌍 Modus: Ausgewählte Länder - {countries}")
+        df_selected = df_full[df_full[fic_column].isin(countries)].copy()
+        logger.info(f"   Nach Länderfilter: {len(df_selected):,} Zeilen")
+
+        if len(df_selected) == 0:
+            raise ValueError(f"Keine Daten gefunden für Länder: {countries}")
+
+    # Index-Proxy Filterung
+    use_proxy = market_config.get('use_index_proxy', False)
+
+    if use_proxy and countries != 'ALL':
+        logger.info("\n📊 Erstelle Index-Proxies pro Land...")
+
+        index_proxies = market_config.get('index_proxies', {})
+        dataframes_per_country = []
+
+        for country in countries:
+            df_country = df_selected[df_selected[fic_column] == country].copy()
+
+            if len(df_country) == 0:
+                logger.warning(f"  ⚠️  {country}: Keine Daten gefunden")
+                continue
+
+            # Proxy Config für dieses Land
+            if isinstance(index_proxies, dict):
+                proxy_config = index_proxies.get(country, {'type': 'all'})
+            else:
+                proxy_config = {'type': 'all'}
+
+            # Erstelle Proxy
+            df_proxy = create_index_proxy(df_country, country, proxy_config)
+            df_proxy['source_country'] = country  # Markiere Herkunft
+            dataframes_per_country.append(df_proxy)
+
+        # Kombiniere alle Länder
+        df_selected = pd.concat(dataframes_per_country, ignore_index=True)
+        logger.info(f"\n   ✅ Index-Proxy erstellt: {len(df_selected)} Unternehmen gesamt")
+    else:
+        # Keine Proxy-Filterung, nur source_country hinzufügen
+        df_selected['source_country'] = df_selected[fic_column]
+
+    # Sektor-Ausschluss
+    exclude_sectors = market_config.get('exclude_sectors', [])
+    if exclude_sectors and 'gsector' in df_selected.columns:
+        logger.info(f"\n🚫 Schließe Sektoren aus: {exclude_sectors}")
+        initial_len = len(df_selected)
+        df_selected = df_selected[~df_selected['gsector'].isin(exclude_sectors)]
+        logger.info(f"   {initial_len - len(df_selected)} Zeilen entfernt → {len(df_selected)} verbleiben")
+
+    # Größenfilter
+    min_size = market_config.get('min_company_size')
+    if min_size:
+        size_col = 'mkvalt' if 'mkvalt' in df_selected.columns else 'at'
+        if size_col in df_selected.columns:
+            logger.info(f"\n📏 Filtere nach Mindestgröße: {size_col} >= {min_size}")
+            initial_len = len(df_selected)
+            df_selected = df_selected[df_selected[size_col] >= min_size]
+            logger.info(f"   {initial_len - len(df_selected)} Zeilen entfernt → {len(df_selected)} verbleiben")
+
+    # Zusammenfassung
+    logger.info(f"\n{'='*80}")
+    logger.info("✅ MULTI-MARKET LOADING ABGESCHLOSSEN")
+    logger.info(f"{'='*80}")
+    logger.info(f"   Final Zeilen: {len(df_selected):,}")
+    logger.info(f"   Final Spalten: {len(df_selected.columns)}")
+
+    if 'source_country' in df_selected.columns:
+        logger.info("\n   Verteilung pro Land:")
+        for country, count in df_selected['source_country'].value_counts().items():
+            logger.info(f"     {country}: {count:,} Zeilen")
+
+    logger.info(f"{'='*80}\n")
+
+    return df_selected
+
+
+# Preset Konfigurationen
+MARKET_PRESETS = {
+    'germany_dax_family': {
+        'mode': 'single',
+        'countries': ['DEU'],
+        'use_index_proxy': True,
+        'index_proxies': {
+            'DEU': {'type': 'top_n', 'n': 160}  # DAX (40) + MDAX (60) + SDAX (60)
+        },
+        'exclude_sectors': [40],  # Financials
+        'description': 'Deutsche DAX-Familie (Top 160 Unternehmen)'
+    },
+
+    'europe_large_cap': {
+        'mode': 'multi',
+        'countries': ['DEU', 'FRA', 'GBR', 'ITA', 'ESP'],
+        'use_index_proxy': True,
+        'index_proxies': {
+            'DEU': {'type': 'top_n', 'n': 50},
+            'FRA': {'type': 'top_n', 'n': 50},
+            'GBR': {'type': 'top_n', 'n': 50},
+            'ITA': {'type': 'top_n', 'n': 50},
+            'ESP': {'type': 'top_n', 'n': 50}
+        },
+        'exclude_sectors': [40, 60],  # Financials & Real Estate
+        'description': 'Top 50 Unternehmen aus 5 großen EU-Ländern'
+    },
+
+    'germany_vs_france': {
+        'mode': 'multi',
+        'countries': ['DEU', 'FRA'],
+        'use_index_proxy': True,
+        'index_proxies': {
+            'DEU': {'type': 'top_n', 'n': 40},
+            'FRA': {'type': 'top_n', 'n': 40}
+        },
+        'exclude_sectors': [],
+        'description': 'Vergleich Deutschland vs Frankreich (je Top 40)'
+    },
+
+    'all_europe': {
+        'mode': 'multi',
+        'countries': ['DEU', 'GBR', 'FRA', 'ITA', 'ESP', 'NLD', 'CHE', 'BEL', 'AUT', 'SWE'],
+        'use_index_proxy': False,  # Alle Unternehmen
+        'exclude_sectors': [40],
+        'description': 'Alle Unternehmen aus 10 europäischen Ländern'
+    },
+
+    'usa_large_cap': {
+        'mode': 'single',
+        'countries': ['USA'],
+        'use_index_proxy': True,
+        'index_proxies': {
+            'USA': {'type': 'top_n', 'n': 500}  # S&P 500 Proxy
+        },
+        'exclude_sectors': [40, 60],
+        'description': 'US Large Caps (Top 500 Unternehmen)'
+    },
+
+    'global_giants': {
+        'mode': 'multi',
+        'countries': ['USA', 'DEU', 'GBR', 'FRA', 'JPN', 'CHN'],
+        'use_index_proxy': True,
+        'index_proxies': {
+            'USA': {'type': 'top_n', 'n': 100},
+            'DEU': {'type': 'top_n', 'n': 30},
+            'GBR': {'type': 'top_n', 'n': 30},
+            'FRA': {'type': 'top_n', 'n': 30},
+            'JPN': {'type': 'top_n', 'n': 30},
+            'CHN': {'type': 'top_n', 'n': 30}
+        },
+        'exclude_sectors': [40],
+        'description': 'Größte Unternehmen aus 6 wichtigsten Wirtschaftsräumen'
+    }
+}
+
+
+def get_preset_config(preset_name: str) -> dict:
+    """
+    Gibt Preset-Konfiguration zurück.
+
+    Args:
+        preset_name: Name des Presets
+
+    Returns:
+        Konfiguration als dict
+
+    Raises:
+        ValueError: Wenn Preset nicht existiert
+    """
+    if preset_name not in MARKET_PRESETS:
+        available = list(MARKET_PRESETS.keys())
+        raise ValueError(f"Preset '{preset_name}' nicht gefunden. Verfügbar: {available}")
+
+    return MARKET_PRESETS[preset_name].copy()
+
+
+def list_available_presets() -> pd.DataFrame:
+    """
+    Zeigt alle verfügbaren Presets mit Beschreibungen.
+
+    Returns:
+        DataFrame mit Preset-Übersicht
+    """
+    presets_info = []
+
+    for name, config in MARKET_PRESETS.items():
+        n_countries = len(config['countries']) if config['countries'] != 'ALL' else 'ALL'
+
+        presets_info.append({
+            'preset_name': name,
+            'description': config.get('description', ''),
+            'countries': n_countries,
+            'mode': config['mode'],
+            'use_proxy': config.get('use_index_proxy', False)
+        })
+
+    return pd.DataFrame(presets_info)
 
 
 if __name__ == "__main__":
