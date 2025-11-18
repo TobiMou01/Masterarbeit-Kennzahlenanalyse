@@ -1,0 +1,7 @@
+{
+  "silhouette": 0.5150115817707646,
+  "calinski_harabasz": 0,
+  "davies_bouldin": 0.4425493573292177,
+  "n_clusters": 5,
+  "linkage": "ward"
+}

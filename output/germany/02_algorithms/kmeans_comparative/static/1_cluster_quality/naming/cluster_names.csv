@@ -1,5 +1,3 @@
 cluster_id,cluster_name
-0,Mid-Tier (Mature Stable) - Equity Ratio: 49.5
-1,Mid-Tier (Balanced) - Quick Ratio: 0.92x
-2,Mid-Tier (Balanced) - Asset Turnover: 1.83x
-3,Challenged (Distressed) - Debt/Equity: 25.06x
+0,Mid-Tier (Distressed) - Quick Ratio: 1.41x
+1,Mid-Tier (Balanced) - Current Ratio: 1.49x

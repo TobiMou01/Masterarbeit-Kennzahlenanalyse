@@ -1,0 +1,4 @@
+Algorithm,N_Clusters,Silhouette,Calinski-Harabasz,Davies-Bouldin,Parameters
+K-Means,5,0.2043916170131605,0,1.8999564163140292,"K=5, n_init=20"
+Hierarchical,5,0.5150115817707646,0,0.4425493573292177,linkage=ward
+DBSCAN,4,0.11927963624385926,0,1.1315815301319263,"eps=1.5, min_samples=3"

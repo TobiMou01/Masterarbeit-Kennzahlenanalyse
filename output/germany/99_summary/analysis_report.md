@@ -2,7 +2,7 @@
 
 **Market:** germany
 **Algorithm:** kmeans
-**Generated:** 2025-11-14 13:25:42
+**Generated:** 2025-11-15 16:48:49
 
 ---
 
@@ -34,12 +34,10 @@
 ### Static Analysis Profiles
 
 ```
-              roa         roe  ebit_margin  net_profit_margin  current_ratio  quick_ratio  debt_to_equity  equity_ratio  asset_turnover  revenue_per_employee     cluster_name
-cluster                                                                                                                                                                       
-0        6.284933    6.780541     9.193421           5.482506       1.738951     1.174915        0.338953     49.523062        0.844991            410.741863        Upper-Mid
-1        4.648844    3.428186     8.047534           2.668569       1.183871     0.917403        1.068857     26.067930        0.639157            555.064750        Lower-Mid
-2        1.795009   42.566366     1.204411          -0.767157       2.212493     1.803597        0.677167     25.334460        1.832553           1230.156906  High Performers
-3       -0.589630 -144.874819    -7.143895         -23.597034       0.999847     0.928391       25.059635      2.494306        0.539283            212.243147   Low Performers
+              roa        roe  ebit_margin  net_profit_margin  current_ratio  quick_ratio  debt_to_equity  equity_ratio  asset_turnover  revenue_per_employee cluster_name
+cluster                                                                                                                                                                  
+0        2.630379  19.229081     1.800161          -0.945263       1.701398     1.405368        3.009009     22.540973        1.400830           1070.571613       Tier 1
+1        5.541389   4.237680     8.979662           4.150217       1.488735     1.055387        0.567764     38.932496        0.724763            441.045897       Tier 2
 ```
 
 
