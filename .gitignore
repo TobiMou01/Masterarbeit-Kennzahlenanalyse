@@ -60,3 +60,10 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Data files - Ignore large CSV files
+data/raw/*.csv
+data/raw/**/*.csv
+# But allow small example/config files if needed
+!data/raw/**/example*.csv
+!data/raw/**/config*.csv
