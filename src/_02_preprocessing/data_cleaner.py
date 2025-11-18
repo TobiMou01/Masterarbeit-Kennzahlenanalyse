@@ -21,7 +21,8 @@ def run_preprocessing(
     smooth_static=False,
     cagr_years=3,
     file_selection=None,
-    filter_country=None
+    filter_country=None,
+    df_raw=None
 ) -> pd.DataFrame:
     """
     Complete preprocessing: Load → Clean → Impute → Engineer Features → (Optional: CAGR Smoothing)
@@ -37,6 +38,8 @@ def run_preprocessing(
         file_selection: Optional - Liste spezifischer Dateien zum Laden
                        Beispiel: ['dax40_proxy.csv', 'mdax_proxy.csv']
         filter_country: Optional - Filtert nach country-Spalte (für internationale Daten)
+        df_raw: Optional - Pre-loaded DataFrame. If provided, skips data loading step.
+                Useful for multi-market or custom data loading scenarios.
 
     Returns:
         DataFrame with all features
@@ -45,13 +48,18 @@ def run_preprocessing(
     logger.info("PREPROCESSING")
     logger.info("=" * 80 + "\n")
 
-    # 1. Load data mit neuer flexibler load_market_data Funktion
-    df = data_loader.load_market_data(
-        market=market,
-        data_dir=input_dir,
-        file_selection=file_selection,
-        filter_country=filter_country
-    )
+    # 1. Load data (only if not pre-loaded)
+    if df_raw is not None:
+        logger.info("  Using pre-loaded DataFrame")
+        df = df_raw
+    else:
+        logger.info("  Loading data from files...")
+        df = data_loader.load_market_data(
+            market=market,
+            data_dir=input_dir,
+            file_selection=file_selection,
+            filter_country=filter_country
+        )
 
     logger.info(f"  Loaded: {len(df)} rows")
 
