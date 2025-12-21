@@ -224,6 +224,10 @@ def clean_numeric_columns(df):
     # Datum-Spalten konvertieren
     for col in date_columns:
         if col in df.columns:
+            # Skip if already datetime
+            if pd.api.types.is_datetime64_any_dtype(df[col]):
+                logger.debug(f"  {col} ist bereits datetime - überspringe Konvertierung")
+                continue
             logger.info(f"  Konvertiere Datum: {col}")
             df[col] = df[col].apply(convert_german_date)
     
@@ -231,9 +235,13 @@ def clean_numeric_columns(df):
     for col in df.columns:
         if col not in text_columns and col not in date_columns:
             # Versuche numerische Konvertierung
-            if df[col].dtype == 'object':
-                logger.debug(f"  Konvertiere zu numerisch: {col}")
-                df[col] = df[col].apply(convert_german_number)
+            try:
+                if df[col].dtype == 'object':
+                    logger.debug(f"  Konvertiere zu numerisch: {col}")
+                    df[col] = df[col].apply(convert_german_number)
+            except AttributeError as e:
+                logger.warning(f"  Überspringe Spalte {col}: {e}")
+                continue
     
     logger.info("✓ Numerische Spalten bereinigt")
     return df
@@ -265,25 +273,34 @@ def impute_missing_values(df, method='median', threshold=0.5):
     skipped_cols = []
 
     for col in numeric_cols:
-        missing_pct = df[col].isna().sum() / len(df)
+        try:
+            # Ensure we're working with a Series
+            col_data = df[col]
+            if isinstance(col_data, pd.DataFrame):
+                continue  # Skip if it's a DataFrame (shouldn't happen but be safe)
 
-        if missing_pct == 0:
-            continue  # Keine fehlenden Werte
+            missing_pct = col_data.isna().sum() / len(df)
 
-        if missing_pct > threshold:
-            skipped_cols.append((col, missing_pct))
-            continue  # Zu viele fehlende Werte
+            if missing_pct == 0:
+                continue  # Keine fehlenden Werte
 
-        # Imputation
-        if method == 'median':
-            fill_value = df[col].median()
-        elif method == 'mean':
-            fill_value = df[col].mean()
-        else:
-            fill_value = df[col].median()
+            if missing_pct > threshold:
+                skipped_cols.append((col, missing_pct))
+                continue  # Zu viele fehlende Werte
 
-        df[col] = df[col].fillna(fill_value)
-        imputed_cols.append((col, missing_pct, fill_value))
+            # Imputation
+            if method == 'median':
+                fill_value = col_data.median()
+            elif method == 'mean':
+                fill_value = col_data.mean()
+            else:
+                fill_value = col_data.median()
+
+            df[col] = col_data.fillna(fill_value)
+            imputed_cols.append((col, missing_pct, fill_value))
+        except Exception as e:
+            logger.warning(f"  Überspringe Imputation für {col}: {e}")
+            continue
 
     if imputed_cols:
         logger.info(f"  ✓ {len(imputed_cols)} Spalten imputiert")

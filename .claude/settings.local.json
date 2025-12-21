@@ -1,7 +1,12 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(python test_phase2_integration.py:*)",
+      "Bash(/opt/anaconda3/envs/masterarbeit/bin/python:*)",
+      "Bash(python:*)",
+      "Bash(echo:*)",
+      "Bash(/opt/anaconda3/envs/masterarbeit/bin/pip list:*)"
     ],
     "deny": [],
     "ask": []
